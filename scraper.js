@@ -198,7 +198,6 @@ async function scrapeRace(raceId) {
         age:          null,
         term:         null,
         grade:        '',
-        style:        null,
         styleRaw:     null,
         gear:         null,
         score:        null,
@@ -237,19 +236,10 @@ async function scrapeRace(raceId) {
             ? $(tds[6 + indexOffset]).text().trim()
             : '';
 
-          // 脚質（出走表の脚質列をそのまま）
-          const styleRaw = tds[7 + indexOffset]
+          // 脚質（生データのみ）
+          rider.styleRaw = tds[7 + indexOffset]
             ? $(tds[7 + indexOffset]).text().trim()
             : null;
-          rider.styleRaw = styleRaw;
-          // 代表値への正規化（ロジックへの受け渡し用）
-          if (styleRaw) {
-            if (styleRaw.includes('逃')) rider.style = '逃';
-            else if (styleRaw.includes('両')) rider.style = '両';
-            else if (styleRaw.includes('追') || styleRaw.includes('差') || styleRaw.includes('マ')) rider.style = '追';
-            else if (styleRaw.includes('自') || styleRaw.includes('捲')) rider.style = '自';
-            else rider.style = styleRaw;
-          }
 
           // ギア比
           const gearVal = parseFloat(tds[8 + indexOffset]
