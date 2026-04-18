@@ -57,29 +57,45 @@ function extractRecent($, tds, indexOffset) {
 // ------------------------------------------------------------
 // 並び予想パーサー（提供：アオケイ）
 // ------------------------------------------------------------
-const STYLE_WORDS = ['先行', '追込', '自在', '押え先', '逃', '追', '自', '両', '差', 'まくり', '捲り', '捲'];
+// 「数字+脚質語」ペアで先頭/後続を判定してライン分割
+// 先頭役（新グループ開始）: 先行/押え先/逃/自在/まくり/捲り/捲/両
+// 後続役（現グループ継続）: 追込/追/差/マーク/マ
+const LEADER_STYLES = new Set(['先行', '押え先', '逃', '自在', 'まくり', '捲り', '捲', '両']);
+const PAIR_RE = /([1-9])(先行|押え先|逃|自在|まくり|捲り|捲|追込|追|差|マーク|マ|両)/g;
 
 function parseLineFormationText(raw) {
+  // 方法1: 「数字+脚質語」ペアパース（Kドリームス形式 "3先行 5追込 1自在..."）
+  const lines = [];
+  let cur = null;
+  let m;
+  PAIR_RE.lastIndex = 0;
+  while ((m = PAIR_RE.exec(raw)) !== null) {
+    const num = parseInt(m[1], 10);
+    const style = m[2];
+    if (LEADER_STYLES.has(style) || cur === null) {
+      cur = { members: [num] };
+      lines.push(cur);
+    } else {
+      cur.members.push(num);
+    }
+  }
+  if (lines.length > 0) return lines;
+
+  // 方法2: ハイフン区切り（"1-2-3" / "1－2－3"）または連続数字（フォールバック）
   let cleaned = raw
     .replace(/並び予想[^\n]*/g, '')
     .replace(/アオケイ/g, '')
-    .replace(/提供/g, '');
-  for (const w of STYLE_WORDS) {
-    cleaned = cleaned.replace(new RegExp(w, 'g'), ' ');
-  }
+    .replace(/提供/g, '')
+    .replace(/[先行押え逃自在まくり捲追込追差両マーク自]/g, ' ');
 
   const groups = cleaned.split(/[\s\n\u3000・｜|]+/).filter(g => g.length > 0);
-  const lines = [];
-
   for (const group of groups) {
     if (/^\d[-－]\d/.test(group) || group.includes('-') || group.includes('－')) {
-      // ハイフン区切り: "1-2-3" or "1－2－3"
       const members = group.split(/[-－]/)
         .map(n => parseInt(n.trim(), 10))
         .filter(n => !isNaN(n) && n >= 1 && n <= 9);
       if (members.length > 0) lines.push({ members });
     } else if (/^\d+$/.test(group) && group.length <= 7) {
-      // 連続数字: "123" → [1,2,3]
       const members = group.split('').map(Number).filter(n => n >= 1 && n <= 9);
       if (members.length > 0) lines.push({ members });
     }
