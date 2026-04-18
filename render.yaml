@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: keirin-proxy-ii
+    runtime: node
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: PORT
+        value: 10000
