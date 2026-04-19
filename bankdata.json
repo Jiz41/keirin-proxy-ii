@@ -1,0 +1,254 @@
+{
+  "🦑函館": {
+    "length": 400, "straight": 51.3, "straight_deviation": 46.4, "canto": 30.61, "width_home": 10.8, "width_back": 9.8, "width_center": 7.8, "alpha": 0.95, "indoor": false, "beta": 0.80,
+    "keirin_bias": { "先行": 1.0, "捲り": 1.05, "差し": 1.0 },
+    "wind_direction_map": { "南": "H向かい風", "北": "H追い風", "西": "H→B横風", "東": "B→H横風" },
+    "_archived_legacy_notes": { "B追い風": 1.05 }
+  },
+  "🍎青森": {
+    "length": 400, "straight": 58.9, "straight_deviation": 56.2, "canto": 32.25, "width_home": 10.8, "width_back": 9.8, "width_center": 7.8, "alpha": 1.09, "indoor": false, "beta": 0.80,
+    "keirin_bias": { "先行": 1.05, "捲り": 1.0, "差し": 0.98 },
+    "wind_direction_map": { "南東": "H向かい風", "北西": "H追い風", "南西": "H→B横風", "北東": "B→H横風" },
+    "_archived_legacy_notes": {}
+  },
+  "🏝️いわき平": {
+    "length": 400, "straight": 62.7, "straight_deviation": 61.0, "canto": 32.91, "width_home": 10.0, "width_back": 10.0, "width_center": 7.3, "alpha": 1.16, "indoor": false, "beta": 0.80,
+    "keirin_bias": { "先行": 0.98, "捲り": 1.05, "差し": 1.05 },
+    "wind_direction_map": { "北東": "H向かい風", "南西": "H追い風", "南東": "H→B横風", "北西": "B→H横風" },
+    "_archived_legacy_notes": {}
+  },
+  "⛩️弥彦": {
+    "length": 400, "straight": 63.1, "straight_deviation": 61.6, "canto": 32.41, "width_home": 10.1, "width_back": 9.0, "width_center": 7.3, "alpha": 1.17, "indoor": false, "beta": 0.72,
+    "keirin_bias": { "先行": 0.98, "捲り": 1.05, "差し": 1.05 },
+    "wind_direction_map": { "南": "H向かい風", "北": "H追い風", "西": "H→B横風", "東": "B→H横風" },
+    "_archived_legacy_notes": { "直線長い": 1.03 }
+  },
+  "🏔️前橋": {
+    "length": 335, "straight": 46.7, "straight_deviation": 40.5, "canto": 36.00, "width_home": 9.9, "width_back": 9.9, "width_center": 9.9, "alpha": 0.0, "indoor": true, "beta": 0.00,
+    "keirin_bias": { "先行": 1.05, "捲り": 1.0, "差し": 0.98 },
+    "wind_direction_map": null,
+    "_archived_legacy_notes": { "ドーム無風": 1.10 }
+  },
+  "🐓取手": {
+    "length": 400, "straight": 54.8, "straight_deviation": 50.9, "canto": 31.51, "width_home": 10.0, "width_back": 10.0, "width_center": 7.5, "alpha": 1.01, "indoor": false, "beta": 0.75,
+    "keirin_bias": { "先行": 0.98, "捲り": 0.95, "差し": 1.10 },
+    "wind_direction_map": { "南西": "H向かい風", "北東": "H追い風", "北西": "H→B横風", "南東": "B→H横風" },
+    "_archived_legacy_notes": { "向かい風": 0.95 }
+  },
+  "🥟宇都宮": {
+    "length": 500, "straight": 63.3, "straight_deviation": 61.8, "canto": 25.80, "width_home": 10.3, "width_back": 11.3, "width_center": 8.3, "alpha": 1.17, "indoor": false, "beta": 0.72,
+    "keirin_bias": { "先行": 0.98, "捲り": 1.0, "差し": 1.05 },
+    "wind_direction_map": { "北西": "H向かい風", "南東": "H追い風", "北東": "H→B横風", "南西": "B→H横風" },
+    "_archived_legacy_notes": {}
+  },
+  "🌸大宮": {
+    "length": 500, "straight": 66.7, "straight_deviation": 66.2, "canto": 26.28, "width_home": 10.3, "width_back": 9.3, "width_center": 7.5, "alpha": 1.23, "indoor": false, "beta": 0.68,
+    "keirin_bias": { "先行": 1.0, "捲り": 1.0, "差し": 1.10 },
+    "wind_direction_map": { "東": "H向かい風", "西": "H追い風", "南": "H→B横風", "北": "B→H横風" },
+    "_archived_legacy_notes": { "B向かい風": 0.95 }
+  },
+  "🎡西武園": {
+    "length": 400, "straight": 47.6, "straight_deviation": 41.7, "canto": 29.45, "width_home": 11.0, "width_back": 10.0, "width_center": 7.5, "alpha": 0.88, "indoor": false, "beta": 0.68,
+    "keirin_bias": { "先行": 1.05, "捲り": 1.0, "差し": 0.98 },
+    "wind_direction_map": { "東": "H向かい風", "西": "H追い風", "南": "H→B横風", "北": "B→H横風" },
+    "_archived_legacy_notes": { "競りイン優勢": 1.05 }
+  },
+  "🏦京王閣": {
+    "length": 400, "straight": 51.5, "straight_deviation": 46.7, "canto": 32.18, "width_home": 10.3, "width_back": 9.0, "width_center": 7.5, "alpha": 0.95, "indoor": false, "beta": 0.64,
+    "keirin_bias": { "先行": 1.0, "捲り": 1.0, "差し": 1.05 },
+    "wind_direction_map": { "北西": "H向かい風", "南東": "H追い風", "北東": "H→B横風", "南西": "B→H横風" },
+    "_archived_legacy_notes": { "風向き変化": 1.0 }
+  },
+  "🏙️立川": {
+    "length": 400, "straight": 58.0, "straight_deviation": 55.0, "canto": 31.22, "width_home": 9.7, "width_back": 8.7, "width_center": 7.7, "alpha": 1.07, "indoor": false, "beta": 0.70,
+    "keirin_bias": { "先行": 0.98, "捲り": 1.0, "差し": 1.05 },
+    "wind_direction_map": { "西": "H向かい風", "東": "H追い風", "北": "H→B横風", "南": "B→H横風" },
+    "_archived_legacy_notes": { "B向かい風": 0.9 }
+  },
+  "🏰松戸": {
+    "length": 333, "straight": 38.2, "straight_deviation": 29.6, "canto": 29.75, "width_home": 11.1, "width_back": 9.6, "width_center": 8.1, "alpha": 0.71, "indoor": false, "beta": 0.62,
+    "keirin_bias": { "先行": 1.05, "捲り": 1.05, "差し": 0.98 },
+    "wind_direction_map": { "北東": "H向かい風", "南西": "H追い風", "南東": "H→B横風", "北西": "B→H横風" },
+    "_archived_legacy_notes": {}
+  },
+  "🏭川崎": {
+    "length": 400, "straight": 58.0, "straight_deviation": 55.0, "canto": 32.17, "width_home": 10.3, "width_back": 9.3, "width_center": 8.3, "alpha": 1.07, "indoor": false, "beta": 0.64,
+    "keirin_bias": { "先行": 1.0, "捲り": 1.05, "差し": 1.0 },
+    "wind_direction_map": { "西": "H向かい風", "東": "H追い風", "北": "H→B横風", "南": "B→H横風" },
+    "_archived_legacy_notes": { "B追い風": 1.05, "4コーナー外伸び": 1.05 }
+  },
+  "🎋平塚": {
+    "length": 400, "straight": 54.2, "straight_deviation": 50.1, "canto": 31.48, "width_home": 11.0, "width_back": 9.3, "width_center": 7.5, "alpha": 1.00, "indoor": false, "beta": 0.78,
+    "keirin_bias": { "先行": 1.0, "捲り": 1.02, "差し": 1.03 },
+    "wind_direction_map": { "南西": "H向かい風", "北東": "H追い風", "北西": "H→B横風", "南東": "B→H横風" },
+    "_archived_legacy_notes": {}
+  },
+  "🏯小田原": {
+    "length": 333, "straight": 36.1, "straight_deviation": 26.9, "canto": 35.57, "width_home": 11.3, "width_back": 9.0, "width_center": 7.5, "alpha": 0.67, "indoor": false, "beta": 0.62,
+    "keirin_bias": { "先行": 1.05, "捲り": 0.98, "差し": 1.0 },
+    "wind_direction_map": { "東": "H向かい風", "西": "H追い風", "南": "H→B横風", "北": "B→H横風" },
+    "_archived_legacy_notes": {}
+  },
+  "♨️伊東": {
+    "length": 333, "straight": 46.6, "straight_deviation": 40.4, "canto": 34.69, "width_home": 11.0, "width_back": 9.3, "width_center": 7.8, "alpha": 0.86, "indoor": false, "beta": 0.65,
+    "keirin_bias": { "先行": 1.02, "捲り": 1.05, "差し": 1.05 },
+    "wind_direction_map": { "西": "H向かい風", "東": "H追い風", "北": "H→B横風", "南": "B→H横風" },
+    "_archived_legacy_notes": {}
+  },
+  "🗻静岡": {
+    "length": 400, "straight": 56.4, "straight_deviation": 53.0, "canto": 30.72, "width_home": 10.3, "width_back": 9.3, "width_center": 7.5, "alpha": 1.04, "indoor": false, "beta": 0.72,
+    "keirin_bias": { "先行": 1.0, "捲り": 1.05, "差し": 1.0 },
+    "wind_direction_map": { "南西": "H向かい風", "北東": "H追い風", "北西": "H→B横風", "南東": "B→H横風" },
+    "_archived_legacy_notes": { "16時以降風向き変化": 1.05 }
+  },
+  "🐟富山": {
+    "length": 333, "straight": 43.0, "straight_deviation": 35.8, "canto": 33.69, "width_home": 10.2, "width_back": 9.2, "width_center": 6.4, "alpha": 0.79, "indoor": false, "beta": 0.68,
+    "keirin_bias": { "先行": 1.05, "捲り": 1.05, "差し": 0.98 },
+    "wind_direction_map": { "東": "H向かい風", "西": "H追い風", "南": "H→B横風", "北": "B→H横風" },
+    "_archived_legacy_notes": { "夏追い風": 1.05 }
+  },
+  "🏯名古屋": {
+    "length": 400, "straight": 58.8, "straight_deviation": 56.0, "canto": 34.03, "width_home": 10.3, "width_back": 9.3, "width_center": 7.3, "alpha": 1.09, "indoor": false, "beta": 0.72,
+    "keirin_bias": { "先行": 1.0, "捲り": 1.05, "差し": 1.0 },
+    "wind_direction_map": { "北西": "H向かい風", "南東": "H追い風", "北東": "H→B横風", "南西": "B→H横風" },
+    "_archived_legacy_notes": {}
+  },
+  "🎣岐阜": {
+    "length": 400, "straight": 59.3, "straight_deviation": 56.7, "canto": 32.25, "width_home": 10.2, "width_back": 9.0, "width_center": 7.4, "alpha": 1.10, "indoor": false, "beta": 0.70,
+    "keirin_bias": { "先行": 0.98, "捲り": 1.02, "差し": 1.05 },
+    "wind_direction_map": { "西": "H向かい風", "東": "H追い風", "北": "H→B横風", "南": "B→H横風" },
+    "_archived_legacy_notes": {}
+  },
+  "💧大垣": {
+    "length": 400, "straight": 56.0, "straight_deviation": 52.5, "canto": 30.62, "width_home": 10.2, "width_back": 9.0, "width_center": 7.4, "alpha": 1.04, "indoor": false, "beta": 0.72,
+    "keirin_bias": { "先行": 1.0, "捲り": 0.98, "差し": 1.10 },
+    "wind_direction_map": { "南西": "H向かい風", "北東": "H追い風", "北西": "H→B横風", "南東": "B→H横風" },
+    "_archived_legacy_notes": {}
+  },
+  "🧨豊橋": {
+    "length": 400, "straight": 60.3, "straight_deviation": 58.0, "canto": 33.84, "width_home": 10.3, "width_back": 9.3, "width_center": 7.8, "alpha": 1.11, "indoor": false, "beta": 0.75,
+    "keirin_bias": { "先行": 1.0, "捲り": 1.0, "差し": 1.10 },
+    "wind_direction_map": { "南": "H向かい風", "北": "H追い風", "西": "H→B横風", "東": "B→H横風" },
+    "_archived_legacy_notes": {}
+  },
+  "🥩松阪": {
+    "length": 400, "straight": 61.5, "straight_deviation": 59.5, "canto": 34.42, "width_home": 10.9, "width_back": 9.0, "width_center": 7.7, "alpha": 1.14, "indoor": false, "beta": 0.75,
+    "keirin_bias": { "先行": 0.98, "捲り": 1.05, "差し": 1.05 },
+    "wind_direction_map": { "南西": "H向かい風", "北東": "H追い風", "北西": "H→B横風", "南東": "B→H横風" },
+    "_archived_legacy_notes": {}
+  },
+  "🌃四日市": {
+    "length": 400, "straight": 62.4, "straight_deviation": 60.7, "canto": 32.25, "width_home": 13.3, "width_back": 11.5, "width_center": 8.5, "alpha": 1.15, "indoor": false, "beta": 0.78,
+    "keirin_bias": { "先行": 1.0, "捲り": 1.0, "差し": 1.08 },
+    "wind_direction_map": { "南西": "H向かい風", "北東": "H追い風", "北西": "H→B横風", "南東": "B→H横風" },
+    "_archived_legacy_notes": { "第4コーナー外伸び": 1.05 }
+  },
+  "🦖福井": {
+    "length": 400, "straight": 52.8, "straight_deviation": 48.3, "canto": 31.48, "width_home": 10.5, "width_back": 9.0, "width_center": 7.5, "alpha": 0.98, "indoor": false, "beta": 0.72,
+    "keirin_bias": { "先行": 1.0, "捲り": 1.0, "差し": 1.0 },
+    "wind_direction_map": { "南": "H向かい風", "北": "H追い風", "西": "H→B横風", "東": "B→H横風" },
+    "_archived_legacy_notes": {}
+  },
+  "🦌奈良": {
+    "length": 333, "straight": 38.0, "straight_deviation": 29.4, "canto": 33.43, "width_home": 10.8, "width_back": 7.8, "width_center": 7.8, "alpha": 0.70, "indoor": false, "beta": 0.65,
+    "keirin_bias": { "先行": 1.0, "捲り": 0.95, "差し": 1.10 },
+    "wind_direction_map": { "西": "H向かい風", "東": "H追い風", "北": "H→B横風", "南": "B→H横風" },
+    "_archived_legacy_notes": { "B向かい風": 0.95 }
+  },
+  "🎋向日町": {
+    "length": 400, "straight": 47.3, "straight_deviation": 41.3, "canto": 30.48, "width_home": 10.3, "width_back": 9.3, "width_center": 7.6, "alpha": 0.87, "indoor": false, "beta": 0.70,
+    "keirin_bias": { "先行": 0.98, "捲り": 1.05, "差し": 1.05 },
+    "wind_direction_map": { "東": "H向かい風", "西": "H追い風", "南": "H→B横風", "北": "B→H横風" },
+    "_archived_legacy_notes": { "カント緩い": 1.02 }
+  },
+  "🍊和歌山": {
+    "length": 400, "straight": 59.9, "straight_deviation": 57.5, "canto": 32.25, "width_home": 11.4, "width_back": 9.3, "width_center": 7.7, "alpha": 1.11, "indoor": false, "beta": 0.78,
+    "keirin_bias": { "先行": 1.0, "捲り": 0.95, "差し": 1.10 },
+    "wind_direction_map": { "北東": "H向かい風", "南西": "H追い風", "南東": "H→B横風", "北西": "B→H横風" },
+    "_archived_legacy_notes": { "風の影響大": 0.95 }
+  },
+  "🏮岸和田": {
+    "length": 400, "straight": 56.7, "straight_deviation": 53.3, "canto": 30.93, "width_home": 10.2, "width_back": 10.1, "width_center": 7.3, "alpha": 1.05, "indoor": false, "beta": 0.75,
+    "keirin_bias": { "先行": 1.0, "捲り": 1.03, "差し": 1.05 },
+    "wind_direction_map": { "北西": "H向かい風", "南東": "H追い風", "北東": "H→B横風", "南西": "B→H横風" },
+    "_archived_legacy_notes": { "横風": 0.95 }
+  },
+  "🛳️玉野": {
+    "length": 400, "straight": 47.9, "straight_deviation": 42.1, "canto": 30.63, "width_home": 10.3, "width_back": 9.3, "width_center": 7.5, "alpha": 0.89, "indoor": false, "beta": 0.82,
+    "keirin_bias": { "先行": 1.0, "捲り": 1.02, "差し": 1.03 },
+    "wind_direction_map": { "南": "H向かい風", "北": "H追い風", "西": "H→B横風", "東": "B→H横風" },
+    "_archived_legacy_notes": { "B向かい風": 0.95 }
+  },
+  "🍁広島": {
+    "length": 400, "straight": 57.9, "straight_deviation": 54.9, "canto": 32.53, "width_home": 10.5, "width_back": 8.5, "width_center": 7.3, "alpha": 1.07, "indoor": false, "beta": 0.75,
+    "keirin_bias": { "先行": 1.0, "捲り": 1.0, "差し": 1.05 },
+    "wind_direction_map": { "南東": "H向かい風", "北西": "H追い風", "南西": "H→B横風", "北東": "B→H横風" },
+    "_archived_legacy_notes": { "4コーナー外伸び": 1.05 }
+  },
+  "⛩️防府": {
+    "length": 333, "straight": 42.5, "straight_deviation": 35.1, "canto": 34.69, "width_home": 10.2, "width_back": 9.1, "width_center": 7.4, "alpha": 0.79, "indoor": false, "beta": 0.82,
+    "keirin_bias": { "先行": 1.05, "捲り": 1.0, "差し": 1.05 },
+    "wind_direction_map": { "東": "H向かい風", "西": "H追い風", "南": "H→B横風", "北": "B→H横風" },
+    "_archived_legacy_notes": { "西風": 0.95 }
+  },
+  "🍜高松": {
+    "length": 400, "straight": 54.8, "straight_deviation": 50.9, "canto": 33.26, "width_home": 11.0, "width_back": 9.0, "width_center": 8.0, "alpha": 1.01, "indoor": false, "beta": 0.78,
+    "keirin_bias": { "先行": 1.0, "捲り": 1.05, "差し": 1.0 },
+    "wind_direction_map": { "東": "H向かい風", "西": "H追い風", "南": "H→B横風", "北": "B→H横風" },
+    "_archived_legacy_notes": { "海風（横風）": 0.95 }
+  },
+  "🦝小松島": {
+    "length": 400, "straight": 55.5, "straight_deviation": 51.8, "canto": 29.77, "width_home": 10.3, "width_back": 9.3, "width_center": 8.3, "alpha": 1.03, "indoor": false, "beta": 0.78,
+    "keirin_bias": { "先行": 1.0, "捲り": 1.05, "差し": 1.0 },
+    "wind_direction_map": { "南東": "H向かい風", "北西": "H追い風", "南西": "H→B横風", "北東": "B→H横風" },
+    "_archived_legacy_notes": { "バック風": 0.95 }
+  },
+  "🐳高知": {
+    "length": 500, "straight": 52.0, "straight_deviation": 47.3, "canto": 24.50, "width_home": 11.3, "width_back": 10.8, "width_center": 7.8, "alpha": 0.96, "indoor": false, "beta": 0.78,
+    "keirin_bias": { "先行": 1.05, "捲り": 1.0, "差し": 0.98 },
+    "wind_direction_map": { "東": "H向かい風", "西": "H追い風", "南": "H→B横風", "北": "B→H横風" },
+    "_archived_legacy_notes": {}
+  },
+  "🍊松山": {
+    "length": 400, "straight": 58.6, "straight_deviation": 55.8, "canto": 34.03, "width_home": 10.3, "width_back": 9.3, "width_center": 7.3, "alpha": 1.08, "indoor": false, "beta": 0.75,
+    "keirin_bias": { "先行": 1.0, "捲り": 1.05, "差し": 1.05 },
+    "wind_direction_map": { "北西": "H向かい風", "南東": "H追い風", "北東": "H→B横風", "南西": "B→H横風" },
+    "_archived_legacy_notes": { "標準的バンク": 1.0 }
+  },
+  "🚂小倉": {
+    "length": 400, "straight": 56.9, "straight_deviation": 53.6, "canto": 34.03, "width_home": 11.0, "width_back": 10.0, "width_center": 8.0, "alpha": 0.0, "indoor": true, "beta": 0.00,
+    "keirin_bias": { "先行": 1.0, "捲り": 1.05, "差し": 1.05 },
+    "wind_direction_map": null,
+    "_archived_legacy_notes": {}
+  },
+  "🍜久留米": {
+    "length": 400, "straight": 50.7, "straight_deviation": 45.7, "canto": 31.48, "width_home": 11.0, "width_back": 10.0, "width_center": 9.0, "alpha": 0.94, "indoor": false, "beta": 0.72,
+    "keirin_bias": { "先行": 1.0, "捲り": 0.95, "差し": 1.10 },
+    "wind_direction_map": { "南東": "H向かい風", "北西": "H追い風", "南西": "H→B横風", "北東": "B→H横風" },
+    "_archived_legacy_notes": {}
+  },
+  "♨️武雄": {
+    "length": 400, "straight": 64.4, "straight_deviation": 63.2, "canto": 32.01, "width_home": 9.7, "width_back": 8.7, "width_center": 7.4, "alpha": 1.19, "indoor": false, "beta": 0.72,
+    "keirin_bias": { "先行": 1.0, "捲り": 1.05, "差し": 1.0 },
+    "wind_direction_map": { "南西": "H向かい風", "北東": "H追い風", "北西": "H→B横風", "南東": "B→H横風" },
+    "_archived_legacy_notes": { "追い風H側": 1.05 }
+  },
+  "🍔佐世保": {
+    "length": 400, "straight": 40.2, "straight_deviation": 32.2, "canto": 31.48, "width_home": 10.0, "width_back": 9.0, "width_center": 7.5, "alpha": 0.74, "indoor": false, "beta": 0.70,
+    "keirin_bias": { "先行": 1.05, "捲り": 1.0, "差し": 1.0 },
+    "wind_direction_map": { "南西": "H向かい風", "北東": "H追い風", "北西": "H→B横風", "南東": "B→H横風" },
+    "_archived_legacy_notes": { "海風": 0.95 }
+  },
+  "♨️別府": {
+    "length": 400, "straight": 59.9, "straight_deviation": 57.5, "canto": 33.69, "width_home": 10.0, "width_back": 9.0, "width_center": 8.0, "alpha": 1.11, "indoor": false, "beta": 0.80,
+    "keirin_bias": { "先行": 0.98, "捲り": 1.05, "差し": 1.05 },
+    "wind_direction_map": { "南": "H向かい風", "北": "H追い風", "西": "H→B横風", "東": "B→H横風" },
+    "_archived_legacy_notes": { "B向かい風": 0.9 }
+  },
+  "🏯熊本": {
+    "length": 400, "straight": 60.3, "straight_deviation": 58.0, "canto": 34.26, "width_home": 10.0, "width_back": 9.0, "width_center": 8.0, "alpha": 1.11, "indoor": false, "beta": 0.75,
+    "keirin_bias": { "先行": 1.0, "捲り": 1.05, "差し": 1.0 },
+    "wind_direction_map": { "南西": "H向かい風", "北東": "H追い風", "北西": "H→B横風", "南東": "B→H横風" },
+    "_archived_legacy_notes": {}
+  }
+}
