@@ -180,6 +180,12 @@ async function scrapeRace(raceId) {
   const venueMatch = titleText.match(/(.+)競輪 レース詳細/);
   const venue = BANK_NAME_MAP[venueMatch ? venueMatch[1] : ''] || (venueMatch ? venueMatch[1] : '');
 
+  // 発走予定時刻
+  const raceTimeRaw = $('dl.time dt.start').next('dd').first().text().trim();
+  const raceTime = /^\d{1,2}:\d{2}$/.test(raceTimeRaw)
+    ? raceTimeRaw.padStart(5, '0')
+    : null;
+
   // ライン予想（並び予想セクション）
   const lineFormation = extractLineFormation($);
 
@@ -311,7 +317,7 @@ async function scrapeRace(raceId) {
   else if (grades.some(g => g && g.startsWith('S'))) series = 'S級';
   else if (grades.some(g => g === 'A3'))           series = 'A級チャレンジ';
 
-  return { raceId, venue, series, riders, lineFormation };
+  return { raceId, venue, series, riders, lineFormation, raceTime };
 }
 
 module.exports = { scrapeRace };
