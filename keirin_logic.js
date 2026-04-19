@@ -968,6 +968,7 @@ function calculateTenunIndex(seitenreiScores, koutenreiScores, allScenarioResult
     return {
         tenunIndex: tIndex,
         message: finalHtml,
+        targetPlayerId,
         rankingWithData: seitenreiRanking,
         koutenRankingWithData: koutenreiRanking
     };

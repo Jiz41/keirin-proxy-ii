@@ -180,6 +180,10 @@ async function predict(raceId) {
       tenun: {
         index:   tenunData.tenunIndex,
         message: tenunData.message,
+        ichiyo: {
+          activated: tenunData.targetPlayerId !== null && tenunData.targetPlayerId !== undefined,
+          playerId:  tenunData.targetPlayerId ?? null,
+        },
       },
       shakkou: shakkouResult,
     },
