@@ -17,12 +17,26 @@ async function selectRaces() {
 
   const kaisai = await getKaisai(dateStr);
 
-  // 今日のraceIdのみ収集（raceId[2..10] === dateStr）
+  // 今日のraceIdのみ収集
+  // raceId構造: [VV][YYYYMMDD(開催初日)][DD(日数目)][RRRR(レース番号)]
+  // 開催初日が当日とは限らないため、初日日付と当日の差分でDD(日数目)を算出して照合する
+  const todayMs = Date.UTC(
+    parseInt(dateStr.slice(0, 4)),
+    parseInt(dateStr.slice(4, 6)) - 1,
+    parseInt(dateStr.slice(6, 8))
+  );
   const allRaceIds = [];
   for (const venue of kaisai.venues) {
     for (const day of venue.days) {
       for (const race of day.races) {
-        if (race.raceId.slice(2, 10) === dateStr) {
+        const start = race.raceId.slice(2, 10);
+        const startMs = Date.UTC(
+          parseInt(start.slice(0, 4)),
+          parseInt(start.slice(4, 6)) - 1,
+          parseInt(start.slice(6, 8))
+        );
+        const dayNum = Math.round((todayMs - startMs) / 86400000) + 1;
+        if (dayNum >= 1 && race.raceId.slice(10, 12) === String(dayNum).padStart(2, '0')) {
           allRaceIds.push(race.raceId);
         }
       }
