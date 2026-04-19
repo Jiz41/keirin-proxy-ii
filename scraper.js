@@ -1,6 +1,23 @@
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 
+const BANK_NAME_MAP = {
+  '函館':'🦑函館', '青森':'🍎青森', 'いわき平':'🏝️いわき平',
+  '弥彦':'⛩️弥彦', '前橋':'🏔️前橋', '取手':'🐓取手',
+  '宇都宮':'🥟宇都宮', '大宮':'🌸大宮', '西武園':'🎡西武園',
+  '京王閣':'🏦京王閣', '立川':'🏙️立川', '松戸':'🏰松戸',
+  '川崎':'🏭川崎', '平塚':'🎋平塚', '小田原':'🏯小田原',
+  '伊東':'♨️伊東', '静岡':'🗻静岡', '富山':'🐟富山',
+  '名古屋':'🏯名古屋', '岐阜':'🎣岐阜', '大垣':'💧大垣',
+  '豊橋':'🧨豊橋', '松阪':'🥩松阪', '四日市':'🌃四日市',
+  '福井':'🦖福井', '奈良':'🦌奈良', '向日町':'🎋向日町',
+  '和歌山':'🍊和歌山', '岸和田':'🏮岸和田', '玉野':'🛳️玉野',
+  '広島':'🍁広島', '防府':'⛩️防府', '高松':'🍜高松',
+  '小松島':'🦝小松島', '高知':'🐳高知', '松山':'🍊松山',
+  '小倉':'🚂小倉', '久留米':'🍜久留米', '武雄':'♨️武雄',
+  '佐世保':'🍔佐世保', '別府':'♨️別府', '熊本':'🏯熊本',
+};
+
 const VENUE_MAP = {
   '11': 'hakodate',  '12': 'aomori',    '13': 'iwakitaira',
   '21': 'yahiko',    '22': 'maebashi',  '23': 'toride',
@@ -161,7 +178,7 @@ async function scrapeRace(raceId) {
 
   const titleText = $('title').text();
   const venueMatch = titleText.match(/(.+)競輪 レース詳細/);
-  const venue = venueMatch ? venueMatch[1] : '';
+  const venue = BANK_NAME_MAP[venueMatch ? venueMatch[1] : ''] || (venueMatch ? venueMatch[1] : '');
 
   // ライン予想（並び予想セクション）
   const lineFormation = extractLineFormation($);
