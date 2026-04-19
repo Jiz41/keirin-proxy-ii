@@ -5,7 +5,6 @@ const vm   = require('vm');
 const { scrapeRace } = require('./scraper');
 const { getWeather } = require('./weather');
 
-// ── keirin_logic.js をvm内にロード（モジュール起動時に1回だけ実行）─────
 const KEIRIN_DIR = __dirname;
 
 const elStub = {
@@ -24,13 +23,22 @@ const windowStub = { scrollBy: () => {}, scrollTo: () => {}, open: () => {} };
 const appStub    = { logMessage: () => {}, sendLog: () => {} };
 
 const sharedState = {
-  BANK_DATA: {}, getPlayerData: null, parseLineInput: null, runScenarioSimulation: null,
+  BANK_DATA: {},
+  getPlayerData: null,
+  parseLineInput: null,
+  runScenarioSimulation: null,
+  generateSeitenreiBets: null,
+  generateKoutenreiBets: null,
+  calculateTenunIndex: null,
+  currentWindSpeed: 0,
 };
 
-const logicSrc = fs.readFileSync(path.join(KEIRIN_DIR, 'keirin_logic.js'), 'utf8')
-  .replace(/^\(function\(app\)\s*\{/, '')
-  .replace(/\}\)\(App\);\s*$/, '')
-  .replace(/app\.logMessage\(/g, '(() => {}) (');  // ログ抑制
+function loadSrc(filename) {
+  return fs.readFileSync(path.join(KEIRIN_DIR, filename), 'utf8')
+    .replace(/^\(function\(app\)\s*\{/, '')
+    .replace(/\}\)\(App\);\s*$/, '')
+    .replace(/app\.logMessage\(/g, '(() => {}) (');
+}
 
 const ctx = vm.createContext({
   app: appStub, App: appStub,
@@ -41,31 +49,48 @@ const ctx = vm.createContext({
   alert:    () => {},
   console:  { log: () => {}, error: () => {}, warn: () => {} },
   setTimeout: () => {}, clearTimeout: () => {},
+  setInterval: () => {}, clearInterval: () => {},
+  Promise,
   module: {},
   __shared: sharedState,
 });
 
-vm.runInContext(logicSrc, ctx);
+vm.runInContext(loadSrc('keirin_logic.js'), ctx);
+vm.runInContext(loadSrc('tamaki_speech.js'), ctx);
+vm.runInContext(loadSrc('shakkou_donperi_core.js'), ctx);
+
 vm.runInContext(`
   __shared.BANK_DATA             = BANK_DATA;
   __shared.getPlayerData         = getPlayerData;
   __shared.parseLineInput        = parseLineInput;
   __shared.runScenarioSimulation = runScenarioSimulation;
+  __shared.generateSeitenreiBets = generateSeitenreiBets;
+  __shared.generateKoutenreiBets = generateKoutenreiBets;
+  __shared.calculateTenunIndex   = calculateTenunIndex;
 `, ctx);
 
-// ── predict(raceId) ──────────────────────────────────────────────────────────
+const SERIES_TO_GRADE = {
+  'ガールズ': 'girls',
+  'S級':      's-kyu',
+  'A級':      'a-kyu',
+  'A級チャレンジ': 'a-challenge',
+};
+
 async function predict(raceId) {
-  // ① レースデータ取得
   const raceData = await scrapeRace(raceId);
   const { venue, series, riders, lineFormation } = raceData;
 
-  // ② 気象データ取得（null時フォールバック）
   const weather = await getWeather(venue);
   const windSpeed     = weather.windSpeed     ?? 0;
   const windDirection = weather.windDirection ?? '北';
 
-  // ③ ロジック呼び出し
-  const { BANK_DATA, getPlayerData, parseLineInput, runScenarioSimulation } = sharedState;
+  const {
+    BANK_DATA, getPlayerData, parseLineInput, runScenarioSimulation,
+    generateSeitenreiBets, generateKoutenreiBets, calculateTenunIndex,
+  } = sharedState;
+
+  sharedState.currentWindSpeed = windSpeed;
+
   const selectedBank = BANK_DATA[venue];
 
   const playerDataArray = riders
@@ -95,15 +120,51 @@ async function predict(raceId) {
     true, lineInput, windSpeed, windDirection, lines
   );
 
-  const toRanking = (integratedScores) =>
+  const toRankingRich = (integratedScores) =>
     Object.entries(integratedScores)
       .sort((a, b) => b[1] - a[1])
       .map(([id, score], rank) => {
         const p = basePlayers.find(p => p.id === Number(id));
-        return { rank: rank + 1, id: Number(id), style: p ? p.style : '', score: Math.round(score * 100) / 100 };
+        return {
+          rank:        rank + 1,
+          id:          Number(id),
+          style:       p ? p.style : '',
+          score:       Math.round(score * 100) / 100,
+          final_score: score,
+          is_b1:       p ? (p.is_b1 || false) : false,
+          is_s1:       p ? (p.is_s1 || false) : false,
+          wmark:       p ? (p.wmark || '')    : '',
+        };
       });
 
-  // ④ 返却
+  const seitenRanking = toRankingRich(seitenResult.integratedScores);
+  const koutenRanking = toRankingRich(koutenResult.integratedScores);
+
+  const seitenBets = generateSeitenreiBets(seitenRanking);
+  const koutenBets = generateKoutenreiBets(koutenRanking);
+
+  const tenunData = calculateTenunIndex(
+    seitenResult.integratedScores,
+    koutenResult.integratedScores,
+    null,
+    basePlayers
+  );
+
+  let shakkouResult = null;
+  if (typeof appStub.invokeShakkouDonperi === 'function') {
+    const gradeKey = SERIES_TO_GRADE[series] || 'a-kyu';
+    const shakkouContext = {
+      grade:         gradeKey,
+      seriInfos:     allSeriInfos,
+      lineInput,
+      windSpeed,
+      windDirection,
+      isGirls:       settings.IS_GIRLS || false,
+      BANK_DATA:     selectedBank,
+    };
+    shakkouResult = await appStub.invokeShakkouDonperi(basePlayers, shakkouContext);
+  }
+
   return {
     raceId,
     venue,
@@ -113,8 +174,15 @@ async function predict(raceId) {
     windDirection,
     bankFound: !!selectedBank,
     results: {
-      seiten: toRanking(seitenResult.integratedScores),
-      kouten: toRanking(koutenResult.integratedScores),
+      seiten:     seitenRanking.map(({ rank, id, style, score }) => ({ rank, id, style, score })),
+      kouten:     koutenRanking.map(({ rank, id, style, score }) => ({ rank, id, style, score })),
+      seitenBets,
+      koutenBets,
+      tenun: {
+        index:   tenunData.tenunIndex,
+        message: tenunData.message,
+      },
+      shakkou: shakkouResult,
     },
   };
 }
