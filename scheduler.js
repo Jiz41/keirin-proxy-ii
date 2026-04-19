@@ -1,4 +1,5 @@
 const cron      = require('node-cron');
+const fetch     = require('node-fetch');
 const { selectRaces } = require('./selector');
 const { predict }     = require('./orchestrator');
 const { format }      = require('./formatter');
@@ -46,5 +47,12 @@ async function run() {
 
 // 毎時0分に実行
 cron.schedule('0 * * * *', run);
+
+// 毎時30分に自己ping（Renderスリープ防止）
+cron.schedule('30 * * * *', async () => {
+  try {
+    await fetch('https://keirin-proxy-ii.onrender.com/');
+  } catch (e) {}
+});
 
 console.log('[scheduler] 起動 — 毎時0分に実行（JST 00〜07時はスキップ）');
