@@ -186,6 +186,11 @@ async function scrapeRace(raceId) {
     ? raceTimeRaw.padStart(5, '0')
     : null;
 
+  const betTimeRaw = $('dl.time dt.bet').next('dd').first().text().trim();
+  const betTime = /^\d{1,2}:\d{2}$/.test(betTimeRaw)
+    ? betTimeRaw.padStart(5, '0')
+    : null;
+
   // ライン予想（並び予想セクション）
   const lineFormation = extractLineFormation($);
 
@@ -317,7 +322,7 @@ async function scrapeRace(raceId) {
   else if (grades.some(g => g && g.startsWith('S'))) series = 'S級';
   else if (grades.some(g => g === 'A3'))           series = 'A級チャレンジ';
 
-  return { raceId, venue, series, riders, lineFormation, raceTime };
+  return { raceId, venue, series, riders, lineFormation, raceTime, betTime };
 }
 
 module.exports = { scrapeRace };
