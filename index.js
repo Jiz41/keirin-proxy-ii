@@ -2,6 +2,7 @@ const express = require('express');
 const { getKaisai } = require('./kaisai');
 const { scrapeRace } = require('./scraper');
 const { getWeather } = require('./weather');
+const { predict }   = require('./orchestrator');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -39,6 +40,16 @@ app.get('/weather', async (req, res) => {
   if (!venue) return res.status(400).json({ error: 'venue is required' });
   try {
     res.json(await getWeather(venue));
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.get('/predict', async (req, res) => {
+  const { raceId } = req.query;
+  if (!raceId) return res.status(400).json({ error: 'raceId is required' });
+  try {
+    res.json(await predict(raceId));
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
