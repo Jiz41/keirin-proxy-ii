@@ -307,10 +307,10 @@ function getPlayerData(playerDataArray) {
 // ====================================================================================
 function loadBANK_DATA() {
     try {
-        const fs   = require('fs');
-        const path = require('path');
-        const raw  = fs.readFileSync(path.join(__dirname, 'bankdata.json'), 'utf8');
-        BANK_DATA  = JSON.parse(raw);
+        var _fs   = require('fs');
+        var _path = require('path');
+        var raw   = _fs.readFileSync(_path.join(__dirname, 'bankdata.json'), 'utf8');
+        BANK_DATA = JSON.parse(raw);
         app.logMessage(`[SUCCESS] bankdata.jsonを読み込みました。 ${Object.keys(BANK_DATA).length}件のバンクデータをロード。`);
     } catch (error) {
         app.logMessage(`[FATAL ERROR] bankdata.json読み込み失敗: ${error.message}`);
