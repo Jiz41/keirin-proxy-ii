@@ -3,6 +3,9 @@ const { getKaisai } = require('./kaisai');
 const { scrapeRace } = require('./scraper');
 const { getWeather } = require('./weather');
 const { predict }   = require('./orchestrator');
+const { selectRaces } = require('./selector');
+const { format }    = require('./formatter');
+const { post }      = require('./poster');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -50,6 +53,22 @@ app.get('/predict', async (req, res) => {
   if (!raceId) return res.status(400).json({ error: 'raceId is required' });
   try {
     res.json(await predict(raceId));
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.get('/trigger', async (req, res) => {
+  try {
+    const races = await selectRaces();
+    const sent  = [];
+    for (const race of races) {
+      const prediction = await predict(race.raceId);
+      const payload    = format(prediction);
+      await post(payload);
+      sent.push(race.raceId);
+    }
+    res.json({ status: 'ok', races: sent });
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
