@@ -49,7 +49,7 @@ async function run() {
 cron.schedule('0 * * * *', run);
 
 // 毎時30分に自己ping（Renderスリープ防止）
-cron.schedule('30 * * * *', async () => {
+cron.schedule('*/10 * * * *', async () => {
   try {
     await fetch('https://keirin-proxy-ii.onrender.com/');
   } catch (e) {}
