@@ -79,7 +79,7 @@ function formatShakkou(shakkou) {
 
 // ── メインフォーマット ────────────────────────────────────────────────────────
 function format(prediction) {
-  const { raceId, venue, results } = prediction;
+  const { raceId, venue, windDirection, windSpeed, results } = prediction;
   const raceNo = parseInt(raceId.slice(-2), 10);
 
   const { seitenBets, koutenBets, tenun, shakkou } = results;
@@ -90,9 +90,12 @@ function format(prediction) {
   const speechKey  = `index_${tenunIndex}`;
   const tamakiText = pickSpeech(speechKey) || '取得不可';
 
+  const windText = `🌬️ ${windDirection ?? '不明'} ${windSpeed ?? 0}m想定`;
+
   const fields = [
     { name: '🌤 晴天令 買い目', value: formatSeitenBets(seitenBets), inline: true  },
     { name: '🌩 荒天令 買い目', value: formatKoutenBets(koutenBets), inline: true  },
+    { name: '風向風速', value: windText, inline: true },
     {
       name:  `${emoji} 天雲指数  ${tenunIndex}`,
       value: tamakiText.slice(0, 300),
