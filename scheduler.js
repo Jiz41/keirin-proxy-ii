@@ -52,6 +52,7 @@ cron.schedule('0 * * * *', run);
 cron.schedule('*/10 * * * *', async () => {
   try {
     await fetch('https://keirin-proxy-ii.onrender.com/');
+    console.log(`[ping] ${new Date().toISOString()}`);
   } catch (e) {}
 });
 
