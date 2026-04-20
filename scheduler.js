@@ -5,6 +5,8 @@ const { predict }     = require('./orchestrator');
 const { format }      = require('./formatter');
 const { post }        = require('./poster');
 
+const postedRaceIds = new Set();
+
 function jstHour() {
   return new Date(Date.now() + 9 * 60 * 60 * 1000).getUTCHours();
 }
@@ -34,10 +36,15 @@ async function run() {
   }
 
   for (const race of selected) {
+    if (postedRaceIds.has(race.raceId)) {
+      console.log(`[scheduler] スキップ（投稿済み）: ${race.raceId}`);
+      continue;
+    }
     try {
       const prediction = await predict(race.raceId);
       const payload    = format(prediction);
       await post(payload);
+      postedRaceIds.add(race.raceId);
       console.log(`[scheduler] 投稿完了: ${race.raceId} (${race.venue})`);
     } catch (e) {
       console.error(`[scheduler] エラー (${race.raceId}):`, e.message);
