@@ -45,8 +45,8 @@ async function run() {
   }
 }
 
-// 毎時0分に実行
-cron.schedule('0 * * * *', run);
+// 毎時0分・30分に実行
+cron.schedule('0,30 * * * *', run);
 
 // 毎時30分に自己ping（Renderスリープ防止）
 cron.schedule('*/10 * * * *', async () => {
@@ -56,4 +56,4 @@ cron.schedule('*/10 * * * *', async () => {
   } catch (e) {}
 });
 
-console.log('[scheduler] 起動 — 毎時0分に実行（JST 00〜07時はスキップ）');
+console.log('[scheduler] 起動 — 毎時0分・30分に実行（JST 00〜07時はスキップ）');
