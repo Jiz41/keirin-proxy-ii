@@ -1,5 +1,7 @@
 const fetch = require('node-fetch');
 
+console.log('[poster] WEBHOOK URL:', process.env.DISCORD_WEBHOOK_ALL);
+
 async function post(payload) {
   const url = process.env.DISCORD_WEBHOOK_ALL;
   if (!url) {
