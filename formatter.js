@@ -51,9 +51,10 @@ function formatSeitenBets(bets) {
 
 function formatKoutenBets(bets) {
   if (!bets) return '取得不可';
-  const puku = (bets.sanrenpuku || []).map(b => b.join('=')).join('\n');
-  const tan  = (bets.nirentan   || []).map(b => b.join('→')).join('\n');
-  return `${BET_LABEL.sanrenpuku}\n${puku || '-'}\n${BET_LABEL.nirentan}\n${tan || '-'}`;
+  const tokui = bets.targetL ? `⚠️ 特異点 #${bets.targetL.id}（${bets.targetL.style || '?'}）\n` : '';
+  const puku  = (bets.sanrenpuku || []).map(b => b.join('=')).join('\n');
+  const tan   = (bets.nirentan   || []).map(b => b.join('→')).join('\n');
+  return `${tokui}${BET_LABEL.sanrenpuku}\n${puku || '-'}\n${BET_LABEL.nirentan}\n${tan || '-'}`;
 }
 
 // ── 赤口呑縁フォーマット ─────────────────────────────────────────────────────
