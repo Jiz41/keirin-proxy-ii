@@ -24,7 +24,9 @@ async function run() {
 
   let selected;
   try {
+    console.log('[A.L.L.] レース選定開始');
     selected = await selectRaces();
+    console.log('[A.L.L.] レース選定完了:', selected.map(r => r.raceId));
   } catch (e) {
     console.error('[scheduler] selector エラー:', e.message);
     return;
@@ -41,9 +43,13 @@ async function run() {
       continue;
     }
     try {
+      console.log('[A.L.L.] 予想生成開始:', race.raceId);
       const prediction = await predict(race.raceId);
+      console.log('[A.L.L.] 予想生成完了:', race.raceId);
       const payload    = format(prediction);
+      console.log('[A.L.L.] Discord送信開始:', race.raceId);
       await post(payload);
+      console.log('[A.L.L.] Discord送信完了:', race.raceId);
       postedRaceIds.add(race.raceId);
       console.log(`[scheduler] 投稿完了: ${race.raceId} (${race.venue})`);
     } catch (e) {
