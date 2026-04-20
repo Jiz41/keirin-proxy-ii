@@ -77,3 +77,5 @@ app.get('/trigger', async (req, res) => {
 app.listen(port, () => {
   console.log(`keirin-proxy-ii listening at http://localhost:${port}`);
 });
+
+require('./scheduler');

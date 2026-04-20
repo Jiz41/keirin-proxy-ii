@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "start:all": "node index.js & node scheduler.js & wait"
+    "start": "node index.js"
   },
   "dependencies": {
     "cheerio": "^1.0.0",
