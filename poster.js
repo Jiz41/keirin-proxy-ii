@@ -1,11 +1,11 @@
 const fetch = require('node-fetch');
 
-console.log('[poster] WEBHOOK URL:', process.env.DISCORD_WEBHOOK_URL);
+console.log('[poster] WEBHOOK URL:', process.env.DISCORD_WEBHOOK_ALL);
 
 async function post(payload) {
-  const url = process.env.DISCORD_WEBHOOK_URL;
+  const url = process.env.DISCORD_WEBHOOK_ALL;
   if (!url) {
-    console.error('[poster] DISCORD_WEBHOOK_URL が未設定です');
+    console.error('[poster] DISCORD_WEBHOOK_ALL が未設定です');
     return;
   }
   try {
