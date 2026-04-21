@@ -1212,7 +1212,8 @@ function displayResults(detailedScenarioResults, seitenreiIntegratedScores, kout
 
     // 買い目
     const seitenreiBets = generateSeitenreiBets(tenunIndexData.rankingWithData);
-    const koutenreiBets = generateKoutenreiBets(tenunIndexData.rankingWithData);
+    const seitenTop3Ids = new Set(tenunIndexData.rankingWithData.slice(0, 3).map(p => p.id));
+    const koutenreiBets = generateKoutenreiBets(tenunIndexData.koutenRankingWithData, seitenTop3Ids);
 
     return {
         bankTendency,
@@ -1244,16 +1245,18 @@ function generateSeitenreiBets(ranking) {
     };
 }
 
-function generateKoutenreiBets(ranking) {
+function generateKoutenreiBets(ranking, seitenTop3Ids = new Set()) {
     if (!ranking || ranking.length < 4) return null;
     const A = ranking[0], B = ranking[1], C = ranking[2];
-    const lCandidates = ranking.slice(3).map(p => {
-        let s = p.final_score / 10;
-        if (p.is_b1) s += 10;
-        if (p.is_s1) s += 5;
-        if (p.style === '追' || p.style === '両') s += 3;
-        return { ...p, lScore: s };
-    });
+    const lCandidates = ranking
+        .filter(p => !seitenTop3Ids.has(p.id))
+        .map(p => {
+            let s = p.final_score / 10;
+            if (p.is_b1) s += 10;
+            if (p.is_s1) s += 5;
+            if (p.style === '追' || p.style === '両') s += 3;
+            return { ...p, lScore: s };
+        });
     lCandidates.sort((a, b) => b.lScore - a.lScore);
     const targetL = lCandidates[0];
     return {
