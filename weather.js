@@ -63,18 +63,18 @@ async function getWeather(venueName) {
   }
 
   const [lat, lon] = latlng;
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=wind_speed_10m,wind_direction_10m&timezone=Asia/Tokyo`;
+  const url = `https://wttr.in/-${lat},${lon}?format=j1&m`;
 
   const res     = await fetch(url);
   const json    = await res.json();
-  const current = json.current;
+  const current = json.current_condition && json.current_condition[0];
 
-  if (!res.ok || !current || current.wind_speed_10m === undefined) {
-    throw new Error('open-meteo APIからデータを取得できませんでした');
+  if (!res.ok || !current || current.windspeedKmph === undefined) {
+    throw new Error('wttr.in APIからデータを取得できませんでした');
   }
 
-  const windSpeed     = kmhToMs(current.wind_speed_10m);
-  const windDirection = windSpeed < 1.0 ? '無風' : degToDirection(current.wind_direction_10m);
+  const windSpeed     = kmhToMs(parseFloat(current.windspeedKmph));
+  const windDirection = windSpeed < 1.0 ? '無風' : degToDirection(parseInt(current.winddirDegree, 10));
 
   return { windSpeed, windDirection };
 }
