@@ -156,6 +156,62 @@ function extractLineFormation($) {
 }
 
 // ------------------------------------------------------------
+// ウィンチケット並び予想スクレイパー
+// ------------------------------------------------------------
+async function scrapeWinticketLineFormation(raceId) {
+  const venueCode = raceId.slice(0, 2);
+  const slug      = VENUE_MAP[venueCode];
+  if (!slug) return null;
+
+  const yyyymmdd  = raceId.slice(2, 10);
+  const dayOfMeet = parseInt(raceId.slice(10, 12), 10);
+  const raceNo    = parseInt(raceId.slice(12), 10);
+  const url = `https://www.winticket.jp/keirin/${slug}/racecard/${yyyymmdd}${venueCode}/${dayOfMeet}/${raceNo}`;
+
+  await sleep(1000);
+  let body;
+  try {
+    const res = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36',
+        'Accept': 'text/html',
+        'Accept-Language': 'ja-JP',
+      }
+    });
+    if (!res.ok) return null;
+    body = await res.text();
+  } catch (e) {
+    console.warn(`[winticket] fetch失敗: ${e.message}`);
+    return null;
+  }
+
+  const $ = cheerio.load(body);
+  const group = $('.BibGroup___Wrapper-sc-d22f727e-0').first();
+  if (!group.length) return null;
+
+  const lines = [];
+  let current = [];
+
+  group.children().each((_, el) => {
+    const $el = $(el);
+    if ($el.is('.Chain___Wrapper-sc-3c332778-0') && $el.attr('aria-label') === 'ライン区切り') {
+      if (current.length > 0) { lines.push(current); current = []; }
+      return;
+    }
+    const bib = $el.find('.Bib___Wrapper-sc-bcd27fee-0').first();
+    if (bib.length) {
+      const label = bib.attr('aria-label') || '';
+      const num = parseInt(label.replace('番', ''), 10);
+      if (!isNaN(num)) current.push(num);
+    }
+  });
+  if (current.length > 0) lines.push(current);
+
+  if (lines.length === 0) return null;
+  return { source: 'winticket', lines };
+}
+
+// ------------------------------------------------------------
 // メインスクレイパー
 // ------------------------------------------------------------
 async function scrapeRace(raceId) {
@@ -191,8 +247,9 @@ async function scrapeRace(raceId) {
     ? betTimeRaw.padStart(5, '0')
     : null;
 
-  // ライン予想（並び予想セクション）
-  const lineFormation = extractLineFormation($);
+  // ライン予想（並び予想セクション）— ウィンチケット優先、失敗時kdreamsにフォールバック
+  let lineFormation = await scrapeWinticketLineFormation(raceId);
+  if (!lineFormation) lineFormation = extractLineFormation($);
 
   // 出走表テーブル特定
   const riders = [];
