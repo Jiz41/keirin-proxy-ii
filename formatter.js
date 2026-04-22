@@ -45,14 +45,14 @@ function strengthMark(winProb, top3Prob) {
 function formatSeitenBets(bets) {
   if (!bets) return '取得不可';
   const tan  = (bets.sanrentan  || []).map(b => b.join('-')).join('\n');
-  const puku = (bets.sanrenpuku || []).map(b => b.join('=')).join('\n');
+  const puku = (bets.sanrenpuku || []).map(b => b.slice().sort((a,b)=>a-b).join('=')).join('\n');
   return `${BET_LABEL.sanrentan}\n${tan || '-'}\n${BET_LABEL.sanrenpuku}\n${puku || '-'}`;
 }
 
 function formatKoutenBets(bets) {
   if (!bets) return '取得不可';
   const tokui = bets.targetL ? `⚠️ 特異点 #${bets.targetL.id}\n` : '';
-  const puku  = (bets.sanrenpuku || []).map(b => b.join('=')).join('\n');
+  const puku  = (bets.sanrenpuku || []).map(b => b.slice().sort((a,b)=>a-b).join('=')).join('\n');
   const tan   = (bets.nirentan   || []).map(b => b.join('→')).join('\n');
   return `${tokui}${BET_LABEL.sanrenpuku}\n${puku || '-'}\n${BET_LABEL.nirentan}\n${tan || '-'}`;
 }

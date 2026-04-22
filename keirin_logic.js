@@ -1248,8 +1248,10 @@ function generateSeitenreiBets(ranking) {
 function generateKoutenreiBets(ranking, seitenTop3Ids = new Set()) {
     if (!ranking || ranking.length < 4) return null;
     const A = ranking[0], B = ranking[1], C = ranking[2];
+    const koutenTop3Ids = new Set([A.id, B.id, C.id]);
     const lCandidates = ranking
-        .filter(p => !seitenTop3Ids.has(p.id))
+        .slice(3)
+        .filter(p => !koutenTop3Ids.has(p.id) && !seitenTop3Ids.has(p.id))
         .map(p => {
             let s = p.final_score / 10;
             if (p.is_b1) s += 10;
