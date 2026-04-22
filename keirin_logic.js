@@ -917,7 +917,7 @@ function runScenarioSimulation(basePlayers, allSeriInfos, settings, BANK_DATA, a
 // ====================================================================================
 // calculateTenunIndex
 // ====================================================================================
-function calculateTenunIndex(seitenreiScores, koutenreiScores, allScenarioResults, participatingPlayers) {
+function calculateTenunIndex(seitenreiScores, koutenreiScores, allScenarioResults, participatingPlayers, windSpeedOverride = null) {
     const seitenreiRanking = Object.keys(seitenreiScores).map(id => {
         const pData = participatingPlayers.find(pp => pp.id === Number(id));
         return { ...pData, final_score: seitenreiScores[id] };
@@ -943,9 +943,11 @@ function calculateTenunIndex(seitenreiScores, koutenreiScores, allScenarioResult
     const tenunIndexMap = { 3: 0, 2: 33, 1: 67, 0: 100 };
     const tIndex = tenunIndexMap[matchCount] ?? 50;
 
-    const windSpeed = (typeof __shared !== 'undefined' && __shared.currentWindSpeed != null)
-        ? __shared.currentWindSpeed
-        : (parseFloat(document.getElementById('wind-speed').value) || 0);
+    const windSpeed = windSpeedOverride != null
+        ? windSpeedOverride
+        : (typeof __shared !== 'undefined' && __shared.currentWindSpeed != null)
+            ? __shared.currentWindSpeed
+            : (parseFloat(document.getElementById('wind-speed').value) || 0);
     let targetPlayerId = null;
 
     if (tIndex === 33 && windSpeed <= 2.0) {

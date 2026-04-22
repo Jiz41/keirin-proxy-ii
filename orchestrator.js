@@ -143,7 +143,8 @@ async function predict(raceId) {
     seitenResult.integratedScores,
     koutenResult.integratedScores,
     seitenResult.allScenarioResults,
-    basePlayers
+    basePlayers,
+    windSpeed
   );
 
   const seitenTop3Ids = new Set((tenunData.rankingWithData || []).slice(0, 3).map(p => p.id));
