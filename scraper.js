@@ -211,15 +211,18 @@ async function scrapeWinticket(raceId) {
   if (lines.length === 0) return null;
 
   // ── 出走表（S/B/wmark）──
-  // 列インデックス: 車番=1, AI印=3, S=5, B=7
+  // 22TD: 枠=0, 車番=1, 選手名=2, AI=3, 得点=4, S=5, H=6, B=7
+  // 21TD: 枠車合流=0, 選手名=1, AI=2, 得点=3, S=4, H=5, B=6
   const playerStats = [];
   $('table').eq(1).find('tbody tr').each((_, tr) => {
     const tds = $(tr).find('td');
-    if (tds.length < 8) return;
-    const id    = parseInt($(tds[1]).text().trim(), 10);
-    const aiRaw = $(tds[3]).text().trim();
-    const s     = parseInt($(tds[5]).text().trim(), 10) || 0;
-    const b     = parseInt($(tds[7]).text().trim(), 10) || 0;
+    const n   = tds.length;
+    if (n < 7) return;
+    const offset = n >= 22 ? 0 : -1;
+    const id    = parseInt($(tds[1 + offset]).text().trim(), 10);
+    const aiRaw = $(tds[3 + offset]).text().trim();
+    const s     = parseInt($(tds[5 + offset]).text().trim(), 10) || 0;
+    const b     = parseInt($(tds[7 + offset]).text().trim(), 10) || 0;
     if (isNaN(id) || id < 1 || id > 9) return;
     playerStats.push({ id, wmark: WMARK_MAP[aiRaw] || '', s, b });
   });
