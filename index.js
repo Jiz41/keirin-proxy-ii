@@ -59,6 +59,7 @@ app.get('/predict', async (req, res) => {
 });
 
 app.get('/trigger', async (req, res) => {
+  console.log('[manual] 手動起動');
   try {
     const races = await selectRaces();
     const sent  = [];
