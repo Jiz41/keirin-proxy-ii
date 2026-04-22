@@ -156,9 +156,11 @@ function extractLineFormation($) {
 }
 
 // ------------------------------------------------------------
-// ウィンチケット並び予想スクレイパー
+// ウィンチケットスクレイパー（並び予想 + S/B/wmark）
 // ------------------------------------------------------------
-async function scrapeWinticketLineFormation(raceId) {
+const WMARK_MAP = { '本命': '◎', '対抗': '○', '単穴': '▲', '穴': '△' };
+
+async function scrapeWinticket(raceId) {
   const venueCode = raceId.slice(0, 2);
   const slug      = VENUE_MAP[venueCode];
   if (!slug) return null;
@@ -186,12 +188,13 @@ async function scrapeWinticketLineFormation(raceId) {
   }
 
   const $ = cheerio.load(body);
+
+  // ── 並び予想 ──
   const group = $('.BibGroup___Wrapper-sc-d22f727e-0').first();
   if (!group.length) return null;
 
   const lines = [];
   let current = [];
-
   group.children().each((_, el) => {
     const $el = $(el);
     if ($el.is('.Chain___Wrapper-sc-3c332778-0') && $el.attr('aria-label') === 'ライン区切り') {
@@ -200,15 +203,44 @@ async function scrapeWinticketLineFormation(raceId) {
     }
     const bib = $el.find('.Bib___Wrapper-sc-bcd27fee-0').first();
     if (bib.length) {
-      const label = bib.attr('aria-label') || '';
-      const num = parseInt(label.replace('番', ''), 10);
+      const num = parseInt((bib.attr('aria-label') || '').replace('番', ''), 10);
       if (!isNaN(num)) current.push(num);
     }
   });
   if (current.length > 0) lines.push(current);
-
   if (lines.length === 0) return null;
-  return { source: 'winticket', lines };
+
+  // ── 出走表（S/B/wmark）──
+  // 列インデックス: 車番=1, AI印=3, S=5, B=7
+  const playerStats = [];
+  $('table').eq(1).find('tbody tr').each((_, tr) => {
+    const tds = $(tr).find('td');
+    if (tds.length < 8) return;
+    const id    = parseInt($(tds[1]).text().trim(), 10);
+    const aiRaw = $(tds[3]).text().trim();
+    const s     = parseInt($(tds[5]).text().trim(), 10) || 0;
+    const b     = parseInt($(tds[7]).text().trim(), 10) || 0;
+    if (isNaN(id) || id < 1 || id > 9) return;
+    playerStats.push({ id, wmark: WMARK_MAP[aiRaw] || '', s, b });
+  });
+
+  // ── S1/B1 選出（同数なら並び順で前の選手を優先）──
+  const lineOrder = lines.flat();
+  const rankOf = (id) => { const i = lineOrder.indexOf(id); return i === -1 ? 999 : i; };
+
+  let s1Id = null, b1Id = null;
+  let maxS = -1, maxB = -1;
+  for (const p of playerStats) {
+    if (p.s > maxS || (p.s === maxS && rankOf(p.id) < rankOf(s1Id))) { maxS = p.s; s1Id = p.id; }
+    if (p.b > maxB || (p.b === maxB && rankOf(p.id) < rankOf(b1Id))) { maxB = p.b; b1Id = p.id; }
+  }
+
+  return {
+    lineFormation: { source: 'winticket', lines },
+    playerStats,
+    s1Id,
+    b1Id,
+  };
 }
 
 // ------------------------------------------------------------
@@ -247,9 +279,9 @@ async function scrapeRace(raceId) {
     ? betTimeRaw.padStart(5, '0')
     : null;
 
-  // ライン予想（並び予想セクション）— ウィンチケット優先、失敗時kdreamsにフォールバック
-  let lineFormation = await scrapeWinticketLineFormation(raceId);
-  if (!lineFormation) lineFormation = extractLineFormation($);
+  // ウィンチケット（並び予想 + S/B/wmark）— 失敗時はkdreamsにフォールバック
+  const winticketData = await scrapeWinticket(raceId);
+  let lineFormation = winticketData ? winticketData.lineFormation : extractLineFormation($);
 
   // 出走表テーブル特定
   const riders = [];
@@ -369,6 +401,17 @@ async function scrapeRace(raceId) {
       }
 
       riders.push(rider);
+    });
+  }
+
+  // ウィンチケットの wmark / is_s1 / is_b1 をマージ
+  if (winticketData) {
+    const { playerStats, s1Id, b1Id } = winticketData;
+    riders.forEach(r => {
+      const p = playerStats.find(p => p.id === r.number);
+      r.wmark = p ? p.wmark : '';
+      r.is_s1 = r.number === s1Id;
+      r.is_b1 = r.number === b1Id;
     });
   }
 
