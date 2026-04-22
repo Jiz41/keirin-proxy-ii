@@ -105,7 +105,7 @@ async function predict(raceId) {
       is_scratch: false,
     }));
 
-  const lineInput = lineFormation.lines.map(l => l.members.join('')).join(',');
+  const lineInput = (lineFormation.lines || []).map(l => (l.members || []).join('')).join(',');
   const basePlayers = getPlayerData(playerDataArray);
   const { lines, allSeriInfos } = parseLineInput(lineInput, basePlayers);
   const settings = { IS_GIRLS: series === 'ガールズ' };
@@ -139,8 +139,9 @@ async function predict(raceId) {
   const seitenRanking = toRankingRich(seitenResult.integratedScores);
   const koutenRanking = toRankingRich(koutenResult.integratedScores);
 
+  const seitenTop3Ids = new Set(seitenRanking.slice(0, 3).map(p => p.id));
   const seitenBets = generateSeitenreiBets(seitenRanking);
-  const koutenBets = generateKoutenreiBets(koutenRanking);
+  const koutenBets = generateKoutenreiBets(koutenRanking, seitenTop3Ids);
 
   const tenunData = calculateTenunIndex(
     seitenResult.integratedScores,
