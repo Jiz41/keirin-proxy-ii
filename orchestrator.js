@@ -139,16 +139,16 @@ async function predict(raceId) {
   const seitenRanking = toRankingRich(seitenResult.integratedScores);
   const koutenRanking = toRankingRich(koutenResult.integratedScores);
 
-  const seitenTop3Ids = new Set(seitenRanking.slice(0, 3).map(p => p.id));
-  const seitenBets = generateSeitenreiBets(seitenRanking);
-  const koutenBets = generateKoutenreiBets(koutenRanking, seitenTop3Ids);
-
   const tenunData = calculateTenunIndex(
     seitenResult.integratedScores,
     koutenResult.integratedScores,
-    null,
+    seitenResult.allScenarioResults,
     basePlayers
   );
+
+  const seitenTop3Ids = new Set((tenunData.rankingWithData || []).slice(0, 3).map(p => p.id));
+  const seitenBets = generateSeitenreiBets(tenunData.rankingWithData);
+  const koutenBets = generateKoutenreiBets(tenunData.koutenRankingWithData, seitenTop3Ids);
 
   let shakkouResult = null;
   if (typeof appStub.invokeShakkouDonperi === 'function') {
