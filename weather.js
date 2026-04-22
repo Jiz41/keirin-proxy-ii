@@ -65,11 +65,21 @@ async function getWeather(venueName) {
   const [lat, lon] = latlng;
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=wind_speed_10m,wind_direction_10m&timezone=Asia/Tokyo`;
 
-  const res     = await fetch(url);
-  const json    = await res.json();
+  let res, json;
+  try {
+    res  = await fetch(url);
+    json = await res.json();
+  } catch (e) {
+    const jst = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
+    console.warn(`[weather] open-meteo fetch失敗 | 時刻: ${jst} | 会場: ${venueName} | 座標: ${lat},${lon} | エラー: ${e.message}`);
+    throw e;
+  }
+
   const current = json.current;
 
   if (!res.ok || !current || current.wind_speed_10m === undefined) {
+    const jst = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
+    console.warn(`[weather] open-meteo 異常レスポンス | 時刻: ${jst} | 会場: ${venueName} | 座標: ${lat},${lon} | HTTP: ${res.status} | エラー: open-meteoからデータを取得できませんでした`);
     throw new Error('open-meteo APIからデータを取得できませんでした');
   }
 
