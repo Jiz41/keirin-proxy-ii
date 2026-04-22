@@ -1213,7 +1213,7 @@ function displayResults(detailedScenarioResults, seitenreiIntegratedScores, kout
     // 買い目
     const seitenreiBets = generateSeitenreiBets(tenunIndexData.rankingWithData);
     const seitenTop3Ids = new Set(tenunIndexData.rankingWithData.slice(0, 3).map(p => p.id));
-    const koutenreiBets = generateKoutenreiBets(tenunIndexData.koutenRankingWithData, seitenTop3Ids);
+    const koutenreiBets = generateKoutenreiBets(tenunIndexData.rankingWithData, seitenTop3Ids);
 
     return {
         bankTendency,
