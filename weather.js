@@ -63,7 +63,7 @@ async function getWeather(venueName) {
   }
 
   const [lat, lon] = latlng;
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=wind_speed_10m,wind_direction_10m&timezone=Asia/Tokyo`;
+  const url = `https://jiz41-weather-proxy.hf.space/weather?lat=${lat}&lng=${lon}`;
 
   let res, json;
   try {
@@ -71,20 +71,18 @@ async function getWeather(venueName) {
     json = await res.json();
   } catch (e) {
     const jst = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
-    console.warn(`[weather] open-meteo fetch失敗 | 時刻: ${jst} | 会場: ${venueName} | 座標: ${lat},${lon} | エラー: ${e.message}`);
+    console.warn(`[weather] fetch失敗 | 時刻: ${jst} | 会場: ${venueName} | 座標: ${lat},${lon} | エラー: ${e.message}`);
     throw e;
   }
 
-  const current = json.current;
-
-  if (!res.ok || !current || current.wind_speed_10m === undefined) {
+  if (!res.ok || json.wind_speed_10m === undefined) {
     const jst = new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
-    console.warn(`[weather] open-meteo 異常レスポンス | 時刻: ${jst} | 会場: ${venueName} | 座標: ${lat},${lon} | HTTP: ${res.status} | エラー: open-meteoからデータを取得できませんでした`);
-    throw new Error('open-meteo APIからデータを取得できませんでした');
+    console.warn(`[weather] 異常レスポンス | 時刻: ${jst} | 会場: ${venueName} | 座標: ${lat},${lon} | HTTP: ${res.status} | エラー: weather-proxyからデータを取得できませんでした`);
+    throw new Error('weather-proxy APIからデータを取得できませんでした');
   }
 
-  const windSpeed     = kmhToMs(current.wind_speed_10m);
-  const windDirection = windSpeed < 1.0 ? '無風' : degToDirection(current.wind_direction_10m);
+  const windSpeed     = kmhToMs(json.wind_speed_10m);
+  const windDirection = windSpeed < 1.0 ? '無風' : degToDirection(json.wind_direction_10m);
 
   return { windSpeed, windDirection };
 }

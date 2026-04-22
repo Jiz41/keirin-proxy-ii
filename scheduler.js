@@ -61,11 +61,15 @@ async function run() {
 // 毎時0分・30分に実行
 cron.schedule('0,30 * * * *', run);
 
-// 毎時30分に自己ping（Renderスリープ防止）
+// 毎10分にping（Renderスリープ防止 + HF Spaceスリープ防止）
 cron.schedule('*/10 * * * *', async () => {
   try {
     await fetch('https://keirin-proxy-ii.onrender.com/');
-    console.log(`[ping] ${new Date().toISOString()}`);
+    console.log(`[ping] render ${new Date().toISOString()}`);
+  } catch (e) {}
+  try {
+    await fetch('https://jiz41-weather-proxy.hf.space/');
+    console.log(`[ping] weather-proxy ${new Date().toISOString()}`);
   } catch (e) {}
 });
 
