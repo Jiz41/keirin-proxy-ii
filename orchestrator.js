@@ -13,8 +13,9 @@ const elStub = {
   querySelectorAll: () => [], dispatchEvent: () => {},
   insertAdjacentHTML: () => {}, remove: () => {}, forEach: () => {},
 };
+const raceTypeHolder = { value: 'a-kyu' };
 const documentStub = {
-  getElementById: () => elStub,
+  getElementById: (id) => id === 'race-type' ? raceTypeHolder : elStub,
   querySelector:  () => null,
   querySelectorAll: () => ({ forEach: () => {} }),
   addEventListener: () => {},
@@ -72,8 +73,10 @@ const SERIES_TO_GRADE = {
   'ガールズ': 'girls',
   'S級':      's-kyu',
   'A級':      'a-kyu',
-  'A級チャレンジ': 'a-challenge',
+  'A級チャレンジ': 'a-chal',
 };
+
+const STYLE_TO_BIAS_KEY = { '自': '先行', '逃': '先行', '両': '捲り', '追': '差し' };
 
 async function predict(raceId) {
   const raceData = await scrapeRace(raceId);
@@ -89,6 +92,9 @@ async function predict(raceId) {
   } = sharedState;
 
   sharedState.currentWindSpeed = windSpeed;
+
+  const gradeKey = SERIES_TO_GRADE[series] || 'a-kyu';
+  raceTypeHolder.value = gradeKey;
 
   const selectedBank = BANK_DATA[venue];
 
@@ -109,6 +115,13 @@ async function predict(raceId) {
   const basePlayers = getPlayerData(playerDataArray);
   const { lines, allSeriInfos } = parseLineInput(lineInput, basePlayers);
   const settings = { IS_GIRLS: series === 'ガールズ' };
+
+  if (selectedBank && selectedBank.keirin_bias) {
+    basePlayers.forEach(p => {
+      const biasKey = STYLE_TO_BIAS_KEY[p.style] || '';
+      p.c_e = selectedBank.keirin_bias[biasKey] || 1.0;
+    });
+  }
 
   const seitenResult = runScenarioSimulation(
     basePlayers, allSeriInfos, settings, selectedBank,
@@ -149,11 +162,10 @@ async function predict(raceId) {
 
   const seitenTop3Ids = new Set((tenunData.rankingWithData || []).slice(0, 3).map(p => p.id));
   const seitenBets = generateSeitenreiBets(tenunData.rankingWithData);
-  const koutenBets = generateKoutenreiBets(tenunData.rankingWithData, seitenTop3Ids);
+  const koutenBets = generateKoutenreiBets(tenunData.koutenRankingWithData, seitenTop3Ids);
 
   let shakkouResult = null;
   if (typeof appStub.invokeShakkouDonperi === 'function') {
-    const gradeKey = SERIES_TO_GRADE[series] || 'a-kyu';
     const shakkouContext = {
       grade:         gradeKey,
       seriInfos:     allSeriInfos,
