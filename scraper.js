@@ -158,7 +158,7 @@ function extractLineFormation($) {
 // ------------------------------------------------------------
 // ウィンチケットスクレイパー（並び予想 + S/B/wmark）
 // ------------------------------------------------------------
-const WMARK_MAP = { '本命': '◎', '対抗': '○', '単穴': '▲', '穴': '△' };
+const WMARK_MAP = { '本命': '◎', '対抗': '〇', '単穴': '△', '穴': '△' };
 
 async function scrapeWinticket(raceId) {
   const venueCode = raceId.slice(0, 2);

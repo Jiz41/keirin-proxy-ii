@@ -151,7 +151,7 @@ async function predict(raceId) {
     p.c_recent = (1.0 + (4 - avgRank) * 0.05 + trendBonus) * settings.RECENT_WEIGHT;
 
     if      (p.wmark === '◎')                         p.c_wmark = 1.04;
-    else if (p.wmark === '〇' || p.wmark === '○')     p.c_wmark = 1.02;
+    else if (p.wmark === '〇')                         p.c_wmark = 1.02;
     else if (p.wmark === '△')                         p.c_wmark = 1.015;
     else if (p.wmark === '✕')                         p.c_wmark = 1.01;
     else                                               p.c_wmark = 1.0;
