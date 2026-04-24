@@ -83,7 +83,7 @@ function format(prediction) {
   const { raceId, venue, windDirection, windSpeed, results } = prediction;
   const raceNo = parseInt(raceId.slice(-2), 10);
 
-  const { seitenBets, koutenBets, tenun, shakkou } = results;
+  const { seitenBets, koutenBets, tenun, shakkou, gcActivated } = results;
 
   const tenunIndex = tenun?.index ?? 50;
   const emoji      = TENUN_EMOJI[tenunIndex] ?? '🌫';
@@ -93,7 +93,14 @@ function format(prediction) {
 
   const windText = `🌬️ ${windDirection ?? '不明'} ${windSpeed ?? 0}m想定`;
 
-  const fields = [
+  const fields = [];
+
+  if (gcActivated && gcActivated.length > 0) {
+    const gcText = gcActivated.map(p => `👑 GC発動: ${p.id}番 ${p.name}（${p.term}期）`).join('\n');
+    fields.push({ name: '👑 ゴールドキャップ補正', value: gcText, inline: false });
+  }
+
+  fields.push(
     { name: '🌤 晴天令 買い目', value: formatSeitenBets(seitenBets), inline: true  },
     { name: '🌩 荒天令 買い目', value: formatKoutenBets(koutenBets), inline: true  },
     { name: '風向風速', value: windText, inline: true },

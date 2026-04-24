@@ -98,18 +98,27 @@ async function predict(raceId) {
 
   const selectedBank = BANK_DATA[venue];
 
-  const playerDataArray = riders
-    .filter(r => !r.isScratched)
-    .map((r, i) => ({
-      id:         r.number,
-      score:      r.score,
-      style:      r.styleRaw,
-      wmark:      r.wmark  ?? '',
-      recent:     r.recent || '',
-      is_s1:      r.is_s1  ?? false,
-      is_b1:      r.is_b1  ?? false,
-      is_scratch: false,
-    }));
+  const activeRiders = riders.filter(r => !r.isScratched);
+  const playerDataArray = activeRiders.map(r => ({
+    id:         r.number,
+    score:      r.score,
+    style:      r.styleRaw,
+    wmark:      r.wmark  ?? '',
+    recent:     r.recent || '',
+    is_s1:      r.is_s1  ?? false,
+    is_b1:      r.is_b1  ?? false,
+    is_scratch: false,
+  }));
+
+  // GC自動補正（129期以降 かつ recent に "1" が3回以上）
+  const gcActivated = [];
+  playerDataArray.forEach((p, i) => {
+    const r = activeRiders[i];
+    if (r.term >= 129 && (r.recent.match(/1/g) || []).length >= 3) {
+      p.score = Math.max(p.score ?? 0, 90);
+      gcActivated.push({ id: r.number, name: r.name, term: r.term });
+    }
+  });
 
   const lineInput = (lineFormation.lines || []).map(l => (l.members || []).join('')).join(',');
   const basePlayers = getPlayerData(playerDataArray);
@@ -189,6 +198,7 @@ async function predict(raceId) {
     results: {
       seiten:     seitenRanking.map(({ rank, id, style, score }) => ({ rank, id, style, score })),
       kouten:     koutenRanking.map(({ rank, id, style, score }) => ({ rank, id, style, score })),
+      gcActivated,
       seitenBets,
       koutenBets,
       tenun: {
