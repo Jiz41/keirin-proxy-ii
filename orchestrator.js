@@ -120,7 +120,9 @@ async function predict(raceId) {
     }
   });
 
-  const lineInput = (lineFormation.lines || []).map(l => (l.members || []).join('')).join(',');
+  const lineInput = (lineFormation.lines || [])
+    .map(l => (Array.isArray(l) ? l : (l.members || [])).join(''))
+    .join(',');
   const basePlayers = getPlayerData(playerDataArray);
   const { lines, allSeriInfos } = parseLineInput(lineInput, basePlayers);
   const settings = { IS_GIRLS: series === 'ガールズ' };
