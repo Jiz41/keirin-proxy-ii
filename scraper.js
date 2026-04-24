@@ -58,7 +58,7 @@ function parseRecentCell(text) {
 }
 
 function extractRecent($, tds, indexOffset) {
-  // 今場所(16) → 前場所(17) → 前々場所(18) の順で最新5走を抽出
+  // 今場所(16) → 前場所(17) → 前々場所(18) の順で最新走を抽出
   const colIndices = [16 + indexOffset, 17 + indexOffset, 18 + indexOffset];
   const results = [];
   for (const idx of colIndices) {
@@ -66,9 +66,12 @@ function extractRecent($, tds, indexOffset) {
     const cellText = $(tds[idx]).text().trim();
     const digits = parseRecentCell(cellText);
     results.push(...digits);
-    if (results.length >= 5) break;
+    if (results.length >= 3) break;
   }
-  return results.slice(0, 5).join('');
+  // 3桁固定: 不足は9補填、超過は先頭3桁のみ（WEB版 InputGuard.getRecent に準拠）
+  let raw = results.slice(0, 3).join('');
+  while (raw.length < 3) raw += '9';
+  return raw;
 }
 
 // ------------------------------------------------------------
