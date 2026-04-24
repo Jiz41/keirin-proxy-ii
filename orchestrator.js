@@ -78,6 +78,13 @@ const SERIES_TO_GRADE = {
 
 const STYLE_TO_BIAS_KEY = { '自': '先行', '逃': '先行', '両': '捲り', '追': '差し' };
 
+const COEFFICIENT_SETTINGS = {
+  's-kyu':  { R_BIAS: 1.15, RECENT_WEIGHT: 0.90, COOP_WEIGHT: 1.20, IS_GIRLS: false, SUICIDE_LIMIT: 0.97 },
+  'a-kyu':  { R_BIAS: 1.00, RECENT_WEIGHT: 1.00, COOP_WEIGHT: 1.00, IS_GIRLS: false, SUICIDE_LIMIT: 0.93 },
+  'a-chal': { R_BIAS: 0.90, RECENT_WEIGHT: 1.20, COOP_WEIGHT: 0.80, IS_GIRLS: false, SUICIDE_LIMIT: 0.90 },
+  'girls':  { R_BIAS: 1.00, RECENT_WEIGHT: 1.10, COOP_WEIGHT: 1.00, IS_GIRLS: true,  SUICIDE_LIMIT: 1.00 },
+};
+
 async function predict(raceId) {
   const raceData = await scrapeRace(raceId);
   const { venue, series, riders, lineFormation } = raceData;
@@ -125,14 +132,38 @@ async function predict(raceId) {
     .join(',');
   const basePlayers = getPlayerData(playerDataArray);
   const { lines, allSeriInfos } = parseLineInput(lineInput, basePlayers);
-  const settings = { IS_GIRLS: series === 'ガールズ' };
+  const settings = COEFFICIENT_SETTINGS[gradeKey];
 
-  if (selectedBank && selectedBank.keirin_bias) {
-    basePlayers.forEach(p => {
-      const biasKey = STYLE_TO_BIAS_KEY[p.style] || '';
-      p.c_e = selectedBank.keirin_bias[biasKey] || 1.0;
-    });
-  }
+  basePlayers.forEach(p => {
+    p.c_score_adj = 1.0 + (p.score / 100 - 1) * settings.R_BIAS;
+
+    const recentScores = p.recent.split('').map(Number);
+    const avgRank = recentScores.length > 0
+      ? recentScores.reduce((a, b) => a + b, 0) / recentScores.length
+      : 4.0;
+    let trendBonus = 0;
+    if (recentScores.length >= 3) {
+      const d1 = recentScores[1] - recentScores[0];
+      const d2 = recentScores[2] - recentScores[1];
+      if (d1 > 0 && d2 > 0) trendBonus = +0.03;
+      if (d1 < 0 && d2 < 0) trendBonus = -0.03;
+    }
+    p.c_recent = (1.0 + (4 - avgRank) * 0.05 + trendBonus) * settings.RECENT_WEIGHT;
+
+    if      (p.wmark === '◎')                         p.c_wmark = 1.04;
+    else if (p.wmark === '〇' || p.wmark === '○')     p.c_wmark = 1.02;
+    else if (p.wmark === '△')                         p.c_wmark = 1.015;
+    else if (p.wmark === '✕')                         p.c_wmark = 1.01;
+    else                                               p.c_wmark = 1.0;
+
+    p.c_s1 = p.is_s1 ? 1.005 : 1.0;
+    p.c_b1 = p.is_b1 ? 1.015 : 1.0;
+
+    const biasKey = STYLE_TO_BIAS_KEY[p.style] || '';
+    p.c_e = (selectedBank && selectedBank.keirin_bias)
+      ? (selectedBank.keirin_bias[biasKey] || 1.0)
+      : 1.0;
+  });
 
   const seitenResult = runScenarioSimulation(
     basePlayers, allSeriInfos, settings, selectedBank,
