@@ -111,7 +111,7 @@ async function predict(raceId) {
     score:      r.score,
     style:      r.styleRaw,
     wmark:      r.wmark  ?? '',
-    recent:     r.recent || '',
+    recent:     r.recent ?? null,
     is_s1:      r.is_s1  ?? false,
     is_b1:      r.is_b1  ?? false,
     is_scratch: false,
@@ -121,7 +121,7 @@ async function predict(raceId) {
   const gcActivated = [];
   playerDataArray.forEach((p, i) => {
     const r = activeRiders[i];
-    if (r.term >= 129 && r.age <= 25 && r.score < 80 && (r.recent.match(/1/g) || []).length >= 3) {
+    if (r.term >= 129 && r.age <= 25 && r.score < 80 && ((r.recent || '').match(/1/g) || []).length >= 3) {
       p.score = Math.max(p.score ?? 0, 90);
       gcActivated.push({ id: r.number, name: r.name, term: r.term });
     }
@@ -137,18 +137,22 @@ async function predict(raceId) {
   basePlayers.forEach(p => {
     p.c_score_adj = 1.0 + (p.score / 100 - 1) * settings.R_BIAS;
 
-    const recentScores = p.recent.split('').map(Number);
-    const avgRank = recentScores.length > 0
-      ? recentScores.reduce((a, b) => a + b, 0) / recentScores.length
-      : 4.0;
-    let trendBonus = 0;
-    if (recentScores.length >= 3) {
-      const d1 = recentScores[1] - recentScores[0];
-      const d2 = recentScores[2] - recentScores[1];
-      if (d1 > 0 && d2 > 0) trendBonus = +0.03;
-      if (d1 < 0 && d2 < 0) trendBonus = -0.03;
+    if (!p.recent) {
+      p.c_recent = 1.0;
+    } else {
+      const recentScores = p.recent.split('').map(Number);
+      const avgRank = recentScores.length > 0
+        ? recentScores.reduce((a, b) => a + b, 0) / recentScores.length
+        : 4.0;
+      let trendBonus = 0;
+      if (recentScores.length >= 3) {
+        const d1 = recentScores[1] - recentScores[0];
+        const d2 = recentScores[2] - recentScores[1];
+        if (d1 > 0 && d2 > 0) trendBonus = +0.03;
+        if (d1 < 0 && d2 < 0) trendBonus = -0.03;
+      }
+      p.c_recent = (1.0 + (4 - avgRank) * 0.05 + trendBonus) * settings.RECENT_WEIGHT;
     }
-    p.c_recent = (1.0 + (4 - avgRank) * 0.05 + trendBonus) * settings.RECENT_WEIGHT;
 
     if      (p.wmark === '◎')                         p.c_wmark = 1.04;
     else if (p.wmark === '〇')                         p.c_wmark = 1.02;

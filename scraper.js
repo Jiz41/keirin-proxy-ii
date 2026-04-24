@@ -41,37 +41,63 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 // ------------------------------------------------------------
 // 直近成績セル解析: 落車・棄権・失格 → "9"
 // ------------------------------------------------------------
-function parseRecentCell(text) {
-  if (!text || text.trim() === '') return [];
+// table[2]（今場所・前場所・前々場所出走レース成績）から着順を取得
+// liの<span>N着</span>をパース。落車・棄権・失格は9に変換。
+function parseResultsCell($, td) {
   const results = [];
-  const tokens = text.trim().split(/[\s\u3000]+/).filter(t => t.length > 0);
-  for (const token of tokens) {
-    const n = parseInt(token, 10);
-    if (!isNaN(n) && n >= 1 && n <= 9) {
-      results.push(String(n));
-    } else if (token.length > 0 && /[^\d]/.test(token)) {
-      // 落車(F)・棄権(D)・失格(X)・その他非数字 → 9
-      results.push('9');
-    }
-  }
-  return results;
+  $(td).find('li').each((_, li) => {
+    $(li).find('span').each((_, span) => {
+      const text = $(span).text().trim();
+      const m = text.match(/^(\d+)着$/);
+      if (m) {
+        const n = parseInt(m[1], 10);
+        results.push(n >= 1 && n <= 9 ? String(n) : '9');
+      } else if (/^[FDX棄失]/.test(text)) {
+        results.push('9');
+      }
+    });
+  });
+  return results; // 古い順（最初が最古）
 }
 
-function extractRecent($, tds, indexOffset) {
-  // 今場所(16) → 前場所(17) → 前々場所(18) の順で最新走を抽出
-  const colIndices = [16 + indexOffset, 17 + indexOffset, 18 + indexOffset];
-  const results = [];
-  for (const idx of colIndices) {
-    if (!tds[idx]) continue;
-    const cellText = $(tds[idx]).text().trim();
-    const digits = parseRecentCell(cellText);
-    results.push(...digits);
-    if (results.length >= 3) break;
-  }
-  // 3桁固定: 不足は9補填、超過は先頭3桁のみ（WEB版 InputGuard.getRecent に準拠）
-  let raw = results.slice(0, 3).join('');
-  while (raw.length < 3) raw += '9';
-  return raw;
+// table[2] を走査して 車番→直近3走文字列（or null）のマップを返す
+// 今開催→前場所→前々場所の順に遡り、3走分揃ったら確定
+// 3場所遡っても3走未満の場合は null
+function buildRecentMap($) {
+  const map = {};
+  $('table').eq(2).find('tbody tr').each((_, tr) => {
+    const tds = $(tr).find('td');
+    if (tds.length < 5) return;
+
+    let number = null;
+    let dataStart = 0;
+    const t0 = $(tds[0]).text().trim();
+    const t1 = tds[1] ? $(tds[1]).text().trim() : '';
+    if (/^[1-9]$/.test(t0) && /^[1-9]$/.test(t1)) {
+      number = parseInt(t1, 10);
+      dataStart = 2; // name=2, score=3, 今場所=4, 前場所=5, 前々場所=6
+    } else if (/^[1-9]$/.test(t0)) {
+      number = parseInt(t0, 10);
+      dataStart = 1; // name=1, score=2, 今場所=3, 前場所=4, 前々場所=5
+    } else {
+      return;
+    }
+
+    const collected = [];
+    for (const offset of [2, 3, 4]) {
+      if (collected.length >= 3) break;
+      const td = tds[dataStart + offset];
+      if (!td) continue;
+      const races = parseResultsCell($, td).reverse(); // 最新走を先頭に
+      for (const r of races) {
+        if (collected.length >= 3) break;
+        collected.push(r);
+      }
+    }
+
+    map[number] = collected.length >= 3 ? collected.slice(0, 3).join('') : null;
+  });
+  return map;
 }
 
 // ------------------------------------------------------------
@@ -289,6 +315,9 @@ async function scrapeRace(raceId) {
   const winticketData = await scrapeWinticket(raceId);
   let lineFormation = winticketData ? winticketData.lineFormation : extractLineFormation($);
 
+  // table[2] から今開催/前場所/前々場所の直近着順マップを構築
+  const recentMap = buildRecentMap($);
+
   // 出走表テーブル特定
   const riders = [];
   let raceTable = null;
@@ -341,7 +370,7 @@ async function scrapeRace(raceId) {
         gear:         null,
         score:        null,
         winningMoves: { nige: 0, makuri: 0, sashi: 0, mark: 0 },
-        recent:       '',
+        recent:       null,
         isScratched
       };
 
@@ -398,8 +427,8 @@ async function scrapeRace(raceId) {
             mark:   parseInt($(tds[15 + indexOffset]).text().trim(), 10) || 0,
           };
 
-          // 直近成績（今場所→前場所→前々場所 最新5走）
-          rider.recent = extractRecent($, tds, indexOffset);
+          // 直近成績（table[2] から取得済みマップを参照）
+          rider.recent = recentMap[number] ?? null;
 
         } catch (e) {
           console.error(`Row parse error for #${number}: ${e.message}`);
