@@ -109,7 +109,7 @@ function format(prediction) {
       value: tamakiText.slice(0, 300),
       inline: false,
     },
-  ];
+  );
 
   // 壱耀晴乾ノ象（発動時のみ）
   if (tenun?.ichiyo?.activated) {
