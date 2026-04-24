@@ -171,7 +171,7 @@ async function predict(raceId) {
 
   const seitenTop3Ids = new Set((tenunData.rankingWithData || []).slice(0, 3).map(p => p.id));
   const seitenBets = generateSeitenreiBets(tenunData.rankingWithData);
-  const koutenBets = generateKoutenreiBets(tenunData.koutenRankingWithData, seitenTop3Ids);
+  const koutenBets = generateKoutenreiBets(tenunData.rankingWithData, seitenTop3Ids);
 
   let shakkouResult = null;
   if (typeof appStub.invokeShakkouDonperi === 'function') {
