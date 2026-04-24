@@ -114,7 +114,7 @@ async function predict(raceId) {
   const gcActivated = [];
   playerDataArray.forEach((p, i) => {
     const r = activeRiders[i];
-    if (r.term >= 129 && (r.recent.match(/1/g) || []).length >= 3) {
+    if (r.term >= 129 && r.age <= 25 && (r.recent.match(/1/g) || []).length >= 3) {
       p.score = Math.max(p.score ?? 0, 90);
       gcActivated.push({ id: r.number, name: r.name, term: r.term });
     }
