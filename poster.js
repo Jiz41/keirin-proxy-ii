@@ -1,22 +1,36 @@
-const fetch = require('node-fetch');
+const { createClient } = require('@supabase/supabase-js');
 
-console.log('[poster] WEBHOOK URL:', process.env.DISCORD_WEBHOOK_ALL);
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+);
 
 async function post(payload) {
-  const url = process.env.DISCORD_WEBHOOK_ALL;
-  if (!url) {
-    console.error('[poster] DISCORD_WEBHOOK_ALL が未設定です');
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
+    console.error('[poster] SUPABASE_URL または SUPABASE_SERVICE_KEY が未設定です');
     return;
   }
+
+  const embed = payload.embeds[0];
+  const fields = embed.fields ?? [];
+
+  const hasField = (keyword) => fields.some((f) => f.name.includes(keyword));
+
+  const record = {
+    race_id:      embed.footer.text,
+    title:        embed.title,
+    color:        embed.color,
+    timestamp:    embed.timestamp,
+    fields:       fields,
+    has_gold_cap: hasField('ゴールドキャップ'),
+    has_ichiyo:   hasField('壱耀'),
+    has_shakkou:  hasField('赤口'),
+  };
+
   try {
-    const res = await fetch(url, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify(payload),
-    });
-    if (!res.ok) {
-      const body = await res.text();
-      console.error(`[poster] POST失敗: ${res.status} ${body}`);
+    const { error } = await supabase.from('discord_posts').insert(record);
+    if (error) {
+      console.error('[poster] INSERT失敗:', error.message);
     }
   } catch (e) {
     console.error('[poster] エラー:', e.message);
