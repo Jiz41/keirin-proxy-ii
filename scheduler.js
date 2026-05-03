@@ -1,11 +1,49 @@
-const cron      = require('node-cron');
-const fetch     = require('node-fetch');
-const { selectRaces } = require('./selector');
-const { predict }     = require('./orchestrator');
-const { format }      = require('./formatter');
-const { post }        = require('./poster');
+const cron              = require('node-cron');
+const fetch             = require('node-fetch');
+const { createClient }  = require('@supabase/supabase-js');
+const { selectRaces }   = require('./selector');
+const { predict }       = require('./orchestrator');
+const { format }        = require('./formatter');
+const { post }          = require('./poster');
 
-const postedRaceIds = new Set();
+// ── Supabase クライアント（二重投稿防止 + 実行ログ共用） ─────────────────────
+let _db = null;
+function getDb() {
+  if (!_db && process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
+    _db = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+  }
+  return _db;
+}
+
+// 実行ログINSERT
+async function logExecution(result, raceId = null, venue = null, raceNum = null) {
+  const db = getDb();
+  if (!db) return;
+  const { error } = await db.from('execution_logs').insert({
+    result,
+    race_id:  raceId,
+    venue,
+    race_num: raceNum,
+  });
+  if (error) console.error('[scheduler] execution_logs INSERT失敗:', error.message);
+  else       console.log(`[scheduler] execution_logs INSERT: ${result}${raceId ? ` (${raceId})` : ''}`);
+}
+
+// Supabase上の discord_posts で二重投稿チェック
+async function hasPosted(raceId) {
+  const db = getDb();
+  if (!db) return false;
+  const { data, error } = await db
+    .from('discord_posts')
+    .select('race_id')
+    .eq('race_id', raceId)
+    .limit(1);
+  if (error) {
+    console.error('[scheduler] hasPosted チェック失敗:', error.message);
+    return false;
+  }
+  return !!(data && data.length > 0);
+}
 
 function jstHour() {
   return new Date(Date.now() + 9 * 60 * 60 * 1000).getUTCHours();
@@ -34,11 +72,14 @@ async function run() {
 
   if (selected.length === 0) {
     console.log('[scheduler] 対象レースなし（betTime 15〜30分 / 7車立て）');
+    await logExecution('not_found');
     return;
   }
 
   for (const race of selected) {
-    if (postedRaceIds.has(race.raceId)) {
+    // Supabaseで二重投稿チェック（インメモリSetを廃止）
+    const alreadyPosted = await hasPosted(race.raceId);
+    if (alreadyPosted) {
       console.log(`[scheduler] スキップ（投稿済み）: ${race.raceId}`);
       continue;
     }
@@ -50,7 +91,8 @@ async function run() {
       console.log('[A.L.L.] Discord送信開始:', race.raceId);
       await post(payload);
       console.log('[A.L.L.] Discord送信完了:', race.raceId);
-      postedRaceIds.add(race.raceId);
+      const raceNum = parseInt(race.raceId.slice(-2), 10);
+      await logExecution('found', race.raceId, race.venue, raceNum);
       console.log(`[scheduler] 投稿完了: ${race.raceId} (${race.venue})`);
     } catch (e) {
       console.error(`[scheduler] エラー (${race.raceId}):`, e.message);
