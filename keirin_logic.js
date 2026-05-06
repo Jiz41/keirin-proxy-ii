@@ -674,7 +674,7 @@ function assignFinalGrades(scenarioPlayers) {
 // ====================================================================================
 // calculate_koutenrei_bias（荒天令）
 // ====================================================================================
-function calculate_koutenrei_bias(players, scenario, BANK_DATA, v) {
+function calculate_koutenrei_bias(players, scenario, BANK_DATA, v, lineInput, settings) {
     let tempPlayers = JSON.parse(JSON.stringify(players));
     const appliedCoeffs = [];
 
@@ -683,8 +683,7 @@ function calculate_koutenrei_bias(players, scenario, BANK_DATA, v) {
     const scoreMin   = Math.min(...allScores);
     const scoreRange = scoreMax - scoreMin;
 
-    const lineInput = document.getElementById('line-input').value;
-    const { lines: initialLines } = parseLineInput(lineInput, tempPlayers);
+    const { lines: initialLines } = parseLineInput(lineInput || '', tempPlayers);
 
     const lines = [];
     const allRidersInLines = new Set();
@@ -702,7 +701,7 @@ function calculate_koutenrei_bias(players, scenario, BANK_DATA, v) {
         }
 
         // 3. C_mental
-        const raceGrade = document.getElementById('race-type').value;
+        const raceGrade = Object.keys(COEFFICIENT_SETTINGS).find(key => COEFFICIENT_SETTINGS[key] === settings) || 'a-kyu';
         const participatingMaxScore = Math.max(...tempPlayers.map(pp => pp.score));
         const isHighPressure = ['s-kyu'].includes(raceGrade) || (p.score === participatingMaxScore);
         if (isHighPressure && p.recent.startsWith('1')) {
@@ -781,9 +780,7 @@ function calculate_koutenrei_bias(players, scenario, BANK_DATA, v) {
     });
 
     // 10. C_suicide
-    const raceGradeForSuicide = document.getElementById('race-type').value;
-    const suicideSettings = COEFFICIENT_SETTINGS[raceGradeForSuicide] || {};
-    const SUICIDE_PENALTY = suicideSettings.SUICIDE_LIMIT || 0.90;
+    const SUICIDE_PENALTY = (settings && settings.SUICIDE_LIMIT != null) ? settings.SUICIDE_LIMIT : 0.90;
     const BOOTY_BONUS = 1.05;
 
     let isSuicideRiskDetected = false;
@@ -894,7 +891,7 @@ function runScenarioSimulation(basePlayers, allSeriInfos, settings, BANK_DATA, a
         scenarioPlayers = applySeriCorrection(scenarioPlayers, allSeriInfos);
 
         if (applyKoutenrei) {
-            scenarioPlayers = calculate_koutenrei_bias(scenarioPlayers, scenario, BANK_DATA, v);
+            scenarioPlayers = calculate_koutenrei_bias(scenarioPlayers, scenario, BANK_DATA, v, lineInput, settings);
         }
 
         scenarioPlayers.forEach(p => {
