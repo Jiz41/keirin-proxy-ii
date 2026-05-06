@@ -429,10 +429,35 @@ async function invokeShakkouDonperi(basePlayers, context) {
         for (let i = start; i < end; i++) {
             const world = selectWorldLine(context.grade);
             const players = JSON.parse(JSON.stringify(basePlayers));
+            const lines   = context.lines || [];
+
+            // 物理層（直線長ペナルティ）
+            if (typeof app.applyPhysicalPenalty === 'function') {
+                app.applyPhysicalPenalty(players, context.BANK_DATA, lines);
+            }
+            // 展開層（カント捲りペナルティ・イン突きブースト）
+            if (typeof app.applyTacticalAdjustments === 'function') {
+                app.applyTacticalAdjustments(players, context.BANK_DATA, lines, context.seriInfos || []);
+            }
 
             players.forEach(p => {
                 p.final_score = p.score * p.c_score_adj * p.c_recent * p.c_wmark * p.c_s1 * p.c_b1 * p.c_l * p.c_e;
+                p.final_score *= (p.physicalPenalty    || 1.0);
+                p.final_score /= (p.cantoMakuriPenalty || 1.0);
+                p.final_score *= (p.warpBoost          || 1.0);
+                if (typeof app.getKururuAdjustment === 'function') {
+                    const res = app.getKururuAdjustment(
+                        p, context.windDirection, context.windSpeed,
+                        context.isGirls, context.lineInput, context.BANK_DATA
+                    );
+                    p.final_score *= res.adj;
+                }
             });
+
+            // 競り補正
+            if (typeof app.applySeriCorrection === 'function') {
+                app.applySeriCorrection(players, context.seriInfos || []);
+            }
 
             const occurredEvents = applyChaos(players, world.events, context);
 

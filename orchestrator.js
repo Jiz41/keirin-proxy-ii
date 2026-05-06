@@ -216,6 +216,7 @@ async function predict(raceId) {
       grade:         gradeKey,
       seriInfos:     allSeriInfos,
       lineInput,
+      lines,
       windSpeed,
       windDirection,
       isGirls:       settings.IS_GIRLS || false,

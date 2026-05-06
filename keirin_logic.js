@@ -74,6 +74,11 @@ resetSnapshot();
 app.getCurrentCoefficients = () => JSON.parse(JSON.stringify(CalculationSnapshot));
 app.resetSnapshot = resetSnapshot;
 app.setRaceId = function(id) { CalculationSnapshot.race_id = id; };
+// 物理層関数を赤口呑縁から参照できるよう公開
+app.applyPhysicalPenalty    = applyPhysicalPenalty;
+app.applyTacticalAdjustments = applyTacticalAdjustments;
+app.getKururuAdjustment     = getKururuAdjustment;
+app.applySeriCorrection     = applySeriCorrection;
 // ------------------------------------------
 
 let BANK_DATA = {};
@@ -1177,6 +1182,7 @@ app.calculatePrediction = async function() {
                 grade: gradeKey,
                 seriInfos: allSeriInfos,
                 lineInput: currentLineInputForCalc,
+                lines: lines,
                 windSpeed: windSpeed,
                 windDirection: windDirection,
                 isGirls: settings.IS_GIRLS || false,
