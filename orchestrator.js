@@ -76,7 +76,7 @@ const SERIES_TO_GRADE = {
   'A級チャレンジ': 'a-chal',
 };
 
-const STYLE_TO_BIAS_KEY = { '自': '先行', '逃': '先行', '両': '捲り', '追': '差し' };
+const STYLE_TO_BIAS_KEY = { '自': '先行', '逃': '先行', '両': '捲り', '追': '差し', '差': '差し' };
 
 const COEFFICIENT_SETTINGS = {
   's-kyu':  { R_BIAS: 1.15, RECENT_WEIGHT: 0.90, COOP_WEIGHT: 1.20, IS_GIRLS: false, SUICIDE_LIMIT: 0.97 },
@@ -104,6 +104,9 @@ async function predict(raceId) {
   raceTypeHolder.value = gradeKey;
 
   const selectedBank = BANK_DATA[venue];
+  if (!selectedBank) {
+    throw new Error(`バンクデータが見つかりません: "${venue}"`);
+  }
 
   const activeRiders = riders.filter(r => !r.isScratched);
   const playerDataArray = activeRiders.map(r => ({
@@ -127,6 +130,9 @@ async function predict(raceId) {
     }
   });
 
+  if (!lineFormation) {
+    throw new Error('並び予想の取得に失敗しました（winticket・kdreams両方未取得）');
+  }
   const lineInput = (lineFormation.lines || [])
     .map(l => (Array.isArray(l) ? l : (l.members || [])).join(''))
     .join(',');
