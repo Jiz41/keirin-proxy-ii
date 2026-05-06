@@ -190,6 +190,44 @@ function getPlayerPositions(lines) {
 }
 
 // ====================================================================================
+// 物理層：直線長サバイバル判定（V9.0）
+// ====================================================================================
+function applyPhysicalPenalty(players, bankData, lines) {
+    // straight_deviation（実質直線距離）優先、なければ straight にフォールバック
+    const straight = (bankData && bankData.straight_deviation != null)
+        ? bankData.straight_deviation
+        : (bankData && bankData.straight) || 50;
+
+    const positionMap = getPlayerPositions(lines);
+
+    players.forEach(p => {
+        const pos = positionMap[p.id] ? positionMap[p.id].position : 1;
+
+        if (pos < 4) {
+            p.physicalPenalty = 1.0;
+            CalculationSnapshot.physical.physicalPenalty[p.id] = 1.0;
+            return;
+        }
+
+        // 後方深さ係数（4番手=0, 5番手=1, 6番手=2, 7番手=3）
+        const depth = pos - 4;
+
+        if (straight < 35) {
+            // 極端短直線（松戸等）: 4番手→0.80、段階的に7番手→0.70
+            p.physicalPenalty = Math.max(0.70, 0.80 - depth * 0.033);
+        } else if (straight < 50) {
+            // 短直線（前橋・西武園・函館等）: 4番手→0.93、段階的に7番手→0.87
+            p.physicalPenalty = Math.max(0.87, 0.93 - depth * 0.02);
+        } else {
+            p.physicalPenalty = 1.0;
+        }
+
+        CalculationSnapshot.physical.physicalPenalty[p.id] = p.physicalPenalty;
+        app.logMessage(`[物理層] 選手${p.id}: 直線${straight.toFixed(1)}m 全体${pos}番手 → physicalPenalty=${p.physicalPenalty.toFixed(3)}`);
+    });
+}
+
+// ====================================================================================
 // 展開層：カント・イン突き（V9.0）
 // ====================================================================================
 function applyTacticalAdjustments(players, bankData, lines, seriInfos) {
@@ -873,6 +911,8 @@ function runScenarioSimulation(basePlayers, allSeriInfos, settings, BANK_DATA, a
         const speed     = (windSpeed !== undefined) ? windSpeed : (BANK_DATA ? BANK_DATA.speed : 0);
         const isGirls   = settings ? settings.IS_GIRLS : false;
 
+        // 🔥 物理層（V9.0）
+        applyPhysicalPenalty(scenarioPlayers, BANK_DATA, lines);
         // 🔥 展開層（V9.0）
         applyTacticalAdjustments(scenarioPlayers, BANK_DATA, lines, allSeriInfos);
 
