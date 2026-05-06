@@ -101,7 +101,7 @@ function selectWorldLine(grade) {
         }
     }
     
-    return worldTable[0];
+    return worldTable[worldTable.length - 1];
 }
 
 // ----------------------------------------------------------------------------
@@ -313,7 +313,7 @@ function applyRecklessAttack(players, context) {
 function applyWindGust(players, context) {
     const rand = Math.random(); // 突風の方向を1回だけ決定
     
-    if (rand < 0.33) {
+    if (rand < 1/3) {
         // 追い風：先行・自走型に有利
         players.forEach(p => {
             if (p.style === '逃' || p.style === '自' || p.style === '両') {
@@ -322,7 +322,7 @@ function applyWindGust(players, context) {
                 p.final_score *= 0.95;
             }
         });
-    } else if (rand < 0.66) {
+    } else if (rand < 2/3) {
         // 向かい風：差し・追い込みに有利
         players.forEach(p => {
             if (p.style === '追' || p.style === '両') {
@@ -332,7 +332,7 @@ function applyWindGust(players, context) {
             }
         });
     }
-    // 0.66以上：横風（影響なし）
+    // 2/3以上：横風（影響なし）
 }
 
 function applySeriUpset(players, context) {

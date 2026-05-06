@@ -1306,6 +1306,7 @@ function generateKoutenreiBets(ranking, seitenTop3Ids = new Set()) {
         });
     lCandidates.sort((a, b) => b.lScore - a.lScore);
     const targetL = lCandidates[0];
+    if (!targetL) return null;
     return {
         targetL,
         sanrenpuku: [[A.id, B.id, targetL.id], [A.id, C.id, targetL.id]],

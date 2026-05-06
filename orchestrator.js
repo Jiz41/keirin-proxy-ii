@@ -183,12 +183,13 @@ async function predict(raceId) {
       .sort((a, b) => b[1] - a[1])
       .map(([id, score], rank) => {
         const p = basePlayers.find(p => p.id === Number(id));
+        const normalizedScore = score / 3;
         return {
           rank:        rank + 1,
           id:          Number(id),
           style:       p ? p.style : '',
-          score:       Math.round(score * 100) / 100,
-          final_score: score,
+          score:       Math.round(normalizedScore * 100) / 100,
+          final_score: normalizedScore,
           is_b1:       p ? (p.is_b1 || false) : false,
           is_s1:       p ? (p.is_s1 || false) : false,
           wmark:       p ? (p.wmark || '')    : '',
