@@ -89,7 +89,7 @@ async function predict(raceId) {
   const raceData = await scrapeRace(raceId);
   const { venue, series, riders, lineFormation, raceName } = raceData;
 
-  if (raceName && /新人|ルーキー|[Rr]ookie/.test(raceName)) {
+  if (raceName && /新人|ルーキー|新鋭|[Rr]ookie|[Jj]unior|[Nn]ewbie/.test(raceName)) {
     const err = new Error(`ROOKIE_SKIP:${raceName}`);
     err.isRookieSkip = true;
     throw err;

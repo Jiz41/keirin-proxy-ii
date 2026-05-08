@@ -7,7 +7,7 @@ const SLUG       = 'matsuyama';
 const VENUE_CODE = '75';
 const YYYYMMDD   = '20260508';
 const MAX_RACE   = 12;
-const SKIP_RE    = /新人|ルーキー|[Rr]ookie/;
+const SKIP_RE    = /新人|ルーキー|新鋭|[Rr]ookie|[Jj]unior|[Nn]ewbie/;
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
