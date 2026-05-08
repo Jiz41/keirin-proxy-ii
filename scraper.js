@@ -216,6 +216,17 @@ async function scrapeWinticket(raceId) {
     return null;
   }
 
+  // raceType を embedded JSON から抽出
+  let raceName = null;
+  const raceTypeRe = /"number":(\d+),"class":"[^"]+","raceType":"([^"]+)"/g;
+  let rtm;
+  while ((rtm = raceTypeRe.exec(body)) !== null) {
+    if (parseInt(rtm[1], 10) === raceNo) {
+      raceName = rtm[2];
+      break;
+    }
+  }
+
   const $ = cheerio.load(body);
 
   // ── 並び予想 ──
@@ -272,6 +283,7 @@ async function scrapeWinticket(raceId) {
     playerStats,
     s1Id,
     b1Id,
+    raceName,
   };
 }
 
@@ -314,6 +326,7 @@ async function scrapeRace(raceId) {
   // ウィンチケット（並び予想 + S/B/wmark）— 失敗時はkdreamsにフォールバック
   const winticketData = await scrapeWinticket(raceId);
   let lineFormation = winticketData ? winticketData.lineFormation : extractLineFormation($);
+  const raceName = winticketData ? winticketData.raceName : null;
 
   // table[2] から今開催/前場所/前々場所の直近着順マップを構築
   const recentMap = buildRecentMap($);
@@ -457,7 +470,7 @@ async function scrapeRace(raceId) {
   else if (grades.some(g => g && g.startsWith('S'))) series = 'S級';
   else if (grades.some(g => g === 'A3'))           series = 'A級チャレンジ';
 
-  return { raceId, venue, series, riders, lineFormation, raceTime, betTime };
+  return { raceId, venue, series, riders, lineFormation, raceTime, betTime, raceName };
 }
 
 module.exports = { scrapeRace };

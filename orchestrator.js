@@ -87,7 +87,13 @@ const COEFFICIENT_SETTINGS = {
 
 async function predict(raceId) {
   const raceData = await scrapeRace(raceId);
-  const { venue, series, riders, lineFormation } = raceData;
+  const { venue, series, riders, lineFormation, raceName } = raceData;
+
+  if (raceName && /新人|ルーキー|[Rr]ookie/.test(raceName)) {
+    const err = new Error(`ROOKIE_SKIP:${raceName}`);
+    err.isRookieSkip = true;
+    throw err;
+  }
 
   const weather = await getWeather(venue);
   const windSpeed     = weather.windSpeed     ?? 0;
