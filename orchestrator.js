@@ -95,6 +95,14 @@ async function predict(raceId) {
     throw err;
   }
 
+  const lowScoreRiders = riders.filter(r => !r.isScratched && r.score !== null && r.score <= 67);
+  if (lowScoreRiders.length >= 2) {
+    const detail = lowScoreRiders.map(r => `${r.number}番(${r.score})`).join(', ');
+    const err = new Error(`LOW_SCORE_SKIP:${lowScoreRiders.length}人が67点以下 [${detail}]`);
+    err.isLowScoreSkip = true;
+    throw err;
+  }
+
   const weather = await getWeather(venue);
   const windSpeed     = weather.windSpeed     ?? 0;
   const windDirection = weather.windDirection ?? '北';

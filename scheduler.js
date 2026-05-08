@@ -95,11 +95,15 @@ async function run() {
       await logExecution('found', race.raceId, race.venue, raceNum);
       console.log(`[scheduler] 投稿完了: ${race.raceId} (${race.venue})`);
     } catch (e) {
+      const raceNum = parseInt(race.raceId.slice(-2), 10);
       if (e.isRookieSkip) {
         const name = e.message.replace('ROOKIE_SKIP:', '');
         console.log(`[scheduler] 新人戦スキップ (${race.raceId}): ${name}`);
-        const raceNum = parseInt(race.raceId.slice(-2), 10);
         await logExecution('rookie_skip', race.raceId, race.venue, raceNum);
+      } else if (e.isLowScoreSkip) {
+        const detail = e.message.replace('LOW_SCORE_SKIP:', '');
+        console.log(`[scheduler] 低得点スキップ (${race.raceId}): ${detail}`);
+        await logExecution('low_score_skip', race.raceId, race.venue, raceNum);
       } else {
         console.error(`[scheduler] エラー (${race.raceId}):`, e.message);
       }
