@@ -154,6 +154,52 @@ async function predict(raceId) {
   const { lines, allSeriInfos } = parseLineInput(lineInput, basePlayers);
   const settings = COEFFICIENT_SETTINGS[gradeKey];
 
+  // c_l（ライン結束係数）計算
+  // calculateLineCoeffs は DOM 依存のため A.L.L. から直接呼べない。同等ロジックをここで実行。
+  {
+    const seriLoserSet = new Set(allSeriInfos.map(s => s.loser));
+    const coop = settings.COOP_WEIGHT || 1.0;
+
+    if (settings.IS_GIRLS) {
+      lines.forEach(line => {
+        if (line.length < 2) return;
+        const leader = basePlayers.find(p => p.id === line[0]);
+        for (let i = 1; i < line.length; i++) {
+          const p = basePlayers.find(pp => pp.id === line[i]);
+          if (!p || seriLoserSet.has(p.id)) continue;
+          let markVal = 1.03;
+          if (leader && leader.wmark === '◎')      markVal = 1.12;
+          else if (leader && leader.wmark === '〇') markVal = 1.08;
+          p.c_l = (i === 1) ? markVal : 1.0 + (markVal - 1.0) * 0.5;
+        }
+      });
+    } else {
+      const mainLine = lines.length > 0
+        ? lines.reduce((mx, l) => {
+            const s = l.reduce((t, id) => {
+              const p = basePlayers.find(p => p.id === id);
+              return t + (p ? (p.score || 0) : 0);
+            }, 0);
+            return s > mx.s ? { line: l, s } : mx;
+          }, { line: [], s: -1 }).line
+        : [];
+
+      lines.forEach(line => {
+        if (line.length < 2) return;
+        line.forEach((id, i) => {
+          if (seriLoserSet.has(id)) return;
+          const p = basePlayers.find(pp => pp.id === id);
+          if (!p) return;
+          if (i === 1) {
+            p.c_l = 1.0 + coop * 0.05;
+          } else if (i === 2 && mainLine.join() === line.join()) {
+            p.c_l = 1.0 + coop * 0.03;
+          }
+        });
+      });
+    }
+  }
+
   basePlayers.forEach(p => {
     p.c_score_adj = 1.0 + (p.score / 100 - 1) * settings.R_BIAS;
 
