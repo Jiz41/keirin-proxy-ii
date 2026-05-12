@@ -1,5 +1,5 @@
 const { getKaisai } = require('./kaisai');
-const { scrapeRace } = require('./scraper');
+const { scrapeRace, scrapeRaceLight } = require('./scraper');
 
 function jstNow() {
   const d = new Date(Date.now() + 9 * 60 * 60 * 1000);
@@ -17,9 +17,6 @@ async function selectRaces() {
 
   const kaisai = await getKaisai(dateStr);
 
-  // 今日のraceIdのみ収集
-  // raceId構造: [VV][YYYYMMDD(開催初日)][DD(日数目)][RRRR(レース番号)]
-  // 開催初日が当日とは限らないため、初日日付と当日の差分でDD(日数目)を算出して照合する
   const todayMs = Date.UTC(
     parseInt(dateStr.slice(0, 4)),
     parseInt(dateStr.slice(4, 6)) - 1,
@@ -43,21 +40,33 @@ async function selectRaces() {
     }
   }
 
-  // 5並列バッチスクレイプ
-  const BATCH = 5;
-  const scraped = [];
+  // Phase 1: ライトスクレイプ — betTime のみ取得して範囲外を除外
+  const BATCH = 3;
+  const candidates = [];
   for (let i = 0; i < allRaceIds.length; i += BATCH) {
     const batch = allRaceIds.slice(i, i + BATCH);
-    const results = await Promise.allSettled(batch.map(id => scrapeRace(id)));
-    for (const r of results) {
-      if (r.status === 'fulfilled') scraped.push(r.value);
+    const results = await Promise.allSettled(batch.map(id => scrapeRaceLight(id)));
+    for (let j = 0; j < batch.length; j++) {
+      const r = results[j];
+      if (r.status !== 'fulfilled' || !r.value) continue;
+      const [h, m] = r.value.split(':').map(Number);
+      const diff = (h * 60 + m) - nowMinutes;
+      if (diff >= 15 && diff <= 30) candidates.push(batch[j]);
     }
     if (i + BATCH < allRaceIds.length) {
       await new Promise(resolve => setTimeout(resolve, 300));
     }
   }
 
-  // 条件: betTimeまで15〜30分以内 かつ 7車立て
+  if (candidates.length === 0) return [];
+
+  // Phase 2: 候補のみフルスクレイプ（winticket 含む）
+  const fullResults = await Promise.allSettled(candidates.map(id => scrapeRace(id)));
+  const scraped = fullResults
+    .filter(r => r.status === 'fulfilled')
+    .map(r => r.value);
+
+  // 再確認: betTime + 7車立て
   const filtered = scraped.filter(race => {
     if (!race.betTime) return false;
     const [h, m] = race.betTime.split(':').map(Number);
@@ -66,7 +75,6 @@ async function selectRaces() {
     return diff >= 15 && diff <= 30 && riderCount === 7;
   });
 
-  // シャッフルして最大2件
   return filtered.sort(() => Math.random() - 0.5).slice(0, 2);
 }
 

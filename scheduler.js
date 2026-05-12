@@ -49,7 +49,16 @@ function jstHour() {
   return new Date(Date.now() + 9 * 60 * 60 * 1000).getUTCHours();
 }
 
+let isRunning = false;
+
 async function run() {
+  if (isRunning) {
+    console.log('[scheduler] 前回の実行が継続中 — スキップ');
+    return;
+  }
+  isRunning = true;
+
+  try {
   const hour = jstHour();
 
   // 00:00〜07:00 はスキップ
@@ -108,6 +117,9 @@ async function run() {
         console.error(`[scheduler] エラー (${race.raceId}):`, e.message);
       }
     }
+  }
+  } finally {
+    isRunning = false;
   }
 }
 

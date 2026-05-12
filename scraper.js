@@ -288,6 +288,33 @@ async function scrapeWinticket(raceId) {
 }
 
 // ------------------------------------------------------------
+// ライトスクレイパー（betTime のみ取得 — selector の事前絞り込み用）
+// ------------------------------------------------------------
+async function scrapeRaceLight(raceId) {
+  const venueCode = raceId.slice(0, 2);
+  const slug = VENUE_MAP[venueCode];
+  if (!slug) return null;
+
+  await sleep(500);
+  try {
+    const resp = await fetch(`https://keirin.kdreams.jp/${slug}/racedetail/${raceId}/`, {
+      headers: {
+        'User-Agent': 'PoliteKeirinBot/1.0 (on-demand only, no flood; say the word and I vanish; DM: https://x.com/kayoutouidou01)',
+        'Accept': 'text/html',
+        'Accept-Language': 'ja-JP',
+      }
+    });
+    if (!resp.ok) return null;
+    const body = await resp.text();
+    const $ = cheerio.load(body);
+    const raw = $('dl.time dt.bet').next('dd').first().text().trim();
+    return /^\d{1,2}:\d{2}$/.test(raw) ? raw.padStart(5, '0') : null;
+  } catch {
+    return null;
+  }
+}
+
+// ------------------------------------------------------------
 // メインスクレイパー
 // ------------------------------------------------------------
 async function scrapeRace(raceId) {
@@ -473,4 +500,4 @@ async function scrapeRace(raceId) {
   return { raceId, venue, series, riders, lineFormation, raceTime, betTime, raceName };
 }
 
-module.exports = { scrapeRace };
+module.exports = { scrapeRace, scrapeRaceLight };
