@@ -1105,8 +1105,8 @@ app.calculatePrediction = async function() {
 
         if      (p.wmark === '◎') p.c_wmark = 1.04;
         else if (p.wmark === '〇') p.c_wmark = 1.02;
-        else if (p.wmark === '△') p.c_wmark = 1.015;
-        else if (p.wmark === '✕') p.c_wmark = 1.01;
+        else if (p.wmark === '△') p.c_wmark = 1.005;
+        else if (p.wmark === '✕') p.c_wmark = 1.003;
         else                       p.c_wmark = 1.0;
 
         // S1位(+0.5%)：ライン先頭の象徴的優位
