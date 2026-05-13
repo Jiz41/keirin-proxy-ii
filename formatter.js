@@ -61,7 +61,7 @@ function formatKoutenBets(bets) {
 function formatShakkou(shakkou) {
   if (!shakkou) return null;
 
-  const stats = (shakkou.statistics || []).slice(0, 5);
+  const stats = (shakkou.statistics || []).slice(0, 7);
   const lines = stats.map(s => {
     const mark = strengthMark(s.winProbability, s.top3Probability);
     const win  = (s.winProbability  * 100).toFixed(1);
