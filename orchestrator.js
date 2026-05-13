@@ -85,6 +85,20 @@ const COEFFICIENT_SETTINGS = {
   'girls':  { R_BIAS: 1.00, RECENT_WEIGHT: 1.10, COOP_WEIGHT: 1.00, IS_GIRLS: true,  SUICIDE_LIMIT: 1.00 },
 };
 
+function applyLineCountBonus(integratedScores, lines) {
+  const LINE_BONUS = { 4: 1.08, 3: 1.04 };
+  const bonusMap = {};
+  (lines || []).forEach(line => {
+    const bonus = LINE_BONUS[line.length] || 1.00;
+    line.forEach(id => { bonusMap[id] = bonus; });
+  });
+  const result = {};
+  Object.keys(integratedScores).forEach(id => {
+    result[id] = integratedScores[id] * (bonusMap[Number(id)] || 1.00);
+  });
+  return result;
+}
+
 async function predict(raceId) {
   const raceData = await scrapeRace(raceId);
   const { venue, series, riders, lineFormation, raceName } = raceData;
@@ -262,11 +276,12 @@ async function predict(raceId) {
         };
       });
 
-  const seitenRanking = toRankingRich(seitenResult.integratedScores);
+  const seitenScoresWithBonus = applyLineCountBonus(seitenResult.integratedScores, lines);
+  const seitenRanking = toRankingRich(seitenScoresWithBonus);
   const koutenRanking = toRankingRich(koutenResult.integratedScores);
 
   const tenunData = calculateTenunIndex(
-    seitenResult.integratedScores,
+    seitenScoresWithBonus,
     koutenResult.integratedScores,
     seitenResult.allScenarioResults,
     basePlayers,
@@ -301,6 +316,7 @@ async function predict(raceId) {
     windDirection,
     bankFound: !!selectedBank,
     results: {
+      lines,
       seiten:     seitenRanking.map(({ rank, id, style, score }) => ({ rank, id, style, score })),
       kouten:     koutenRanking.map(({ rank, id, style, score }) => ({ rank, id, style, score })),
       gcActivated,
