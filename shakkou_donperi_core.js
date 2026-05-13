@@ -459,6 +459,16 @@ async function invokeShakkouDonperi(basePlayers, context) {
                 app.applySeriCorrection(players, context.seriInfos || []);
             }
 
+            // 荒天令バイアス（W1以降のカオス世界線のみ）
+            if (world.id !== 'W0' && typeof calculate_koutenrei_bias === 'function') {
+                const biasedPlayers = calculate_koutenrei_bias(
+                    players, world.id, context.BANK_DATA,
+                    context.windSpeed || 0, context.lineInput || '',
+                    COEFFICIENT_SETTINGS[context.grade] || {}
+                );
+                biasedPlayers.forEach((bp, idx) => { players[idx].final_score = bp.final_score; });
+            }
+
             const occurredEvents = applyChaos(players, world.events, context);
 
             const flutterMap = {
