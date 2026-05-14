@@ -585,19 +585,14 @@ function calculateLineCoeffs(players, settings) {
                 if (!p || seriLoserIds.has(p.id)) continue;
 
                 if (i === 0) { // 1番手
-                    p.c_l = 1.00;
+                    p.c_l = 1.0 + coop * 0.03;
+                    app.logMessage(`[C_L] 選手ID ${p.id}: 先頭 C_L=${p.c_l.toFixed(3)}`);
                 } else if (i === 1) { // 2番手
                     p.c_l = 1.0 + coop * 0.05;
                     app.logMessage(`[C_L] 選手ID ${p.id}: 2番手 C_L=${p.c_l.toFixed(3)}`);
-                } else if (i === 2) { // 3番手
-                    const isMainLine = (mainLine.toString() === line.toString());
-                    if (isMainLine) {
-                        p.c_l = 1.0 + coop * 0.03;
-                        app.logMessage(`[C_L] 選手ID ${p.id}: ★メインライン3番手★ C_L=${p.c_l.toFixed(3)}`);
-                    } else {
-                        p.c_l = 1.00;
-                        app.logMessage(`[C_L] 選手ID ${p.id}: 非メインライン3番手 C_L=1.00`);
-                    }
+                } else if (i === 2) { // 3番手（メインライン問わず無補正）
+                    p.c_l = 1.00;
+                    app.logMessage(`[C_L] 選手ID ${p.id}: 3番手 C_L=1.00`);
                 } else { // 4番手以降
                     p.c_l = 1.00;
                 }
