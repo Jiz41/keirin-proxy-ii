@@ -1,8 +1,6 @@
 User-agent: *
-Disallow: /keirin_logic.js
-Disallow: /shakkou_donperi_core.js
-Disallow: /shakkou_donperi_display.js
-Disallow: /paste-input.js
-Disallow: /LogModule.js
-Disallow: /test_race_id.js
-Disallow: /monookii/
+Disallow: /kaisai
+Disallow: /race
+Disallow: /weather
+Disallow: /predict
+Disallow: /trigger
