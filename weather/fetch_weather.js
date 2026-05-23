@@ -61,13 +61,11 @@ function avg(arr) {
 
 // date: YYYY-MM-DD, lat/lon: number → { temp, humidity }（12〜16時平均）
 async function fetchWeatherForDate(date, lat, lon) {
-  const url = new URL('https://archive-api.open-meteo.com/v1/archive');
-  url.searchParams.set('latitude',  lat);
-  url.searchParams.set('longitude', lon);
+  const url = new URL('https://jiz41-weather-proxy.hf.space/archive');
+  url.searchParams.set('lat',        lat);
+  url.searchParams.set('lng',        lon);
   url.searchParams.set('start_date', date);
   url.searchParams.set('end_date',   date);
-  url.searchParams.set('hourly', 'temperature_2m,relativehumidity_2m');
-  url.searchParams.set('timezone', 'Asia/Tokyo');
 
   await sleep(500);
   const res  = await fetch(url.toString());
