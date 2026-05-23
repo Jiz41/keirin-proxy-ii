@@ -5,8 +5,11 @@ const fetch    = require('node-fetch');
 const Database = require('better-sqlite3');
 const path     = require('path');
 
-const DB_PATH = path.join(process.env.HOME || '/root', 'keirin_weather.db');
-const sleep   = ms => new Promise(r => setTimeout(r, ms));
+const DB_PATH   = path.join(process.env.HOME || '/root', 'keirin_weather.db');
+const PROXY_URL = 'https://jiz41-weather-proxy.hf.space/archive';
+
+const sleep      = ms => new Promise(r => setTimeout(r, ms));
+const sleepRand  = () => sleep(3000 + Math.random() * 2000); // 3〜5秒ランダム
 
 // 会場名 → [緯度, 経度]（前橋・小倉は null で除外済み）
 const VENUE_LATLNG = {
@@ -59,58 +62,118 @@ function avg(arr) {
   return Math.round((valid.reduce((s, v) => s + v, 0) / valid.length) * 10) / 10;
 }
 
-// date: YYYY-MM-DD, lat/lon: number → { temp, humidity }（12〜16時平均）
-async function fetchWeatherForDate(date, lat, lon) {
-  const url = new URL('https://jiz41-weather-proxy.hf.space/archive');
+// YYYY-MM-DD 同士の日差（整数）
+function dayDiff(from, to) {
+  return Math.round((new Date(to) - new Date(from)) / 86400000);
+}
+
+// 日付配列を7日以内のチャンクに分割
+function chunkDates(dates) {
+  const sorted = [...dates].sort();
+  const chunks = [];
+  let chunk = [sorted[0]];
+  for (let i = 1; i < sorted.length; i++) {
+    if (dayDiff(chunk[0], sorted[i]) < 7) {
+      chunk.push(sorted[i]);
+    } else {
+      chunks.push(chunk);
+      chunk = [sorted[i]];
+    }
+  }
+  chunks.push(chunk);
+  return chunks; // [[startDate, ..., endDate], ...]
+}
+
+// 指数バックオフリトライ付きフェッチ（最大5回、sleep込み）
+async function fetchWithRetry(url, maxRetries = 5) {
+  let lastErr;
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    await sleepRand();
+    try {
+      const res = await fetch(url);
+      if (res.ok) return res;
+      lastErr = new Error(`HTTP ${res.status}`);
+    } catch (e) {
+      lastErr = e;
+    }
+    if (attempt < maxRetries - 1) {
+      const backoff = Math.pow(2, attempt) * 1000;
+      console.warn(`    retry ${attempt + 1}/${maxRetries - 1} after ${backoff}ms...`);
+      await sleep(backoff);
+    }
+  }
+  throw lastErr;
+}
+
+// チャンク（複数日）まとめて1リクエスト → 日別の12〜16時平均を返す Map<date, {temp, humidity}>
+async function fetchChunk(dates, lat, lon) {
+  const startDate = dates[0];
+  const endDate   = dates[dates.length - 1];
+
+  const url = new URL(PROXY_URL);
   url.searchParams.set('lat',        lat);
   url.searchParams.set('lng',        lon);
-  url.searchParams.set('start_date', date);
-  url.searchParams.set('end_date',   date);
+  url.searchParams.set('start_date', startDate);
+  url.searchParams.set('end_date',   endDate);
 
-  await sleep(500);
-  const res  = await fetch(url.toString());
-  if (!res.ok) throw new Error(`open-meteo HTTP ${res.status}`);
+  const res  = await fetchWithRetry(url.toString());
   const data = await res.json();
-
   if (!data.hourly) throw new Error('hourly data missing');
-  // index 12〜16 = 12:00〜16:00
-  const tempSlice     = data.hourly.temperature_2m.slice(12, 17);
-  const humiditySlice = data.hourly.relativehumidity_2m.slice(12, 17);
 
-  return { temp: avg(tempSlice), humidity: avg(humiditySlice) };
+  const result = new Map();
+  for (const date of dates) {
+    const offset    = dayDiff(startDate, date) * 24;
+    const tempSlice = data.hourly.temperature_2m.slice(offset + 12, offset + 17);
+    const humSlice  = data.hourly.relativehumidity_2m.slice(offset + 12, offset + 17);
+    result.set(date, { temp: avg(tempSlice), humidity: avg(humSlice) });
+  }
+  return result;
 }
 
 async function run() {
   const db  = new Database(DB_PATH);
   const upd = db.prepare('UPDATE races SET temp=@temp, humidity=@humidity WHERE date=@date AND venue=@venue AND race_no=@race_no');
 
-  // temp が NULL の行を日付・会場でグループ化して処理
-  const rows = db.prepare('SELECT DISTINCT date, venue FROM races WHERE temp IS NULL').all();
+  // 未取得行を会場ごとにグループ化
+  const rows = db.prepare('SELECT DISTINCT date, venue FROM races WHERE temp IS NULL ORDER BY venue, date').all();
   console.log(`未取得 ${rows.length} 件（日付×会場）`);
 
-  let updated = 0;
+  // venue → [date, ...] のマップ
+  const venueMap = new Map();
   for (const { date, venue } of rows) {
+    if (!venueMap.has(venue)) venueMap.set(venue, []);
+    venueMap.get(venue).push(date);
+  }
+
+  let updated = 0;
+  for (const [venue, dates] of venueMap) {
     const latlng = VENUE_LATLNG[venue];
-    if (!latlng) {
-      console.warn(`  座標なし: ${venue} → スキップ`);
-      continue;
-    }
+    if (!latlng) { console.warn(`  座標なし: ${venue} → スキップ`); continue; }
 
-    process.stdout.write(`  ${date} ${venue} ... `);
-    let weather;
-    try {
-      weather = await fetchWeatherForDate(date, latlng[0], latlng[1]);
-    } catch (e) {
-      console.log(`error: ${e.message}`);
-      continue;
-    }
+    const chunks = chunkDates(dates);
+    console.log(`[${venue}] ${dates.length}日分 → ${chunks.length}チャンク`);
 
-    const raceNos = db.prepare('SELECT race_no FROM races WHERE date=? AND venue=?').all(date, venue);
-    for (const { race_no } of raceNos) {
-      upd.run({ temp: weather.temp, humidity: weather.humidity, date, venue, race_no });
-      updated++;
+    for (const chunk of chunks) {
+      const label = chunk.length === 1 ? chunk[0] : `${chunk[0]}〜${chunk[chunk.length - 1]}`;
+      process.stdout.write(`  ${label} ... `);
+
+      let weatherMap;
+      try {
+        weatherMap = await fetchChunk(chunk, latlng[0], latlng[1]);
+      } catch (e) {
+        console.log(`error: ${e.message}`);
+        continue;
+      }
+
+      for (const [date, { temp, humidity }] of weatherMap) {
+        const raceNos = db.prepare('SELECT race_no FROM races WHERE date=? AND venue=?').all(date, venue);
+        for (const { race_no } of raceNos) {
+          upd.run({ temp, humidity, date, venue, race_no });
+          updated++;
+        }
+      }
+      console.log(`OK (temp=${[...weatherMap.values()].map(w => w.temp).join('/')}℃)`);
     }
-    console.log(`temp=${weather.temp}℃ humidity=${weather.humidity}%`);
   }
 
   console.log(`\n完了 — ${updated} 行 UPDATE`);
