@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>keirin_weather 進捗ダッシュボード</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:sans-serif;background:#0f1117;color:#e2e8f0;padding:16px;font-size:14px}
+h1{font-size:18px;margin-bottom:4px;color:#f8fafc}
+.meta{color:#64748b;font-size:12px;margin-bottom:20px}
+.summary{display:flex;gap:16px;margin-bottom:24px;flex-wrap:wrap}
+.card{background:#1e2330;border-radius:8px;padding:12px 20px;min-width:140px}
+.card .label{color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+.card .value{font-size:22px;font-weight:700;color:#38bdf8;margin-top:2px}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:8px 10px;color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #2d3448}
+td{padding:8px 10px;border-bottom:1px solid #1a1f2e;vertical-align:middle}
+tr:hover td{background:#1e2330}
+.bar-wrap{width:120px;background:#2d3448;border-radius:4px;height:8px;overflow:hidden;display:inline-block;vertical-align:middle}
+.bar{height:100%;border-radius:4px;background:linear-gradient(90deg,#0ea5e9,#38bdf8);transition:width .3s}
+.pct{display:inline-block;width:36px;text-align:right;color:#94a3b8;font-size:12px;margin-left:6px;vertical-align:middle}
+.venue{font-weight:600;color:#f1f5f9}
+.excluded{color:#475569;font-style:italic}
+.kimari{background:#1e3a5f;color:#7dd3fc;border-radius:4px;padding:1px 6px;font-size:11px}
+.temp{color:#fb923c}
+.hum{color:#34d399}
+.none{color:#334155}
+.updated{color:#475569;font-size:11px;margin-top:20px;text-align:right}
+</style>
+</head>
+<body>
+<h1>keirin_weather 進捗ダッシュボード</h1>
+<p class="meta" id="meta">読み込み中...</p>
+
+<div class="summary">
+  <div class="card"><div class="label">総取得レース数</div><div class="value" id="total-races">—</div></div>
+  <div class="card"><div class="label">対象期間</div><div class="value" id="total-months">—</div></div>
+  <div class="card"><div class="label">取得済み会場</div><div class="value" id="done-venues">—</div></div>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>会場</th>
+      <th>進捗</th>
+      <th>取得月数</th>
+      <th>直近日付</th>
+      <th>決まり手</th>
+      <th>気温</th>
+      <th>湿度</th>
+    </tr>
+  </thead>
+  <tbody id="tbody"></tbody>
+</table>
+
+<p class="updated" id="updated"></p>
+
+<script>
+fetch('./progress.json?_=' + Date.now())
+  .then(r => r.json())
+  .then(data => {
+    document.getElementById('meta').textContent =
+      '2022年4月〜現在 | 最終更新: ' + new Date(data.generated_at).toLocaleString('ja-JP');
+    document.getElementById('total-races').textContent =
+      Number(data.total_races).toLocaleString() + ' R';
+    document.getElementById('total-months').textContent = data.total_months + ' ヶ月';
+
+    const doneVenues = data.venues.filter(v => v.done_months > 0).length;
+    document.getElementById('done-venues').textContent =
+      doneVenues + ' / ' + data.venues.length;
+
+    const tbody = document.getElementById('tbody');
+    const excluded = new Set(['前橋', '小倉']);
+
+    data.venues.forEach(v => {
+      const ex = excluded.has(v.venue);
+      const tr = document.createElement('tr');
+      const l  = v.latest;
+
+      tr.innerHTML = `
+        <td class="${ex ? 'excluded' : 'venue'}">${v.venue}${ex ? ' (除外)' : ''}</td>
+        <td>
+          <span class="bar-wrap"><span class="bar" style="width:${v.pct}%"></span></span>
+          <span class="pct">${v.pct}%</span>
+        </td>
+        <td>${v.done_months} / ${v.total_months}</td>
+        <td>${l ? l.date : '<span class="none">—</span>'}</td>
+        <td>${l && l.kimari ? '<span class="kimari">'+l.kimari+'</span>' : '<span class="none">—</span>'}</td>
+        <td class="temp">${l && l.temp != null ? l.temp + '℃' : '<span class="none">—</span>'}</td>
+        <td class="hum">${l && l.humidity != null ? l.humidity + '%' : '<span class="none">—</span>'}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById('updated').textContent =
+      '生成日時: ' + new Date(data.generated_at).toLocaleString('ja-JP');
+  })
+  .catch(e => {
+    document.getElementById('meta').textContent = 'progress.json 読み込みエラー: ' + e.message;
+  });
+</script>
+</body>
+</html>

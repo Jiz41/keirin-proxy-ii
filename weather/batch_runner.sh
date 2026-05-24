@@ -125,4 +125,6 @@ done
 
 log "=== scrape完了 ${COUNT} 件 — fetch_weather 実行 ==="
 "$NODE" "$WEATHER"
+log "=== fetch_weather 完了 — progress.json 生成 ==="
+"$NODE" "$SCRIPT_DIR/generate_progress.js"
 log "=== batch_runner 終了 ==="
