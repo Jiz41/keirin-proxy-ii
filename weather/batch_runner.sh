@@ -1,9 +1,10 @@
 #!/bin/bash
-# batch_runner.sh — 41会場×2021年1月〜現在を月単位でローテーション取得
+# batch_runner.sh — 39会場×2022年4月〜現在を月単位でローテーション取得
+# 1日15会場×1ヶ月分を消化、翌日は続きから
 # 進捗: ~/keirin_weather_progress.json
 # ログ: ~/keirin_weather_cron.log（crontabから追記）
 
-set -euo pipefail
+set -uo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROGRESS_FILE="$HOME/keirin_weather_progress.json"
@@ -11,6 +12,8 @@ SCRAPE="$SCRIPT_DIR/scrape_results.js"
 WEATHER="$SCRIPT_DIR/fetch_weather.js"
 NODE="$(which node)"
 export TMPDIR=/data/data/com.termux/files/usr/tmp
+
+MAX_PER_DAY=15
 
 # 前橋(maebashi)・小倉(kokura)を除いた39会場
 SLUGS=(
@@ -23,15 +26,15 @@ SLUGS=(
 
 log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"; }
 
-# 2021-01 〜 現在月 の YYYYMM 一覧を生成
+# 2022-04 〜 現在月 の YYYYMM 一覧を生成
 generate_months() {
   local year=2022 month=4
   local cur_year cur_month
   cur_year=$(date +%Y); cur_month=$(date +%-m)
   while [[ $year -lt $cur_year ]] || [[ $year -eq $cur_year && $month -le $cur_month ]]; do
     printf "%04d%02d\n" "$year" "$month"
-    ((month++))
-    if [[ $month -gt 12 ]]; then month=1; ((year++)); fi
+    month=$((month + 1))
+    if [[ $month -gt 12 ]]; then month=1; year=$((year + 1)); fi
   done
 }
 
@@ -68,42 +71,58 @@ print('進捗更新: ' + str(len(d['done'])) + ' 件完了 / last=' + '$key')
 "
 }
 
-mapfile -t MONTHS < <(generate_months)
-DONE="$(load_done)"
-
-TARGET_SLUG=""
-TARGET_YYYYMM=""
-
-# 会場×月の順で次の未取得を探す
-for slug in "${SLUGS[@]}"; do
-  for yyyymm in "${MONTHS[@]}"; do
-    key="${slug}_${yyyymm}"
-    if ! grep -qx "$key" <<< "$DONE" 2>/dev/null; then
-      TARGET_SLUG="$slug"
-      TARGET_YYYYMM="$yyyymm"
-      break 2
-    fi
+# 次の未取得を1件返す（見つからなければ空文字）
+find_next() {
+  local done="$1"
+  for slug in "${SLUGS[@]}"; do
+    for yyyymm in "${MONTHS[@]}"; do
+      local key="${slug}_${yyyymm}"
+      if ! grep -qx "$key" <<< "$done" 2>/dev/null; then
+        echo "${slug} ${yyyymm}"
+        return
+      fi
+    done
   done
+}
+
+mapfile -t MONTHS < <(generate_months)
+
+COUNT=0
+log "=== batch_runner 開始 (最大 ${MAX_PER_DAY} 件) ==="
+
+while [[ $COUNT -lt $MAX_PER_DAY ]]; do
+  # ループごとに進捗を再読み込み（save_done の結果を反映）
+  DONE="$(load_done)"
+  NEXT="$(find_next "$DONE")"
+
+  if [[ -z "$NEXT" ]]; then
+    log "全会場・全月の取得が完了しております。"
+    break
+  fi
+
+  TARGET_SLUG="${NEXT%% *}"
+  TARGET_YYYYMM="${NEXT##* }"
+
+  log "[$((COUNT + 1))/$MAX_PER_DAY] $TARGET_SLUG $TARGET_YYYYMM"
+
+  if "$NODE" "$SCRAPE" "$TARGET_SLUG" "$TARGET_YYYYMM"; then
+    save_done "${TARGET_SLUG}_${TARGET_YYYYMM}" "OK"
+  else
+    EXIT_CODE=$?
+    log "scrapeエラー (exit ${EXIT_CODE}): $TARGET_SLUG $TARGET_YYYYMM → スキップ"
+    save_done "${TARGET_SLUG}_${TARGET_YYYYMM}" "ERROR:${EXIT_CODE}"
+  fi
+
+  COUNT=$((COUNT + 1))
+
+  # 会場間 sleep 3〜5秒ランダム（最終件は不要）
+  if [[ $COUNT -lt $MAX_PER_DAY ]]; then
+    S=$((3 + RANDOM % 3))
+    log "sleep ${S}s"
+    sleep "$S"
+  fi
 done
 
-if [[ -z "$TARGET_SLUG" ]]; then
-  log "全会場・全月の取得が完了しております。"
-  exit 0
-fi
-
-log "実行開始: $TARGET_SLUG $TARGET_YYYYMM"
-
-# scrape
-if "$NODE" "$SCRAPE" "$TARGET_SLUG" "$TARGET_YYYYMM"; then
-  save_done "${TARGET_SLUG}_${TARGET_YYYYMM}" "OK"
-  log "scrape完了: $TARGET_SLUG $TARGET_YYYYMM"
-
-  # fetch_weather
-  log "fetch_weather 実行開始"
-  "$NODE" "$WEATHER"
-  log "fetch_weather 完了"
-else
-  EXIT_CODE=$?
-  log "scrapeエラー (exit ${EXIT_CODE}): $TARGET_SLUG $TARGET_YYYYMM → スキップして次へ"
-  save_done "${TARGET_SLUG}_${TARGET_YYYYMM}" "ERROR:${EXIT_CODE}"
-fi
+log "=== scrape完了 ${COUNT} 件 — fetch_weather 実行 ==="
+"$NODE" "$WEATHER"
+log "=== batch_runner 終了 ==="

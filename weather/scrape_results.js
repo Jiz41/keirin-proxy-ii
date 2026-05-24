@@ -11,7 +11,7 @@ const { getKaisai } = require('../kaisai.js');
 
 const DB_PATH = path.join(process.env.HOME || '/root', 'keirin_weather.db');
 const UA      = 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36';
-const SLEEP_MS = 3000;
+const sleepRand = () => sleep(3000 + Math.random() * 2000); // 3〜5秒ランダム
 
 const VENUE_MAP = {
   '11':'hakodate', '12':'aomori',    '13':'iwakitaira',
@@ -47,7 +47,7 @@ async function scrapeResult(raceId) {
 
   const url = `https://www.winticket.jp/keirin/${slug}/raceresult/${cupId}/${dayOfMeet}/${raceNo}`;
 
-  await sleep(SLEEP_MS);
+  await sleepRand();
 
   let body;
   try {
