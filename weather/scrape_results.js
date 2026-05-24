@@ -148,8 +148,14 @@ async function run(targetSlug, yyyymm) {
     const targetVenue = kaisai.venues.find(v => v.slug === targetSlug);
     if (!targetVenue) continue;
 
+    // F1・F2 以外の開催はスキップ
+    if (!['F1', 'F2'].includes(targetVenue.grade)) {
+      console.log(`  skip (grade=${targetVenue.grade}): ${targetVenue.name}`);
+      continue;
+    }
+
     const loopDate = `${yyyymmdd.slice(0,4)}-${yyyymmdd.slice(4,6)}-${yyyymmdd.slice(6,8)}`;
-    console.log(`[${loopDate}] ${targetVenue.name} — ${targetVenue.days.length}日開催`);
+    console.log(`[${loopDate}] ${targetVenue.name} — ${targetVenue.grade} ${targetVenue.days.length}日開催`);
 
     for (const day of targetVenue.days) {
       for (const race of day.races) {
