@@ -6,7 +6,7 @@ const Database = require('better-sqlite3');
 const path     = require('path');
 
 const DB_PATH   = path.join(process.env.HOME || '/root', 'keirin_weather.db');
-const PROXY_URL = 'https://jiz41-weather-proxy.hf.space/archive';
+const ARCHIVE_URL = 'https://archive-api.open-meteo.com/v1/archive';
 
 const sleep      = ms => new Promise(r => setTimeout(r, ms));
 const sleepRand  = () => sleep(3000 + Math.random() * 2000); // 3〜5秒ランダム
@@ -110,11 +110,12 @@ async function fetchChunk(dates, lat, lon) {
   const startDate = dates[0];
   const endDate   = dates[dates.length - 1];
 
-  const url = new URL(PROXY_URL);
-  url.searchParams.set('lat',        lat);
-  url.searchParams.set('lng',        lon);
+  const url = new URL(ARCHIVE_URL);
+  url.searchParams.set('latitude',   lat);
+  url.searchParams.set('longitude',  lon);
   url.searchParams.set('start_date', startDate);
   url.searchParams.set('end_date',   endDate);
+  url.searchParams.set('hourly',     'temperature_2m,relativehumidity_2m');
 
   const res  = await fetchWithRetry(url.toString());
   const data = await res.json();
