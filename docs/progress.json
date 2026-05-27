@@ -1,14 +1,19 @@
 {
-  "generated_at": "2026-05-24T02:28:10.207Z",
-  "total_races": 36,
+  "generated_at": "2026-05-27T05:47:29.252Z",
+  "total_races": 938,
   "total_months": 50,
   "venues": [
     {
       "venue": "函館",
-      "done_months": 0,
+      "done_months": 10,
       "total_months": 50,
-      "pct": 0,
-      "latest": null
+      "pct": 20,
+      "latest": {
+        "date": "2023-06-30",
+        "kimari": "捲",
+        "temp": 20.2,
+        "humidity": 99
+      }
     },
     {
       "venue": "青森",
