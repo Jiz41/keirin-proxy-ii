@@ -1,30 +1,22 @@
-// setup_db.js — ~/keirin_weather.db の初期化
-const Database = require('better-sqlite3');
-const path = require('path');
+// setup_db.js — Supabase 接続確認（テーブルは SQL Editor で作成済み）
+const { createClient } = require('@supabase/supabase-js');
 
-const DB_PATH = path.join(process.env.HOME || '/root', 'keirin_weather.db');
-const db = new Database(DB_PATH);
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
+  console.error('SUPABASE_URL / SUPABASE_SERVICE_KEY が未設定です');
+  process.exit(1);
+}
 
-db.exec(`
-  CREATE TABLE IF NOT EXISTS races (
-    date     TEXT    NOT NULL,
-    venue    TEXT    NOT NULL,
-    race_no  INTEGER NOT NULL,
-    rank_1   INTEGER,
-    rank_2   INTEGER,
-    rank_3   INTEGER,
-    rank_4   INTEGER,
-    rank_5   INTEGER,
-    rank_6   INTEGER,
-    rank_7   INTEGER,
-    rank_8   INTEGER,
-    rank_9   INTEGER,
-    kimari   TEXT,
-    temp     REAL,
-    humidity REAL,
-    PRIMARY KEY (date, venue, race_no)
-  )
-`);
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
-console.log('DB initialized:', DB_PATH);
-db.close();
+async function run() {
+  const { count, error } = await supabase
+    .from('races')
+    .select('*', { count: 'exact', head: true });
+  if (error) {
+    console.error('Supabase接続エラー:', error.message);
+    process.exit(1);
+  }
+  console.log(`Supabase接続OK — races テーブル: ${count} 件`);
+}
+
+run().catch(e => { console.error(e); process.exit(1); });

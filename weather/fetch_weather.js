@@ -2,10 +2,14 @@
 // Usage: node fetch_weather.js
 
 const fetch    = require('node-fetch');
-const Database = require('better-sqlite3');
-const path     = require('path');
+const { createClient } = require('@supabase/supabase-js');
 
-const DB_PATH   = path.join(process.env.HOME || '/root', 'keirin_weather.db');
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
+  console.error('SUPABASE_URL / SUPABASE_SERVICE_KEY が未設定です');
+  process.exit(1);
+}
+
+const supabase    = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 const ARCHIVE_URL = 'https://archive-api.open-meteo.com/v1/archive';
 
 const sleep      = ms => new Promise(r => setTimeout(r, ms));
@@ -132,11 +136,22 @@ async function fetchChunk(dates, lat, lon) {
 }
 
 async function run() {
-  const db  = new Database(DB_PATH);
-  const upd = db.prepare('UPDATE races SET temp=@temp, humidity=@humidity WHERE date=@date AND venue=@venue AND race_no=@race_no');
+  // 未取得行を Supabase から取得
+  const { data: rawRows, error: selErr } = await supabase
+    .from('races')
+    .select('date,venue')
+    .is('temp', null)
+    .order('venue')
+    .order('date');
+  if (selErr) { console.error('Supabase selectエラー:', selErr.message); process.exit(1); }
 
-  // 未取得行を会場ごとにグループ化
-  const rows = db.prepare('SELECT DISTINCT date, venue FROM races WHERE temp IS NULL ORDER BY venue, date').all();
+  // JS側で (date, venue) を dedup
+  const seen = new Set();
+  const rows = [];
+  for (const r of rawRows) {
+    const k = `${r.date}|${r.venue}`;
+    if (!seen.has(k)) { seen.add(k); rows.push(r); }
+  }
   console.log(`未取得 ${rows.length} 件（日付×会場）`);
 
   // venue → [date, ...] のマップ
@@ -167,9 +182,15 @@ async function run() {
       }
 
       for (const [date, { temp, humidity }] of weatherMap) {
-        const raceNos = db.prepare('SELECT race_no FROM races WHERE date=? AND venue=?').all(date, venue);
-        for (const { race_no } of raceNos) {
-          upd.run({ temp, humidity, date, venue, race_no });
+        // 同一 (date, venue) の全レースをまとめて UPDATE
+        const { error: updErr } = await supabase
+          .from('races')
+          .update({ temp, humidity })
+          .eq('date', date)
+          .eq('venue', venue);
+        if (updErr) {
+          console.warn(`  UPDATEエラー ${date} ${venue}: ${updErr.message}`);
+        } else {
           updated++;
         }
       }
@@ -177,8 +198,7 @@ async function run() {
     }
   }
 
-  console.log(`\n完了 — ${updated} 行 UPDATE`);
-  db.close();
+  console.log(`\n完了 — ${updated} 日付×会場 UPDATE`);
 }
 
 run().catch(e => { console.error(e); process.exit(1); });

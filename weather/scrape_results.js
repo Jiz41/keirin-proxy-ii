@@ -5,12 +5,16 @@
 
 const fetch    = require('node-fetch');
 const cheerio  = require('cheerio');
-const Database = require('better-sqlite3');
-const path     = require('path');
+const { createClient } = require('@supabase/supabase-js');
 const { getKaisai } = require('../kaisai.js');
 
-const DB_PATH = path.join(process.env.HOME || '/root', 'keirin_weather.db');
-const UA      = 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36';
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
+  console.error('SUPABASE_URL / SUPABASE_SERVICE_KEY が未設定です');
+  process.exit(1);
+}
+
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+const UA       = 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36';
 const sleepRand = () => sleep(3000 + Math.random() * 2000); // 3〜5秒ランダム
 
 const VENUE_MAP = {
@@ -123,16 +127,6 @@ async function run(targetSlug, yyyymm) {
     process.exit(1);
   }
 
-  const db   = new Database(DB_PATH);
-  const ins  = db.prepare(`
-    INSERT OR IGNORE INTO races
-      (date, venue, race_no, rank_1, rank_2, rank_3, rank_4, rank_5,
-       rank_6, rank_7, rank_8, rank_9, kimari)
-    VALUES
-      (@date, @venue, @race_no, @rank_1, @rank_2, @rank_3, @rank_4, @rank_5,
-       @rank_6, @rank_7, @rank_8, @rank_9, @kimari)
-  `);
-
   const days   = daysInMonth(yyyymm);
   let inserted = 0;
 
@@ -172,20 +166,23 @@ async function run(targetSlug, yyyymm) {
         const result = await scrapeResult(race.raceId);
         if (!result) { console.log('skip'); continue; }
 
-        ins.run({
+        const { error } = await supabase.from('races').upsert({
           date:    dateStr,
           venue:   targetVenue.name,
           race_no: race.raceNo,
           ...result,
-        });
-        inserted++;
-        console.log(`OK (${result.rank_1}着→決:${result.kimari})`);
+        }, { onConflict: 'date,venue,race_no', ignoreDuplicates: true });
+        if (error) {
+          console.log(`upsertエラー: ${error.message}`);
+        } else {
+          inserted++;
+          console.log(`OK (${result.rank_1}着→決:${result.kimari})`);
+        }
       }
     }
   }
 
-  console.log(`\n完了 — ${inserted} 件 INSERT`);
-  db.close();
+  console.log(`\n完了 — ${inserted} 件 upsert`);
 }
 
 // --- CLI ---

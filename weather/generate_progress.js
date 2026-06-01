@@ -1,9 +1,14 @@
-// generate_progress.js — SQLite集計 → docs/progress.json 出力
-const Database = require('better-sqlite3');
-const path = require('path');
+// generate_progress.js — Supabase集計 → docs/progress.json 出力
+const { createClient } = require('@supabase/supabase-js');
 const fs   = require('fs');
+const path = require('path');
 
-const DB_PATH  = path.join(process.env.HOME || '/root', 'keirin_weather.db');
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
+  console.error('SUPABASE_URL / SUPABASE_SERVICE_KEY が未設定です');
+  process.exit(1);
+}
+
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 const OUT_PATH = path.join(__dirname, '../docs/progress.json');
 
 // 43会場（前橋・小倉含む全場）
@@ -21,31 +26,50 @@ function calcTotalMonths() {
   return (now.getFullYear() - 2022) * 12 + (now.getMonth() + 1 - 4) + 1;
 }
 
-const db         = new Database(DB_PATH);
-const totalMonths = calcTotalMonths();
-const totalRaces  = db.prepare('SELECT COUNT(*) as n FROM races').get().n;
+async function run() {
+  const totalMonths = calcTotalMonths();
 
-const venues = VENUES.map(venue => {
-  const doneRow = db.prepare(
-    "SELECT COUNT(DISTINCT substr(date,1,7)) as n FROM races WHERE venue=?"
-  ).get(venue);
-  const doneMonths = doneRow ? doneRow.n : 0;
-  const pct        = totalMonths > 0 ? Math.min(100, Math.round(doneMonths / totalMonths * 100)) : 0;
+  // 全件取得（集計用）— select date,venue,kimari,temp,humidity のみ
+  const { data: allRows, error } = await supabase
+    .from('races')
+    .select('date,venue,kimari,temp,humidity,race_no');
+  if (error) { console.error('Supabase selectエラー:', error.message); process.exit(1); }
 
-  const latest = db.prepare(
-    "SELECT date, kimari, temp, humidity FROM races WHERE venue=? ORDER BY date DESC, race_no DESC LIMIT 1"
-  ).get(venue) || null;
+  const totalRaces = allRows.length;
 
-  return { venue, done_months: doneMonths, total_months: totalMonths, pct, latest };
-});
+  // venue別に分類
+  const byVenue = new Map();
+  for (const row of allRows) {
+    if (!byVenue.has(row.venue)) byVenue.set(row.venue, []);
+    byVenue.get(row.venue).push(row);
+  }
 
-fs.mkdirSync(path.dirname(OUT_PATH), { recursive: true });
-fs.writeFileSync(OUT_PATH, JSON.stringify({
-  generated_at: new Date().toISOString(),
-  total_races:  totalRaces,
-  total_months: totalMonths,
-  venues,
-}, null, 2), 'utf8');
+  const venues = VENUES.map(venue => {
+    const rows      = byVenue.get(venue) || [];
+    const months    = new Set(rows.map(r => r.date.slice(0, 7)));
+    const doneMonths = months.size;
+    const pct       = totalMonths > 0 ? Math.min(100, Math.round(doneMonths / totalMonths * 100)) : 0;
 
-console.log(`progress.json 出力: ${OUT_PATH} (${venues.length}会場)`);
-db.close();
+    // 最新レコード（date DESC, race_no DESC）
+    const sorted = rows.slice().sort((a, b) =>
+      b.date.localeCompare(a.date) || b.race_no - a.race_no
+    );
+    const latest = sorted.length > 0
+      ? { date: sorted[0].date, kimari: sorted[0].kimari, temp: sorted[0].temp, humidity: sorted[0].humidity }
+      : null;
+
+    return { venue, done_months: doneMonths, total_months: totalMonths, pct, latest };
+  });
+
+  fs.mkdirSync(path.dirname(OUT_PATH), { recursive: true });
+  fs.writeFileSync(OUT_PATH, JSON.stringify({
+    generated_at: new Date().toISOString(),
+    total_races:  totalRaces,
+    total_months: totalMonths,
+    venues,
+  }, null, 2), 'utf8');
+
+  console.log(`progress.json 出力: ${OUT_PATH} (${venues.length}会場)`);
+}
+
+run().catch(e => { console.error(e); process.exit(1); });
