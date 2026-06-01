@@ -5,12 +5,12 @@ const path        = require('path');
 
 const DB_PATH = path.join(process.env.HOME || '/root', 'keirin_weather.db');
 
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
-  console.error('SUPABASE_URL / SUPABASE_SERVICE_KEY が未設定です');
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SECRET_KEY) {
+  console.error('SUPABASE_URL / SUPABASE_SECRET_KEY が未設定です');
   process.exit(1);
 }
 
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY);
 const db       = new Database(DB_PATH, { readonly: true });
 
 const BATCH = 500;

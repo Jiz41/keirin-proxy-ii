@@ -4,12 +4,12 @@
 const fetch    = require('node-fetch');
 const { createClient } = require('@supabase/supabase-js');
 
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
-  console.error('SUPABASE_URL / SUPABASE_SERVICE_KEY が未設定です');
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SECRET_KEY) {
+  console.error('SUPABASE_URL / SUPABASE_SECRET_KEY が未設定です');
   process.exit(1);
 }
 
-const supabase    = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+const supabase    = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY);
 const ARCHIVE_URL = 'https://archive-api.open-meteo.com/v1/archive';
 
 const sleep      = ms => new Promise(r => setTimeout(r, ms));

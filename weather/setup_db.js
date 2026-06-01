@@ -1,12 +1,12 @@
 // setup_db.js — Supabase 接続確認（テーブルは SQL Editor で作成済み）
 const { createClient } = require('@supabase/supabase-js');
 
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
-  console.error('SUPABASE_URL / SUPABASE_SERVICE_KEY が未設定です');
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SECRET_KEY) {
+  console.error('SUPABASE_URL / SUPABASE_SECRET_KEY が未設定です');
   process.exit(1);
 }
 
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY);
 
 async function run() {
   const { count, error } = await supabase

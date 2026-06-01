@@ -8,12 +8,12 @@ const cheerio  = require('cheerio');
 const { createClient } = require('@supabase/supabase-js');
 const { getKaisai } = require('../kaisai.js');
 
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
-  console.error('SUPABASE_URL / SUPABASE_SERVICE_KEY が未設定です');
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SECRET_KEY) {
+  console.error('SUPABASE_URL / SUPABASE_SECRET_KEY が未設定です');
   process.exit(1);
 }
 
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY);
 const UA       = 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36';
 const sleepRand = () => sleep(3000 + Math.random() * 2000); // 3〜5秒ランダム
 
