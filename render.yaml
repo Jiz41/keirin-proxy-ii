@@ -8,9 +8,3 @@ services:
       - key: PORT
         value: 10000
 
-  - type: cron
-    name: keirin-weather-batch
-    env: node
-    schedule: "0 4 * * *"
-    buildCommand: npm install
-    startCommand: bash weather/batch_runner.sh
