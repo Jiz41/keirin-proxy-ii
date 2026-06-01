@@ -6,6 +6,7 @@
 const fetch    = require('node-fetch');
 const cheerio  = require('cheerio');
 const { createClient } = require('@supabase/supabase-js');
+const ws = require('ws');
 const { getKaisai } = require('../kaisai.js');
 
 if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SECRET_KEY) {
@@ -13,7 +14,9 @@ if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SECRET_KEY) {
   process.exit(1);
 }
 
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY);
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY, {
+  realtime: { transport: ws }
+});
 const UA       = 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36';
 const sleepRand = () => sleep(3000 + Math.random() * 2000); // 3〜5秒ランダム
 
