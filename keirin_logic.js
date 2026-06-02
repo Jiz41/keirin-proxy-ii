@@ -1,7 +1,6 @@
 (function(app) {
 
-// 真自在律 Ver10.19
-// 【V10.19】generateSeitenreiBets r配列をslice(0,3)で封鎖、晴天令三連単へのL混入経路を遮断
+// 真自在律 Ver9.3
 // 【V9.3】C_l非メインライン3番手ボーナス廃止
 //          各ラインの競走得点合計を算出しメインラインを特定。
 //          メインライン3番手のみC_l=1.03を維持、それ以外は1.00に変更。
@@ -1277,7 +1276,7 @@ function formatSanrenpuku(bet)  { return bet.slice().sort((a, b) => a - b).join(
 
 function generateSeitenreiBets(ranking) {
     if (!ranking || ranking.length < 3) return null;
-    const r = ranking.slice(0, 3).map(p => p.id);
+    const r = ranking.map(p => p.id);
     return {
         sanrentan: [
             [r[0], r[1], r[2]],
@@ -1292,9 +1291,10 @@ function generateSeitenreiBets(ranking) {
 function generateKoutenreiBets(ranking, seitenTop3Ids = new Set()) {
     if (!ranking || ranking.length < 4) return null;
     const A = ranking[0], B = ranking[1], C = ranking[2];
-    const excludeIds = new Set([A.id, B.id, C.id, ...seitenTop3Ids]);
+    const koutenTop3Ids = new Set([A.id, B.id, C.id]);
     const lCandidates = ranking
-        .filter(p => !excludeIds.has(p.id))
+        .slice(3)
+        .filter(p => !koutenTop3Ids.has(p.id) && !seitenTop3Ids.has(p.id))
         .map(p => {
             let s = p.final_score / 10;
             if (p.is_b1) s += 10;
