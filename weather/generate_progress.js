@@ -3,12 +3,12 @@ const { createClient } = require('@supabase/supabase-js');
 const fs   = require('fs');
 const path = require('path');
 
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
-  console.error('SUPABASE_URL / SUPABASE_SERVICE_KEY が未設定です');
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SECRET_KEY) {
+  console.error('SUPABASE_URL / SUPABASE_SECRET_KEY が未設定です');
   process.exit(1);
 }
 
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY);
 const OUT_PATH = path.join(__dirname, '../docs/progress.json');
 
 // 43会場（前橋・小倉含む全場）
