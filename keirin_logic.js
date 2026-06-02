@@ -1276,7 +1276,7 @@ function formatSanrenpuku(bet)  { return bet.slice().sort((a, b) => a - b).join(
 
 function generateSeitenreiBets(ranking) {
     if (!ranking || ranking.length < 3) return null;
-    const r = ranking.map(p => p.id);
+    const r = ranking.slice(0, 3).map(p => p.id);
     return {
         sanrentan: [
             [r[0], r[1], r[2]],
