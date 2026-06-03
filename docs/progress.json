@@ -1,316 +1,316 @@
 {
-  "generated_at": "2026-05-31T04:40:04.113Z",
-  "total_races": 1743,
-  "total_months": 50,
+  "generated_at": "2026-06-03T00:21:20.817Z",
+  "total_races": 1000,
+  "total_months": 51,
   "venues": [
     {
       "venue": "函館",
-      "done_months": 18,
-      "total_months": 50,
-      "pct": 36,
+      "done_months": 11,
+      "total_months": 51,
+      "pct": 22,
       "latest": {
-        "date": "2024-09-25",
-        "kimari": "差",
-        "temp": 19.3,
-        "humidity": 79.6
+        "date": "2026-04-19",
+        "kimari": "逃",
+        "temp": 5.7,
+        "humidity": 82.2
       }
     },
     {
       "venue": "青森",
-      "done_months": 0,
-      "total_months": 50,
-      "pct": 0,
-      "latest": null
+      "done_months": 6,
+      "total_months": 51,
+      "pct": 12,
+      "latest": {
+        "date": "2022-09-24",
+        "kimari": "差",
+        "temp": 16.8,
+        "humidity": 77.4
+      }
     },
     {
       "venue": "いわき平",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "弥彦",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "前橋",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "取手",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "宇都宮",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "大宮",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "西武園",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "京王閣",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "立川",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "松戸",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "千葉",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "川崎",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "平塚",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "小田原",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "伊東",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "静岡",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "富山",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "名古屋",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "岐阜",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "大垣",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "豊橋",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "松阪",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "四日市",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "福井",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "奈良",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "向日町",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "和歌山",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "岸和田",
-      "done_months": 1,
-      "total_months": 50,
-      "pct": 2,
-      "latest": {
-        "date": "2026-04-03",
-        "kimari": "",
-        "temp": 16.2,
-        "humidity": 59.4
-      }
+      "done_months": 0,
+      "total_months": 51,
+      "pct": 0,
+      "latest": null
     },
     {
       "venue": "玉野",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "広島",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "防府",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "高松",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "小松島",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "高知",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "松山",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "小倉",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "久留米",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "武雄",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "佐世保",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "別府",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "熊本",
       "done_months": 0,
-      "total_months": 50,
+      "total_months": 51,
       "pct": 0,
       "latest": null
     }
