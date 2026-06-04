@@ -1,30 +1,30 @@
 {
-  "generated_at": "2026-06-03T00:21:20.817Z",
+  "generated_at": "2026-06-04T00:17:27.258Z",
   "total_races": 1000,
   "total_months": 51,
   "venues": [
     {
       "venue": "函館",
-      "done_months": 11,
+      "done_months": 10,
       "total_months": 51,
-      "pct": 22,
+      "pct": 20,
       "latest": {
-        "date": "2026-04-19",
-        "kimari": "逃",
-        "temp": 5.7,
-        "humidity": 82.2
+        "date": "2026-04-17",
+        "kimari": "差",
+        "temp": 8.7,
+        "humidity": 66.8
       }
     },
     {
       "venue": "青森",
-      "done_months": 6,
+      "done_months": 8,
       "total_months": 51,
-      "pct": 12,
+      "pct": 16,
       "latest": {
-        "date": "2022-09-24",
-        "kimari": "差",
-        "temp": 16.8,
-        "humidity": 77.4
+        "date": "2023-07-31",
+        "kimari": "逃",
+        "temp": 23.1,
+        "humidity": 84.4
       }
     },
     {
