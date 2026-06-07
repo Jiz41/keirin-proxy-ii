@@ -78,6 +78,15 @@ const SERIES_TO_GRADE = {
 
 const STYLE_TO_BIAS_KEY = { '自': '先行', '逃': '先行', '両': '捲り', '追': '差し', '差': '差し' };
 
+// styleRaw（スクレイパー生値）→ 内部短縮コードへの正規化マップ
+const STYLE_NORM = {
+  '逃':   '逃', '先行': '逃', '押え先': '逃',
+  '自在': '自', '捲り': '自', 'まくり': '自', '捲': '自',
+  '両':   '両',
+  '追込': '追', '追':   '追', 'マーク': '追', 'マ': '追',
+  '差':   '差', '差し': '差',
+};
+
 const COEFFICIENT_SETTINGS = {
   's-kyu':  { R_BIAS: 1.15, RECENT_WEIGHT: 0.90, COOP_WEIGHT: 1.20, IS_GIRLS: false, SUICIDE_LIMIT: 0.97 },
   'a-kyu':  { R_BIAS: 1.00, RECENT_WEIGHT: 1.00, COOP_WEIGHT: 1.00, IS_GIRLS: false, SUICIDE_LIMIT: 0.93 },
@@ -140,7 +149,7 @@ async function predict(raceId) {
   const playerDataArray = activeRiders.map(r => ({
     id:         r.number,
     score:      r.score,
-    style:      r.styleRaw,
+    style:      STYLE_NORM[r.styleRaw] ?? r.styleRaw ?? '',
     wmark:      r.wmark  ?? '',
     recent:     r.recent ?? null,
     is_s1:      r.is_s1  ?? false,
