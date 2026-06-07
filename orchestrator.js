@@ -110,8 +110,23 @@ function applyLineCountBonus(integratedScores, lines) {
 
 async function predict(raceId) {
   const raceData = await scrapeRace(raceId);
-  const { venue, series, riders, lineFormation, raceName } = raceData;
+  const { venue, series, riders, lineFormation, raceName, raceCrownName } = raceData;
 
+  // 冠名・レース名どちらも取得できない場合はスキップ（「わからんからやらん」原則）
+  if (!raceName && !raceCrownName) {
+    const err = new Error('ROOKIE_SKIP:レース名不明');
+    err.isRookieSkip = true;
+    throw err;
+  }
+
+  // 冠名がルーキー系ならスキップ（主判定）
+  if (raceCrownName && /ルーキー|新人|新鋭|[Rr]ookie|[Jj]unior|[Nn]ewbie/.test(raceCrownName)) {
+    const err = new Error(`ROOKIE_SKIP:${raceCrownName}`);
+    err.isRookieSkip = true;
+    throw err;
+  }
+
+  // winticket raceType にルーキー系が入っていた場合の保険
   if (raceName && /新人|ルーキー|新鋭|[Rr]ookie|[Jj]unior|[Nn]ewbie/.test(raceName)) {
     const err = new Error(`ROOKIE_SKIP:${raceName}`);
     err.isRookieSkip = true;

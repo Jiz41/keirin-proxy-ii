@@ -338,6 +338,8 @@ async function scrapeRace(raceId) {
   const titleText = $('title').text();
   const venueMatch = titleText.match(/(.+)競輪 レース詳細/);
   const venue = BANK_NAME_MAP[venueMatch ? venueMatch[1] : ''] || (venueMatch ? venueMatch[1] : '');
+  const crownMatch = titleText.match(/レース詳細 \| (.+?) \d+R /);
+  const raceCrownName = crownMatch ? crownMatch[1] : null;
 
   // 発走予定時刻
   const raceTimeRaw = $('dl.time dt.start').next('dd').first().text().trim();
@@ -497,7 +499,7 @@ async function scrapeRace(raceId) {
   else if (grades.some(g => g && g.startsWith('S'))) series = 'S級';
   else if (grades.some(g => g === 'A3'))           series = 'A級チャレンジ';
 
-  return { raceId, venue, series, riders, lineFormation, raceTime, betTime, raceName };
+  return { raceId, venue, series, riders, lineFormation, raceTime, betTime, raceName, raceCrownName };
 }
 
 module.exports = { scrapeRace, scrapeRaceLight };
