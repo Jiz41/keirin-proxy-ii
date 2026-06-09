@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-08T22:29:44.350Z",
+  "generated_at": "2026-06-09T22:41:11.109Z",
   "total_races": 1000,
   "total_months": 51,
   "venues": [
@@ -9,10 +9,10 @@
       "total_months": 51,
       "pct": 20,
       "latest": {
-        "date": "2026-04-17",
+        "date": "2026-04-16",
         "kimari": "差",
-        "temp": 8.7,
-        "humidity": 66.8
+        "temp": 5.3,
+        "humidity": 87.2
       }
     },
     {
@@ -21,10 +21,10 @@
       "total_months": 51,
       "pct": 16,
       "latest": {
-        "date": "2023-07-31",
-        "kimari": "逃",
-        "temp": 23.1,
-        "humidity": 84.4
+        "date": "2023-07-30",
+        "kimari": "差",
+        "temp": 27,
+        "humidity": 74.6
       }
     },
     {
@@ -36,10 +36,15 @@
     },
     {
       "venue": "弥彦",
-      "done_months": 0,
+      "done_months": 2,
       "total_months": 51,
-      "pct": 0,
-      "latest": null
+      "pct": 4,
+      "latest": {
+        "date": "2022-07-03",
+        "kimari": "差",
+        "temp": 23.2,
+        "humidity": 96.2
+      }
     },
     {
       "venue": "前橋",
