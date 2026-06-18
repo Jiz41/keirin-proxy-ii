@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-18T00:09:24.984Z",
+  "generated_at": "2026-06-18T22:41:06.348Z",
   "total_races": 1000,
   "total_months": 51,
   "venues": [
@@ -9,10 +9,10 @@
       "total_months": 51,
       "pct": 20,
       "latest": {
-        "date": "2026-04-11",
-        "kimari": "逃",
-        "temp": 4,
-        "humidity": 85.2
+        "date": "2026-04-10",
+        "kimari": "差",
+        "temp": 9.1,
+        "humidity": 98
       }
     },
     {
@@ -67,10 +67,15 @@
     },
     {
       "venue": "宇都宮",
-      "done_months": 0,
+      "done_months": 2,
       "total_months": 51,
-      "pct": 0,
-      "latest": null
+      "pct": 4,
+      "latest": {
+        "date": "2025-09-05",
+        "kimari": "捲",
+        "temp": 22.6,
+        "humidity": 93
+      }
     },
     {
       "venue": "大宮",
