@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-09T22:17:56.502Z",
+  "generated_at": "2026-07-11T01:05:47.902Z",
   "total_races": 1000,
   "total_months": 52,
   "venues": [
@@ -10,7 +10,7 @@
       "pct": 19,
       "latest": {
         "date": "2026-04-10",
-        "kimari": "捲",
+        "kimari": "差",
         "temp": 9.1,
         "humidity": 98
       }
@@ -126,10 +126,15 @@
     },
     {
       "venue": "川崎",
-      "done_months": 0,
+      "done_months": 1,
       "total_months": 52,
-      "pct": 0,
-      "latest": null
+      "pct": 2,
+      "latest": {
+        "date": "2024-06-06",
+        "kimari": "逃",
+        "temp": 20.3,
+        "humidity": 85
+      }
     },
     {
       "venue": "平塚",
