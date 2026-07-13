@@ -4,7 +4,7 @@ const path  = require('path');
 const store = require('./store.js');
 
 const OUT_PATH   = path.join(__dirname, '../docs/progress.json');
-const TARGET_RACES = 1000; // 会場あたりの目標R数
+const TARGET_RACES = 350; // 会場あたりの目標R数
 
 // 43会場（前橋・小倉含む全場）
 const VENUES = [

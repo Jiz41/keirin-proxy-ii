@@ -1,55 +1,65 @@
 {
-  "generated_at": "2026-07-13T11:22:50.936Z",
-  "total_races": 951,
+  "generated_at": "2026-07-13T13:43:54.746Z",
+  "total_races": 1525,
   "total_months": 52,
   "venues": [
     {
       "venue": "函館",
-      "done_months": 10,
+      "done_months": 6,
       "total_months": 52,
-      "done_races": 903,
-      "target_races": 1000,
-      "pct": 90,
+      "done_races": 559,
+      "target_races": 350,
+      "pct": 100,
       "latest": {
         "date": "2023-06-30",
         "kimari": "捲",
-        "temp": 20.3,
-        "humidity": 99
+        "temp": 21.1,
+        "humidity": 92.4
       }
     },
     {
       "venue": "青森",
-      "done_months": 0,
+      "done_months": 1,
       "total_months": 52,
-      "done_races": 0,
-      "target_races": 1000,
-      "pct": 0,
-      "latest": null
+      "done_races": 5,
+      "target_races": 350,
+      "pct": 1,
+      "latest": {
+        "date": "2022-04-14",
+        "kimari": "",
+        "temp": 7.2,
+        "humidity": 71.8
+      }
     },
     {
       "venue": "いわき平",
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "弥彦",
-      "done_months": 0,
+      "done_months": 5,
       "total_months": 52,
-      "done_races": 0,
-      "target_races": 1000,
-      "pct": 0,
-      "latest": null
+      "done_races": 431,
+      "target_races": 350,
+      "pct": 100,
+      "latest": {
+        "date": "2022-08-27",
+        "kimari": "差",
+        "temp": null,
+        "humidity": null
+      }
     },
     {
       "venue": "前橋",
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -58,7 +68,7 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -67,25 +77,30 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "大宮",
-      "done_months": 0,
+      "done_months": 1,
       "total_months": 52,
-      "done_races": 0,
-      "target_races": 1000,
-      "pct": 0,
-      "latest": null
+      "done_races": 5,
+      "target_races": 350,
+      "pct": 1,
+      "latest": {
+        "date": "2022-04-28",
+        "kimari": "逃",
+        "temp": 18.4,
+        "humidity": 38.2
+      }
     },
     {
       "venue": "西武園",
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -94,25 +109,30 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "立川",
-      "done_months": 0,
+      "done_months": 4,
       "total_months": 52,
-      "done_races": 0,
-      "target_races": 1000,
-      "pct": 0,
-      "latest": null
+      "done_races": 143,
+      "target_races": 350,
+      "pct": 41,
+      "latest": {
+        "date": "2022-08-24",
+        "kimari": "捲",
+        "temp": null,
+        "humidity": null
+      }
     },
     {
       "venue": "松戸",
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -121,7 +141,7 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -130,13 +150,13 @@
       "done_months": 1,
       "total_months": 52,
       "done_races": 48,
-      "target_races": 1000,
-      "pct": 5,
+      "target_races": 350,
+      "pct": 14,
       "latest": {
         "date": "2025-03-15",
         "kimari": "差",
-        "temp": 6.1,
-        "humidity": 83.6
+        "temp": 10.3,
+        "humidity": 53.4
       }
     },
     {
@@ -144,7 +164,7 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -153,25 +173,30 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "伊東",
-      "done_months": 0,
+      "done_months": 4,
       "total_months": 52,
-      "done_races": 0,
-      "target_races": 1000,
-      "pct": 0,
-      "latest": null
+      "done_races": 294,
+      "target_races": 350,
+      "pct": 84,
+      "latest": {
+        "date": "2022-07-20",
+        "kimari": "逃",
+        "temp": null,
+        "humidity": null
+      }
     },
     {
       "venue": "静岡",
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -180,7 +205,7 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -189,7 +214,7 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -198,7 +223,7 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -207,7 +232,7 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -216,7 +241,7 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -225,7 +250,7 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -234,7 +259,7 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -243,7 +268,7 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -252,7 +277,7 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -261,7 +286,7 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -270,25 +295,30 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "岸和田",
-      "done_months": 0,
+      "done_months": 1,
       "total_months": 52,
-      "done_races": 0,
-      "target_races": 1000,
-      "pct": 0,
-      "latest": null
+      "done_races": 5,
+      "target_races": 350,
+      "pct": 1,
+      "latest": {
+        "date": "2022-04-01",
+        "kimari": "捲",
+        "temp": 10.7,
+        "humidity": 42
+      }
     },
     {
       "venue": "玉野",
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -297,7 +327,7 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -306,7 +336,7 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -315,25 +345,30 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "小松島",
-      "done_months": 0,
+      "done_months": 1,
       "total_months": 52,
-      "done_races": 0,
-      "target_races": 1000,
-      "pct": 0,
-      "latest": null
+      "done_races": 35,
+      "target_races": 350,
+      "pct": 10,
+      "latest": {
+        "date": "2022-04-27",
+        "kimari": "捲",
+        "temp": null,
+        "humidity": null
+      }
     },
     {
       "venue": "高知",
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -342,7 +377,7 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -351,7 +386,7 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -360,7 +395,7 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -369,7 +404,7 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -378,7 +413,7 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -387,7 +422,7 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     },
@@ -396,7 +431,7 @@
       "done_months": 0,
       "total_months": 52,
       "done_races": 0,
-      "target_races": 1000,
+      "target_races": 350,
       "pct": 0,
       "latest": null
     }

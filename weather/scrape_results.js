@@ -154,8 +154,11 @@ async function run(targetSlug, yyyymm) {
     const loopDate = `${yyyymmdd.slice(0,4)}-${yyyymmdd.slice(4,6)}-${yyyymmdd.slice(6,8)}`;
     console.log(`[${loopDate}] ${targetVenue.name} — ${targetVenue.grade} ${targetVenue.days.length}日開催`);
 
+    const testMax = process.env.TEST_MAX_RACES ? parseInt(process.env.TEST_MAX_RACES, 10) : Infinity;
     for (const day of targetVenue.days) {
+      if (inserted >= testMax) break;
       for (const race of day.races) {
+        if (inserted >= testMax) break;
         // 実際のレース日 = 開催開始日 + (dayOfMeet - 1)日
         const startYmd  = race.raceId.slice(2, 10); // 開催開始日 YYYYMMDD
         const dom       = parseInt(race.raceId.slice(10, 12), 10); // dayOfMeet
@@ -181,6 +184,7 @@ async function run(targetSlug, yyyymm) {
         console.log(`OK (${result.data.rank_1}着→決:${result.data.kimari})`);
       }
     }
+    if (inserted >= testMax) break;
   }
 
   if (buffer.length) store.upsertRaces(buffer);

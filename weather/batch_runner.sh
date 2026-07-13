@@ -7,11 +7,13 @@ set -e
 # 完了判定（バグ1対策）:
 #   scrape_results.js は exit 0 = クリーン完走（一時的失敗なし。404含む正当な欠測は許容）、
 #                       exit 3/その他 = 一時的失敗あり → 台帳に記録せず次回再試行。
-# 会場ごとの累積R数が TARGET_RACES に達したらその会場は以降スキップ（進行単位=1000R）。
+# 会場ごとの累積R数が TARGET_RACES に達したらその会場は以降スキップ（進行単位=350R）。
+# 相手サイトへの配慮のため、1日の処理レース数を DAILY_RACE_LIMIT で頭打ちにする。
 
 cd "$(dirname "$0")/.."   # リポジトリルートへ
 
-TARGET_RACES=1000
+TARGET_RACES=350
+DAILY_RACE_LIMIT=650
 
 VENUES=(hakodate aomori iwakitaira yahiko maebashi toride utsunomiya omiya seibuen keiokaku tachikawa matsudo kawasaki hiratsuka odawara ito shizuoka toyama nagoya gifu ogaki toyohashi matsusaka yokkaichi fukui nara mukomachi wakayama kishiwada tamano hiroshima hofu takamatsu komatsushima kochi matsuyama kokura kurume takeo sasebo beppu kumamoto)
 
@@ -23,8 +25,7 @@ START_MONTH=4
 NOW_YEAR=$(date +%Y)
 NOW_MONTH=$(date +%m)
 
-COUNT=0
-MAX=15
+TOTAL_OK=0
 
 for VENUE in "${VENUES[@]}"; do
   case " $EXCLUDED " in *" $VENUE "*) continue ;; esac
@@ -45,7 +46,7 @@ for VENUE in "${VENUES[@]}"; do
     if node weather/store.js ledger-has "$KEY"; then
       :  # 走査済み → スキップ
     else
-      if [ $COUNT -ge $MAX ]; then break 2; fi
+      if [ $TOTAL_OK -ge $DAILY_RACE_LIMIT ]; then break 2; fi
       echo "[$(date '+%Y-%m-%d %H:%M:%S')] 処理開始: $VENUE $Y年${M}月"
       SLEEP_SEC=$((RANDOM % 4 + 3))
       sleep $SLEEP_SEC
@@ -60,7 +61,7 @@ for VENUE in "${VENUES[@]}"; do
         OK=$(echo "$SUMMARY"   | sed -n 's/.*ok=\([0-9]*\).*/\1/p')
         ERRS=$(echo "$SUMMARY" | sed -n 's/.*errors=\([0-9]*\).*/\1/p')
         node weather/store.js ledger-add "$KEY" "${DAYS:-0}" "${OK:-0}" "${ERRS:-0}"
-        COUNT=$((COUNT + 1))
+        TOTAL_OK=$((TOTAL_OK + ${OK:-0}))
 
         # 目標到達したら会場ループを打ち切り
         RACES=$(node weather/store.js venue-races "$VENUE")
@@ -79,7 +80,7 @@ for VENUE in "${VENUES[@]}"; do
   done
 done
 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] === scrape完了 $COUNT 件 — fetch_weather 実行 ==="
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] === scrape完了 ${TOTAL_OK}R — fetch_weather 実行 ==="
 node weather/fetch_weather.js
 
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] === fetch_weather 完了 — progress.json 生成 ==="
