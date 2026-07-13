@@ -114,6 +114,7 @@ async function fetchChunk(dates, lat, lon) {
   url.searchParams.set('start_date', startDate);
   url.searchParams.set('end_date',   endDate);
   url.searchParams.set('hourly',     'temperature_2m,relativehumidity_2m');
+  url.searchParams.set('timezone',   'Asia/Tokyo');
 
   const res  = await fetchWithRetry(url.toString());
   const data = await res.json();
@@ -133,10 +134,13 @@ async function run() {
   // 全 JSONL を読み、temp 未取得（null）の (date, venue) を洗い出す
   const allRows = store.readAll();
 
+  const testVenues = process.env.TEST_VENUES ? new Set(process.env.TEST_VENUES.split(',')) : null;
+
   const seen = new Set();
   const rows = [];
   for (const r of allRows) {
     if (r.temp !== null && r.temp !== undefined) continue;
+    if (testVenues && !testVenues.has(r.venue)) continue;
     const k = `${r.date}|${r.venue}`;
     if (!seen.has(k)) { seen.add(k); rows.push({ date: r.date, venue: r.venue }); }
   }
