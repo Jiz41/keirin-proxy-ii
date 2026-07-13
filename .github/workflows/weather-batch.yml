@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '0 19 * * *'  # JST 04:00
   workflow_dispatch:
+    inputs:
+      diagnose_date:
+        description: '診断対象日 YYYYMMDD（空なら通常バッチ実行）'
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -17,7 +22,12 @@ jobs:
         with:
           node-version: '22'
       - run: npm install
-      - run: bash weather/batch_runner.sh
+      - name: diagnose
+        if: ${{ github.event.inputs.diagnose_date != '' }}
+        run: node weather/diagnose.js ${{ github.event.inputs.diagnose_date }}
+      - name: batch
+        if: ${{ github.event.inputs.diagnose_date == '' }}
+        run: bash weather/batch_runner.sh
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
