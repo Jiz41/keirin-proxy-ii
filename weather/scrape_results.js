@@ -141,10 +141,6 @@ async function run(targetSlug, yyyymm) {
       console.warn(`kaisai fetch error ${yyyymmdd}: ${e.message}`);
       continue;
     }
-    if (process.env.TEMP_DIAG === '1') {
-      console.log(`[TEMP_DIAG] ${yyyymmdd} venues:`, kaisai.venues.map(v => v.slug).join(','));
-    }
-
     const targetVenue = kaisai.venues.find(v => v.slug === targetSlug);
     if (!targetVenue) continue;
 

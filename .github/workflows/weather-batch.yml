@@ -4,19 +4,6 @@ on:
   schedule:
     - cron: '0 19 * * *'  # JST 04:00
   workflow_dispatch:
-    inputs:
-      diagnose_date:
-        description: '診断対象日 YYYYMMDD（空なら通常バッチ実行）'
-        required: false
-        default: ''
-      diagnose_with_supabase:
-        description: '診断時にSupabaseクライアント初期化も再現するか'
-        required: false
-        default: 'false'
-      scrape_direct:
-        description: '本番scrape_results.jsを直接実行して診断（例: "kawasaki 202503"、空なら無効）'
-        required: false
-        default: ''
 
 permissions:
   contents: write
@@ -30,23 +17,7 @@ jobs:
         with:
           node-version: '22'
       - run: npm install
-      - name: diagnose
-        if: ${{ github.event.inputs.diagnose_date != '' }}
-        run: node weather/diagnose.js ${{ github.event.inputs.diagnose_date }}
-        env:
-          DIAG_WITH_SUPABASE: ${{ github.event.inputs.diagnose_with_supabase == 'true' && '1' || '0' }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-      - name: scrape-direct-diagnose
-        if: ${{ github.event.inputs.scrape_direct != '' }}
-        run: node weather/scrape_results.js ${{ github.event.inputs.scrape_direct }}
-        env:
-          TEMP_DIAG: '1'
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
-      - name: batch
-        if: ${{ github.event.inputs.diagnose_date == '' && github.event.inputs.scrape_direct == '' }}
-        run: bash weather/batch_runner.sh
+      - run: bash weather/batch_runner.sh
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
