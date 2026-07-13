@@ -1,86 +1,77 @@
 {
-  "generated_at": "2026-07-12T21:17:41.842Z",
-  "total_races": 1000,
+  "generated_at": "2026-07-13T09:46:22.272Z",
+  "total_races": 48,
   "total_months": 52,
   "venues": [
     {
       "venue": "函館",
-      "done_months": 10,
+      "done_months": 0,
       "total_months": 52,
-      "pct": 19,
-      "latest": {
-        "date": "2026-04-10",
-        "kimari": "差",
-        "temp": 9.1,
-        "humidity": 98
-      }
+      "done_races": 0,
+      "target_races": 1000,
+      "pct": 0,
+      "latest": null
     },
     {
       "venue": "青森",
-      "done_months": 8,
+      "done_months": 0,
       "total_months": 52,
-      "pct": 15,
-      "latest": {
-        "date": "2023-07-30",
-        "kimari": "差",
-        "temp": 27,
-        "humidity": 74.6
-      }
+      "done_races": 0,
+      "target_races": 1000,
+      "pct": 0,
+      "latest": null
     },
     {
       "venue": "いわき平",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "弥彦",
-      "done_months": 2,
+      "done_months": 0,
       "total_months": 52,
-      "pct": 4,
-      "latest": {
-        "date": "2022-07-03",
-        "kimari": "差",
-        "temp": 23.2,
-        "humidity": 96.2
-      }
+      "done_races": 0,
+      "target_races": 1000,
+      "pct": 0,
+      "latest": null
     },
     {
       "venue": "前橋",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "取手",
-      "done_months": 3,
+      "done_months": 0,
       "total_months": 52,
-      "pct": 6,
-      "latest": {
-        "date": "2023-10-17",
-        "kimari": "捲",
-        "temp": 16.5,
-        "humidity": 92
-      }
+      "done_races": 0,
+      "target_races": 1000,
+      "pct": 0,
+      "latest": null
     },
     {
       "venue": "宇都宮",
-      "done_months": 2,
+      "done_months": 0,
       "total_months": 52,
-      "pct": 4,
-      "latest": {
-        "date": "2025-09-05",
-        "kimari": "捲",
-        "temp": 22.6,
-        "humidity": 93
-      }
+      "done_races": 0,
+      "target_races": 1000,
+      "pct": 0,
+      "latest": null
     },
     {
       "venue": "大宮",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -88,6 +79,8 @@
       "venue": "西武園",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -95,25 +88,26 @@
       "venue": "京王閣",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
     {
       "venue": "立川",
-      "done_months": 2,
+      "done_months": 0,
       "total_months": 52,
-      "pct": 4,
-      "latest": {
-        "date": "2024-09-07",
-        "kimari": "逃",
-        "temp": 25,
-        "humidity": 95.4
-      }
+      "done_races": 0,
+      "target_races": 1000,
+      "pct": 0,
+      "latest": null
     },
     {
       "venue": "松戸",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -121,6 +115,8 @@
       "venue": "千葉",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -128,18 +124,22 @@
       "venue": "川崎",
       "done_months": 1,
       "total_months": 52,
-      "pct": 2,
+      "done_races": 48,
+      "target_races": 1000,
+      "pct": 5,
       "latest": {
-        "date": "2024-06-06",
-        "kimari": "逃",
-        "temp": 20.3,
-        "humidity": 85
+        "date": "2025-03-15",
+        "kimari": "差",
+        "temp": 6.1,
+        "humidity": 83.6
       }
     },
     {
       "venue": "平塚",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -147,6 +147,8 @@
       "venue": "小田原",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -154,6 +156,8 @@
       "venue": "伊東",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -161,6 +165,8 @@
       "venue": "静岡",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -168,6 +174,8 @@
       "venue": "富山",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -175,6 +183,8 @@
       "venue": "名古屋",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -182,6 +192,8 @@
       "venue": "岐阜",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -189,6 +201,8 @@
       "venue": "大垣",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -196,6 +210,8 @@
       "venue": "豊橋",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -203,6 +219,8 @@
       "venue": "松阪",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -210,6 +228,8 @@
       "venue": "四日市",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -217,6 +237,8 @@
       "venue": "福井",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -224,6 +246,8 @@
       "venue": "奈良",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -231,6 +255,8 @@
       "venue": "向日町",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -238,6 +264,8 @@
       "venue": "和歌山",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -245,6 +273,8 @@
       "venue": "岸和田",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -252,6 +282,8 @@
       "venue": "玉野",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -259,6 +291,8 @@
       "venue": "広島",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -266,6 +300,8 @@
       "venue": "防府",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -273,6 +309,8 @@
       "venue": "高松",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -280,6 +318,8 @@
       "venue": "小松島",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -287,6 +327,8 @@
       "venue": "高知",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -294,6 +336,8 @@
       "venue": "松山",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -301,6 +345,8 @@
       "venue": "小倉",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -308,6 +354,8 @@
       "venue": "久留米",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -315,6 +363,8 @@
       "venue": "武雄",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -322,6 +372,8 @@
       "venue": "佐世保",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -329,6 +381,8 @@
       "venue": "別府",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     },
@@ -336,6 +390,8 @@
       "venue": "熊本",
       "done_months": 0,
       "total_months": 52,
+      "done_races": 0,
+      "target_races": 1000,
       "pct": 0,
       "latest": null
     }

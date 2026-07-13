@@ -5,18 +5,9 @@
 
 const fetch    = require('node-fetch');
 const cheerio  = require('cheerio');
-const { createClient } = require('@supabase/supabase-js');
-const ws = require('ws');
 const { getKaisai } = require('../kaisai.js');
+const store    = require('./store.js');
 
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SECRET_KEY) {
-  console.error('SUPABASE_URL / SUPABASE_SECRET_KEY が未設定です');
-  process.exit(1);
-}
-
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY, {
-  realtime: { transport: ws }
-});
 const UA       = 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 Chrome/120 Mobile Safari/537.36';
 const sleepRand = () => sleep(3000 + Math.random() * 2000); // 3〜5秒ランダム
 
@@ -42,14 +33,17 @@ const EXCLUDED_SLUGS = new Set(['maebashi', 'kokura']);
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+// 戻り値: { status: 'ok', data } | { status: 'skip' }（404/結果なし＝正当な欠測）
+//         | { status: 'error' }（ネットワーク等の一時的失敗＝再試行対象）
 async function scrapeResult(raceId) {
   const venueCode = raceId.slice(0, 2);
   const slug      = VENUE_MAP[venueCode];
-  if (!slug || EXCLUDED_SLUGS.has(slug)) return null;
+  if (!slug || EXCLUDED_SLUGS.has(slug)) return { status: 'skip' };
 
+  // raceId(16桁) = 場コード(2)+開催初日(8)+開催日目(2)+サブ節(2)+レース番号(2)
   const yyyymmdd  = raceId.slice(2, 10);
   const dayOfMeet = parseInt(raceId.slice(10, 12), 10);
-  const raceNo    = parseInt(raceId.slice(12), 10);
+  const raceNo    = parseInt(raceId.slice(14, 16), 10);
   const cupId     = `${yyyymmdd}${venueCode}`;
 
   const url = `https://www.winticket.jp/keirin/${slug}/raceresult/${cupId}/${dayOfMeet}/${raceNo}`;
@@ -61,11 +55,12 @@ async function scrapeResult(raceId) {
     const res = await fetch(url, {
       headers: { 'User-Agent': UA, 'Accept': 'text/html', 'Accept-Language': 'ja-JP' },
     });
-    if (!res.ok) { console.warn(`  skip ${raceId}: HTTP ${res.status}`); return null; }
+    if (res.status === 404) { console.warn(`  skip ${raceId}: HTTP 404`); return { status: 'skip' }; }
+    if (!res.ok) { console.warn(`  error ${raceId}: HTTP ${res.status}`); return { status: 'error' }; }
     body = await res.text();
   } catch (e) {
     console.warn(`  fetch error ${raceId}: ${e.message}`);
-    return null;
+    return { status: 'error' };
   }
 
   const $ = cheerio.load(body);
@@ -84,21 +79,21 @@ async function scrapeResult(raceId) {
 
   // results JSON（埋め込み）から着順・決まり手を取得
   const rm = body.match(/"results":\[([^\]]*(?:\[[^\]]*\][^\]]*)*)\]/);
-  if (!rm) { console.warn(`  results JSON not found: ${raceId}`); return null; }
+  if (!rm) { console.warn(`  results JSON not found: ${raceId}`); return { status: 'skip' }; }
 
   let results;
   try {
     results = JSON.parse('[' + rm[1] + ']');
   } catch (e) {
     console.warn(`  JSON parse error ${raceId}: ${e.message}`);
-    return null;
+    return { status: 'skip' };
   }
 
   const thisRace = results
     .filter(r => r.raceNumber === raceNo && r.day === dayOfMeet)
     .sort((a, b) => a.order - b.order);
 
-  if (thisRace.length === 0) { console.warn(`  no results for ${raceId}`); return null; }
+  if (thisRace.length === 0) { console.warn(`  no results for ${raceId}`); return { status: 'skip' }; }
 
   const rank   = thisRace.map(r => playerBib[r.playerId] || null);
   const kimari = thisRace[0].factor || '';
@@ -109,7 +104,7 @@ async function scrapeResult(raceId) {
     rankObj[`rank_${i + 1}`] = rank[i] ?? null;
   }
 
-  return { kimari, ...rankObj };
+  return { status: 'ok', data: { kimari, ...rankObj } };
 }
 
 // YYYYMM の全日付を配列で返す
@@ -131,7 +126,11 @@ async function run(targetSlug, yyyymm) {
   }
 
   const days   = daysInMonth(yyyymm);
-  let inserted = 0;
+  let inserted   = 0; // JSONL に書けた件数
+  let okCount    = 0; // scrapeResult が結果を返した件数
+  let errorCount = 0; // 一時的失敗（再試行対象）
+  let kaisaiDays = 0; // 対象会場の開催日数（0なら当月開催なし）
+  const buffer   = []; // 収集レコード（最後にまとめて upsert）
 
   for (const yyyymmdd of days) {
     let kaisai;
@@ -139,6 +138,7 @@ async function run(targetSlug, yyyymm) {
       kaisai = await getKaisai(yyyymmdd);
     } catch (e) {
       console.warn(`kaisai fetch error ${yyyymmdd}: ${e.message}`);
+      errorCount++; // 開催情報が取れない＝一時的失敗として再試行に回す
       continue;
     }
     const targetVenue = kaisai.venues.find(v => v.slug === targetSlug);
@@ -150,6 +150,7 @@ async function run(targetSlug, yyyymm) {
       continue;
     }
 
+    kaisaiDays++;
     const loopDate = `${yyyymmdd.slice(0,4)}-${yyyymmdd.slice(4,6)}-${yyyymmdd.slice(6,8)}`;
     console.log(`[${loopDate}] ${targetVenue.name} — ${targetVenue.grade} ${targetVenue.days.length}日開催`);
 
@@ -166,25 +167,30 @@ async function run(targetSlug, yyyymm) {
 
         process.stdout.write(`  R${race.raceNo} ${race.raceId} ... `);
         const result = await scrapeResult(race.raceId);
-        if (!result) { console.log('skip'); continue; }
+        if (result.status === 'error') { errorCount++; console.log('error'); continue; }
+        if (result.status === 'skip')  { console.log('skip'); continue; }
 
-        const { error } = await supabase.from('races').upsert({
+        okCount++;
+        buffer.push({
           date:    dateStr,
           venue:   targetVenue.name,
           race_no: race.raceNo,
-          ...result,
-        }, { onConflict: 'date,venue,race_no', ignoreDuplicates: true });
-        if (error) {
-          console.log(`upsertエラー: ${error.message}`);
-        } else {
-          inserted++;
-          console.log(`OK (${result.rank_1}着→決:${result.kimari})`);
-        }
+          ...result.data,
+        });
+        inserted++;
+        console.log(`OK (${result.data.rank_1}着→決:${result.data.kimari})`);
       }
     }
   }
 
-  console.log(`\n完了 — ${inserted} 件 upsert`);
+  if (buffer.length) store.upsertRaces(buffer);
+
+  // 完了判定用サマリ（batch_runner がパースする）
+  console.log(`\nSUMMARY kaisai_days=${kaisaiDays} ok=${okCount} errors=${errorCount}`);
+  console.log(`完了 — ${inserted} 件 JSONL へ upsert`);
+
+  // 一時的失敗があった月は「未完了」として再試行に回す（exit 3）
+  process.exit(errorCount > 0 ? 3 : 0);
 }
 
 // --- CLI ---

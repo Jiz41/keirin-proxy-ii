@@ -1,15 +1,10 @@
-// generate_progress.js — Supabase集計 → docs/progress.json 出力
-const { createClient } = require('@supabase/supabase-js');
-const fs   = require('fs');
-const path = require('path');
+// generate_progress.js — data/*.jsonl 集計 → docs/progress.json 出力
+const fs    = require('fs');
+const path  = require('path');
+const store = require('./store.js');
 
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SECRET_KEY) {
-  console.error('SUPABASE_URL / SUPABASE_SECRET_KEY が未設定です');
-  process.exit(1);
-}
-
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY);
-const OUT_PATH = path.join(__dirname, '../docs/progress.json');
+const OUT_PATH   = path.join(__dirname, '../docs/progress.json');
+const TARGET_RACES = 1000; // 会場あたりの目標R数
 
 // 43会場（前橋・小倉含む全場）
 const VENUES = [
@@ -26,15 +21,10 @@ function calcTotalMonths() {
   return (now.getFullYear() - 2022) * 12 + (now.getMonth() + 1 - 4) + 1;
 }
 
-async function run() {
+function run() {
   const totalMonths = calcTotalMonths();
 
-  // 全件取得（集計用）— select date,venue,kimari,temp,humidity のみ
-  const { data: allRows, error } = await supabase
-    .from('races')
-    .select('date,venue,kimari,temp,humidity,race_no');
-  if (error) { console.error('Supabase selectエラー:', error.message); process.exit(1); }
-
+  const allRows = store.readAll();
   const totalRaces = allRows.length;
 
   // venue別に分類
@@ -45,10 +35,12 @@ async function run() {
   }
 
   const venues = VENUES.map(venue => {
-    const rows      = byVenue.get(venue) || [];
-    const months    = new Set(rows.map(r => r.date.slice(0, 7)));
+    const rows       = byVenue.get(venue) || [];
+    const months     = new Set(rows.map(r => r.date.slice(0, 7)));
     const doneMonths = months.size;
-    const pct       = totalMonths > 0 ? Math.min(100, Math.round(doneMonths / totalMonths * 100)) : 0;
+    const doneRaces  = rows.length;
+    // 進捗は「1000R到達度」を主指標に（月数指標は既存フィールドとして維持）
+    const pct        = Math.min(100, Math.round(doneRaces / TARGET_RACES * 100));
 
     // 最新レコード（date DESC, race_no DESC）
     const sorted = rows.slice().sort((a, b) =>
@@ -58,7 +50,15 @@ async function run() {
       ? { date: sorted[0].date, kimari: sorted[0].kimari, temp: sorted[0].temp, humidity: sorted[0].humidity }
       : null;
 
-    return { venue, done_months: doneMonths, total_months: totalMonths, pct, latest };
+    return {
+      venue,
+      done_months:  doneMonths,
+      total_months: totalMonths,
+      done_races:   doneRaces,
+      target_races: TARGET_RACES,
+      pct,
+      latest,
+    };
   });
 
   fs.mkdirSync(path.dirname(OUT_PATH), { recursive: true });
@@ -72,4 +72,4 @@ async function run() {
   console.log(`progress.json 出力: ${OUT_PATH} (${venues.length}会場)`);
 }
 
-run().catch(e => { console.error(e); process.exit(1); });
+try { run(); } catch (e) { console.error(e); process.exit(1); }

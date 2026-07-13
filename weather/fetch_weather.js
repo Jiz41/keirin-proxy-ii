@@ -2,17 +2,8 @@
 // Usage: node fetch_weather.js
 
 const fetch    = require('node-fetch');
-const { createClient } = require('@supabase/supabase-js');
-const ws = require('ws');
+const store    = require('./store.js');
 
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SECRET_KEY) {
-  console.error('SUPABASE_URL / SUPABASE_SECRET_KEY が未設定です');
-  process.exit(1);
-}
-
-const supabase    = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY, {
-  realtime: { transport: ws }
-});
 const ARCHIVE_URL = 'https://archive-api.open-meteo.com/v1/archive';
 
 const sleep      = ms => new Promise(r => setTimeout(r, ms));
@@ -139,22 +130,17 @@ async function fetchChunk(dates, lat, lon) {
 }
 
 async function run() {
-  // 未取得行を Supabase から取得
-  const { data: rawRows, error: selErr } = await supabase
-    .from('races')
-    .select('date,venue')
-    .is('temp', null)
-    .order('venue')
-    .order('date');
-  if (selErr) { console.error('Supabase selectエラー:', selErr.message); process.exit(1); }
+  // 全 JSONL を読み、temp 未取得（null）の (date, venue) を洗い出す
+  const allRows = store.readAll();
 
-  // JS側で (date, venue) を dedup
   const seen = new Set();
   const rows = [];
-  for (const r of rawRows) {
+  for (const r of allRows) {
+    if (r.temp !== null && r.temp !== undefined) continue;
     const k = `${r.date}|${r.venue}`;
-    if (!seen.has(k)) { seen.add(k); rows.push(r); }
+    if (!seen.has(k)) { seen.add(k); rows.push({ date: r.date, venue: r.venue }); }
   }
+  rows.sort((a, b) => a.venue.localeCompare(b.venue) || a.date.localeCompare(b.date));
   console.log(`未取得 ${rows.length} 件（日付×会場）`);
 
   // venue → [date, ...] のマップ
@@ -164,7 +150,10 @@ async function run() {
     venueMap.get(venue).push(date);
   }
 
+  // (date|venue) → {temp, humidity} の確定結果を貯め、最後に月別 upsert
+  const resolved = new Map();
   let updated = 0;
+
   for (const [venue, dates] of venueMap) {
     const latlng = VENUE_LATLNG[venue];
     if (!latlng) { console.warn(`  座標なし: ${venue} → スキップ`); continue; }
@@ -185,23 +174,23 @@ async function run() {
       }
 
       for (const [date, { temp, humidity }] of weatherMap) {
-        // 同一 (date, venue) の全レースをまとめて UPDATE
-        const { error: updErr } = await supabase
-          .from('races')
-          .update({ temp, humidity })
-          .eq('date', date)
-          .eq('venue', venue);
-        if (updErr) {
-          console.warn(`  UPDATEエラー ${date} ${venue}: ${updErr.message}`);
-        } else {
-          updated++;
-        }
+        resolved.set(`${date}|${venue}`, { date, venue, temp, humidity });
       }
       console.log(`OK (temp=${[...weatherMap.values()].map(w => w.temp).join('/')}℃)`);
     }
   }
 
-  console.log(`\n完了 — ${updated} 日付×会場 UPDATE`);
+  // 該当 (date, venue) の全レース行に temp/humidity を書き戻す
+  const updates = [];
+  for (const r of allRows) {
+    const hit = resolved.get(`${r.date}|${r.venue}`);
+    if (!hit) continue;
+    updates.push({ ...r, temp: hit.temp, humidity: hit.humidity });
+    updated++;
+  }
+  if (updates.length) store.upsertRaces(updates);
+
+  console.log(`\n完了 — ${updated} レース行に気象データを反映（${resolved.size} 日付×会場）`);
 }
 
 run().catch(e => { console.error(e); process.exit(1); });

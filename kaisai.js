@@ -113,4 +113,4 @@ async function getKaisai(date) {
   return { date, venues };
 }
 
-module.exports = { getKaisai };
+module.exports = { getKaisai, VENUE_MAP };
