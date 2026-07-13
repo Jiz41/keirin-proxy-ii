@@ -13,7 +13,7 @@ set -e
 cd "$(dirname "$0")/.."   # リポジトリルートへ
 
 TARGET_RACES=350
-DAILY_RACE_LIMIT=650
+DAILY_RACE_LIMIT=700
 
 VENUES=(hakodate aomori iwakitaira yahiko maebashi toride utsunomiya omiya seibuen keiokaku tachikawa matsudo kawasaki hiratsuka odawara ito shizuoka toyama nagoya gifu ogaki toyohashi matsusaka yokkaichi fukui nara mukomachi wakayama kishiwada tamano hiroshima hofu takamatsu komatsushima kochi matsuyama kokura kurume takeo sasebo beppu kumamoto)
 
