@@ -31,9 +31,44 @@ async function run(yyyymmdd) {
   console.log(`[診断] venues一覧: ${JSON.stringify(kaisai.venues.map(v => ({ slug: v.slug, grade: v.grade, days: v.days.length })))}`);
 }
 
-const [, , yyyymmdd] = process.argv;
-if (!yyyymmdd || !/^\d{8}$/.test(yyyymmdd)) {
-  console.error('Usage: node diagnose.js <YYYYMMDD>');
+// 月単位シミュレーション: scrape_results.js の日次ループを模して連続アクセス時の挙動を見る
+function daysInMonth(yyyymm) {
+  const year  = parseInt(yyyymm.slice(0, 4), 10);
+  const month = parseInt(yyyymm.slice(4, 6), 10);
+  const last  = new Date(year, month, 0).getDate();
+  const days  = [];
+  for (let d = 1; d <= last; d++) {
+    days.push(`${yyyymm}${String(d).padStart(2, '0')}`);
+  }
+  return days;
+}
+
+async function runMonth(targetSlug, yyyymm) {
+  const days = daysInMonth(yyyymm);
+  console.log(`[診断月次] ${targetSlug} ${yyyymm} — 対象${days.length}日`);
+  let foundCount = 0;
+  for (const yyyymmdd of days) {
+    let kaisai;
+    try {
+      kaisai = await getKaisai(yyyymmdd);
+    } catch (e) {
+      console.log(`[診断月次] ${yyyymmdd} kaisai fetch error: ${e.message}`);
+      continue;
+    }
+    const targetVenue = kaisai.venues.find(v => v.slug === targetSlug);
+    if (!targetVenue) continue;
+    foundCount++;
+    console.log(`[診断月次] ${yyyymmdd} 発見: ${targetVenue.name} grade=${targetVenue.grade} days=${targetVenue.days.length}`);
+  }
+  console.log(`[診断月次] === 完了 ${targetSlug} ${yyyymm} — 発見${foundCount}日 ===`);
+}
+
+const [, , arg1, arg2] = process.argv;
+if (arg1 && /^\d{8}$/.test(arg1) && !arg2) {
+  run(arg1).catch(e => { console.error('診断エラー:', e); process.exit(1); });
+} else if (arg1 && arg2 && /^\d{6}$/.test(arg2)) {
+  runMonth(arg1, arg2).catch(e => { console.error('診断エラー:', e); process.exit(1); });
+} else {
+  console.error('Usage: node diagnose.js <YYYYMMDD>  |  node diagnose.js <slug> <YYYYMM>');
   process.exit(1);
 }
-run(yyyymmdd).catch(e => { console.error('診断エラー:', e); process.exit(1); });
