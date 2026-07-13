@@ -4,6 +4,21 @@
 const fetch = require('node-fetch');
 const { getKaisai } = require('../kaisai.js');
 
+// scrape_results.js と同じSupabase初期化を再現し、これが原因かどうか切り分ける
+if (process.env.DIAG_WITH_SUPABASE === '1') {
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SECRET_KEY) {
+    console.error('[診断] SUPABASE_URL / SUPABASE_SECRET_KEY が未設定です');
+    process.exit(1);
+  }
+  const { createClient } = require('@supabase/supabase-js');
+  const ws = require('ws');
+  console.log('[診断] Supabaseクライアント初期化中（scrape_results.js同等構成）...');
+  const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY, {
+    realtime: { transport: ws },
+  });
+  console.log('[診断] Supabaseクライアント初期化完了');
+}
+
 async function run(yyyymmdd) {
   const year  = yyyymmdd.slice(0, 4);
   const month = yyyymmdd.slice(4, 6);

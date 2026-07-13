@@ -9,6 +9,10 @@ on:
         description: '診断対象日 YYYYMMDD（空なら通常バッチ実行）'
         required: false
         default: ''
+      diagnose_with_supabase:
+        description: '診断時にSupabaseクライアント初期化も再現するか'
+        required: false
+        default: 'false'
 
 permissions:
   contents: write
@@ -25,6 +29,10 @@ jobs:
       - name: diagnose
         if: ${{ github.event.inputs.diagnose_date != '' }}
         run: node weather/diagnose.js ${{ github.event.inputs.diagnose_date }}
+        env:
+          DIAG_WITH_SUPABASE: ${{ github.event.inputs.diagnose_with_supabase == 'true' && '1' || '0' }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
       - name: batch
         if: ${{ github.event.inputs.diagnose_date == '' }}
         run: bash weather/batch_runner.sh
