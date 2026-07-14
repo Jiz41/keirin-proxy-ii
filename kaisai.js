@@ -1,7 +1,35 @@
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
+const fs = require('fs');
+const path = require('path');
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+const CACHE_DIR = path.join(__dirname, 'data', 'kaisai_cache');
+
+// JST の今日を YYYYMMDD で返す
+function todayJST() {
+  const jst = new Date(Date.now() + 9 * 60 * 60 * 1000);
+  const y = jst.getUTCFullYear();
+  const m = String(jst.getUTCMonth() + 1).padStart(2, '0');
+  const d = String(jst.getUTCDate()).padStart(2, '0');
+  return `${y}${m}${d}`;
+}
+
+function readKaisaiCache(date) {
+  const file = path.join(CACHE_DIR, `${date}.json`);
+  if (!fs.existsSync(file)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch (e) {
+    return null; // 壊れたキャッシュは無視してフォールバック
+  }
+}
+
+function writeKaisaiCache(date, data) {
+  fs.mkdirSync(CACHE_DIR, { recursive: true });
+  fs.writeFileSync(path.join(CACHE_DIR, `${date}.json`), JSON.stringify(data));
+}
 
 // prettier-ignore
 const VENUE_MAP = {
@@ -22,6 +50,9 @@ const VENUE_MAP = {
 };
 
 async function getKaisai(date) {
+  const cached = readKaisaiCache(date);
+  if (cached) return cached;
+
   const year = date.slice(0, 4);
   const month = date.slice(4, 6);
   const day = date.slice(6, 8);
@@ -110,7 +141,15 @@ async function getKaisai(date) {
     venues.push({ name: VENUE_MAP[slug] || slug, slug, grade: grade, days });
   });
 
-  return { date, venues };
+  const result = { date, venues };
+
+  // フェッチ成功(200番台)かつ過去日の場合のみキャッシュ
+  // (当日・未来日は開催情報が変わりうるため保存しない。一時的なエラー応答も保存しない)
+  if (response.ok && date < todayJST()) {
+    writeKaisaiCache(date, result);
+  }
+
+  return result;
 }
 
 module.exports = { getKaisai, VENUE_MAP };
