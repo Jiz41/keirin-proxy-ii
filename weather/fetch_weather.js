@@ -82,8 +82,8 @@ function chunkDates(dates) {
   return chunks; // [[startDate, ..., endDate], ...]
 }
 
-// 指数バックオフリトライ付きフェッチ（最大5回、sleep込み）
-async function fetchWithRetry(url, maxRetries = 5) {
+// 指数バックオフリトライ付きフェッチ（最大3回、sleep込み）
+async function fetchWithRetry(url, maxRetries = 3) {
   let lastErr;
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     await sleepRand();

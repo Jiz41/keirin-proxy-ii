@@ -9,11 +9,16 @@ set -e
 #                       exit 3/その他 = 一時的失敗あり → 台帳に記録せず次回再試行。
 # 会場ごとの累積R数が TARGET_RACES に達したらその会場は以降スキップ（進行単位=350R）。
 # 相手サイトへの配慮のため、1日の処理レース数を DAILY_RACE_LIMIT で頭打ちにする。
+# タイムアウト対策として、経過時間が TIME_LIMIT_SEC を超えたら全ループを打ち切り、
+# 会場完了ごとに commit & push することで手戻り（成果消失）を防ぐ。
 
 cd "$(dirname "$0")/.."   # リポジトリルートへ
 
 TARGET_RACES=350
 DAILY_RACE_LIMIT=700
+
+BATCH_START=$(date +%s)
+TIME_LIMIT_SEC="${TIME_LIMIT_SEC:-$((4 * 3600))}"
 
 VENUES=(hakodate aomori iwakitaira yahiko maebashi toride utsunomiya omiya seibuen keiokaku tachikawa matsudo kawasaki hiratsuka odawara ito shizuoka toyama nagoya gifu ogaki toyohashi matsusaka yokkaichi fukui nara mukomachi wakayama kishiwada tamano hiroshima hofu takamatsu komatsushima kochi matsuyama kokura kurume takeo sasebo beppu kumamoto)
 
@@ -27,8 +32,24 @@ NOW_MONTH=$(date +%m)
 
 TOTAL_OK=0
 
+commit_and_push() {
+  git config user.email "actions@github.com"
+  git config user.name "github-actions"
+  git add data/ docs/progress.json
+  git diff --cached --quiet || git commit -m "update weather dataset [skip ci]"
+  git push https://x-access-token:${GITHUB_TOKEN}@github.com/Jiz41/keirin-proxy-ii.git HEAD:main && \
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] === プッシュ完了 ===" || \
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] === プッシュ失敗 ==="
+}
+
 for VENUE in "${VENUES[@]}"; do
   case " $EXCLUDED " in *" $VENUE "*) continue ;; esac
+
+  ELAPSED=$(( $(date +%s) - BATCH_START ))
+  if [ $ELAPSED -ge $TIME_LIMIT_SEC ]; then
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] 経過時間 ${ELAPSED}s が上限 ${TIME_LIMIT_SEC}s に到達 → 全体を打ち切り"
+    break 2
+  fi
 
   # 累積R数が目標に達している会場はスキップ
   RACES=$(node weather/store.js venue-races "$VENUE")
@@ -46,6 +67,11 @@ for VENUE in "${VENUES[@]}"; do
     if node weather/store.js ledger-has "$KEY"; then
       :  # 走査済み → スキップ
     else
+      ELAPSED=$(( $(date +%s) - BATCH_START ))
+      if [ $ELAPSED -ge $TIME_LIMIT_SEC ]; then
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] 経過時間 ${ELAPSED}s が上限 ${TIME_LIMIT_SEC}s に到達 → 全体を打ち切り"
+        break 2
+      fi
       if [ $TOTAL_OK -ge $DAILY_RACE_LIMIT ]; then break 2; fi
       echo "[$(date '+%Y-%m-%d %H:%M:%S')] 処理開始: $VENUE $Y年${M}月"
       SLEEP_SEC=$((RANDOM % 4 + 3))
@@ -78,6 +104,9 @@ for VENUE in "${VENUES[@]}"; do
     if [ $M -gt 12 ]; then M=1; Y=$((Y + 1)); fi
     if [ $Y -gt $NOW_YEAR ] || ([ $Y -eq $NOW_YEAR ] && [ $M -gt $NOW_MONTH ]); then break; fi
   done
+
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] === $VENUE 分の走査終了 — commit & push ==="
+  commit_and_push
 done
 
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] === scrape完了 ${TOTAL_OK}R — fetch_weather 実行 ==="
@@ -87,10 +116,4 @@ echo "[$(date '+%Y-%m-%d %H:%M:%S')] === fetch_weather 完了 — progress.json 
 node weather/generate_progress.js
 
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] === progress.json 生成完了 — GitHub プッシュ ==="
-git config user.email "actions@github.com"
-git config user.name "github-actions"
-git add data/ docs/progress.json
-git diff --cached --quiet || git commit -m "update weather dataset [skip ci]"
-git push https://x-access-token:${GITHUB_TOKEN}@github.com/Jiz41/keirin-proxy-ii.git HEAD:main && \
-  echo "[$(date '+%Y-%m-%d %H:%M:%S')] === プッシュ完了 ===" || \
-  echo "[$(date '+%Y-%m-%d %H:%M:%S')] === プッシュ失敗 ==="
+commit_and_push
