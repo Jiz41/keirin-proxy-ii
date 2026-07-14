@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-13T13:43:54.746Z",
-  "total_races": 1525,
+  "generated_at": "2026-07-14T23:58:58.012Z",
+  "total_races": 1879,
   "total_months": 52,
   "venues": [
     {
@@ -19,16 +19,16 @@
     },
     {
       "venue": "青森",
-      "done_months": 1,
+      "done_months": 4,
       "total_months": 52,
-      "done_races": 5,
+      "done_races": 359,
       "target_races": 350,
-      "pct": 1,
+      "pct": 100,
       "latest": {
-        "date": "2022-04-14",
-        "kimari": "",
-        "temp": 7.2,
-        "humidity": 71.8
+        "date": "2022-07-21",
+        "kimari": "捲",
+        "temp": null,
+        "humidity": null
       }
     },
     {
