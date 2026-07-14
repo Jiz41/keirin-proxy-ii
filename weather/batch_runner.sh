@@ -33,6 +33,8 @@ NOW_MONTH=$(date +%m)
 TOTAL_OK=0
 
 commit_and_push() {
+  # ダッシュボードを実データと同期させるため、push前に毎回progress.jsonを再生成
+  node weather/generate_progress.js || echo "[$(date '+%Y-%m-%d %H:%M:%S')] progress生成失敗(続行)"
   git config user.email "actions@github.com"
   git config user.name "github-actions"
   git add data/ docs/progress.json
@@ -112,8 +114,5 @@ done
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] === scrape完了 ${TOTAL_OK}R — fetch_weather 実行 ==="
 node weather/fetch_weather.js
 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] === fetch_weather 完了 — progress.json 生成 ==="
-node weather/generate_progress.js
-
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] === progress.json 生成完了 — GitHub プッシュ ==="
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] === fetch_weather 完了 — progress.json 生成 & GitHub プッシュ ==="
 commit_and_push
