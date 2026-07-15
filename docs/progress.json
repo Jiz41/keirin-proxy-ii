@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-15T20:58:25.513Z",
-  "total_races": 2639,
+  "generated_at": "2026-07-15T21:18:00.510Z",
+  "total_races": 2835,
   "total_months": 52,
   "venues": [
     {
@@ -73,8 +73,8 @@
       "latest": {
         "date": "2022-12-26",
         "kimari": "差",
-        "temp": null,
-        "humidity": null
+        "temp": 8.3,
+        "humidity": 38
       }
     },
     {
@@ -87,22 +87,22 @@
       "latest": {
         "date": "2022-10-23",
         "kimari": "差",
-        "temp": null,
-        "humidity": null
+        "temp": 21.7,
+        "humidity": 66
       }
     },
     {
       "venue": "大宮",
-      "done_months": 1,
+      "done_months": 4,
       "total_months": 52,
-      "done_races": 5,
+      "done_races": 201,
       "target_races": 350,
-      "pct": 1,
+      "pct": 57,
       "latest": {
-        "date": "2022-04-28",
-        "kimari": "逃",
-        "temp": 18.4,
-        "humidity": 38.2
+        "date": "2022-07-23",
+        "kimari": "差",
+        "temp": 33.2,
+        "humidity": 47.6
       }
     },
     {
