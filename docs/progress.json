@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-14T23:58:58.012Z",
-  "total_races": 1879,
+  "generated_at": "2026-07-15T00:20:58.616Z",
+  "total_races": 2100,
   "total_months": 52,
   "venues": [
     {
@@ -27,8 +27,8 @@
       "latest": {
         "date": "2022-07-21",
         "kimari": "捲",
-        "temp": null,
-        "humidity": null
+        "temp": 25.3,
+        "humidity": 76.2
       }
     },
     {
@@ -50,8 +50,8 @@
       "latest": {
         "date": "2022-08-27",
         "kimari": "差",
-        "temp": null,
-        "humidity": null
+        "temp": 24.8,
+        "humidity": 88.4
       }
     },
     {
@@ -65,12 +65,17 @@
     },
     {
       "venue": "取手",
-      "done_months": 0,
+      "done_months": 5,
       "total_months": 52,
-      "done_races": 0,
+      "done_races": 221,
       "target_races": 350,
-      "pct": 0,
-      "latest": null
+      "pct": 63,
+      "latest": {
+        "date": "2022-08-31",
+        "kimari": "差",
+        "temp": 30.6,
+        "humidity": 63
+      }
     },
     {
       "venue": "宇都宮",
@@ -123,8 +128,8 @@
       "latest": {
         "date": "2022-08-24",
         "kimari": "捲",
-        "temp": null,
-        "humidity": null
+        "temp": 29.4,
+        "humidity": 74
       }
     },
     {
@@ -187,8 +192,8 @@
       "latest": {
         "date": "2022-07-20",
         "kimari": "逃",
-        "temp": null,
-        "humidity": null
+        "temp": 31.5,
+        "humidity": 66.2
       }
     },
     {
@@ -359,8 +364,8 @@
       "latest": {
         "date": "2022-04-27",
         "kimari": "捲",
-        "temp": null,
-        "humidity": null
+        "temp": 21.3,
+        "humidity": 80.8
       }
     },
     {
