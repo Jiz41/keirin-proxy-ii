@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-16T20:03:11.006Z",
-  "total_races": 2835,
+  "generated_at": "2026-07-16T20:18:56.312Z",
+  "total_races": 3021,
   "total_months": 52,
   "venues": [
     {
@@ -93,16 +93,16 @@
     },
     {
       "venue": "大宮",
-      "done_months": 4,
+      "done_months": 8,
       "total_months": 52,
-      "done_races": 201,
+      "done_races": 387,
       "target_races": 350,
-      "pct": 57,
+      "pct": 100,
       "latest": {
-        "date": "2022-07-23",
-        "kimari": "差",
-        "temp": 33.2,
-        "humidity": 47.6
+        "date": "2022-11-30",
+        "kimari": "捲",
+        "temp": null,
+        "humidity": null
       }
     },
     {
