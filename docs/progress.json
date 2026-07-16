@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-16T20:53:40.672Z",
-  "total_races": 3440,
+  "generated_at": "2026-07-16T21:04:19.338Z",
+  "total_races": 3547,
   "total_months": 52,
   "venues": [
     {
@@ -101,8 +101,8 @@
       "latest": {
         "date": "2022-11-30",
         "kimari": "捲",
-        "temp": null,
-        "humidity": null
+        "temp": 18.8,
+        "humidity": 60.4
       }
     },
     {
@@ -115,18 +115,23 @@
       "latest": {
         "date": "2022-11-21",
         "kimari": "捲",
-        "temp": null,
-        "humidity": null
+        "temp": 17.2,
+        "humidity": 68.8
       }
     },
     {
       "venue": "京王閣",
-      "done_months": 0,
+      "done_months": 3,
       "total_months": 52,
-      "done_races": 0,
+      "done_races": 107,
       "target_races": 350,
-      "pct": 0,
-      "latest": null
+      "pct": 31,
+      "latest": {
+        "date": "2022-06-19",
+        "kimari": "捲",
+        "temp": 27.3,
+        "humidity": 66.8
+      }
     },
     {
       "venue": "立川",
