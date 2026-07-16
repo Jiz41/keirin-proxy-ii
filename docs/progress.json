@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-16T20:18:56.312Z",
-  "total_races": 3021,
+  "generated_at": "2026-07-16T20:53:40.672Z",
+  "total_races": 3440,
   "total_months": 52,
   "venues": [
     {
@@ -107,12 +107,17 @@
     },
     {
       "venue": "西武園",
-      "done_months": 0,
+      "done_months": 6,
       "total_months": 52,
-      "done_races": 0,
+      "done_races": 419,
       "target_races": 350,
-      "pct": 0,
-      "latest": null
+      "pct": 100,
+      "latest": {
+        "date": "2022-11-21",
+        "kimari": "捲",
+        "temp": null,
+        "humidity": null
+      }
     },
     {
       "venue": "京王閣",
