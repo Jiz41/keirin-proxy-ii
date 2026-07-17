@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-17T20:33:05.090Z",
-  "total_races": 3879,
+  "generated_at": "2026-07-17T21:03:39.331Z",
+  "total_races": 4117,
   "total_months": 52,
   "venues": [
     {
@@ -135,16 +135,16 @@
     },
     {
       "venue": "立川",
-      "done_months": 4,
+      "done_months": 8,
       "total_months": 52,
-      "done_races": 143,
+      "done_races": 381,
       "target_races": 350,
-      "pct": 41,
+      "pct": 100,
       "latest": {
-        "date": "2022-08-24",
-        "kimari": "捲",
-        "temp": 29.4,
-        "humidity": 74
+        "date": "2022-12-30",
+        "kimari": "差",
+        "temp": null,
+        "humidity": null
       }
     },
     {

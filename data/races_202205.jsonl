@@ -72,6 +72,7 @@
 {"date":"2022-05-04","venue":"立川","race_no":1,"kimari":"差","rank_1":1,"rank_2":7,"rank_3":4,"rank_4":6,"rank_5":5,"rank_6":3,"rank_7":2,"rank_8":null,"rank_9":null,"temp":21.9,"humidity":52.2}
 {"date":"2022-05-04","venue":"伊東","race_no":1,"kimari":"差","rank_1":5,"rank_2":3,"rank_3":2,"rank_4":1,"rank_5":6,"rank_6":4,"rank_7":null,"rank_8":null,"rank_9":null,"temp":22.4,"humidity":38}
 {"date":"2022-05-04","venue":"伊東","race_no":2,"kimari":"差","rank_1":1,"rank_2":7,"rank_3":5,"rank_4":3,"rank_5":2,"rank_6":6,"rank_7":4,"rank_8":null,"rank_9":null,"temp":22.4,"humidity":38}
+{"date":"2022-05-04","venue":"立川","race_no":2,"kimari":"逃","rank_1":7,"rank_2":2,"rank_3":1,"rank_4":5,"rank_5":3,"rank_6":4,"rank_7":6,"rank_8":null,"rank_9":null,"temp":null,"humidity":null}
 {"date":"2022-05-04","venue":"立川","race_no":3,"kimari":"捲","rank_1":7,"rank_2":3,"rank_3":1,"rank_4":6,"rank_5":2,"rank_6":4,"rank_7":5,"rank_8":null,"rank_9":null,"temp":21.9,"humidity":52.2}
 {"date":"2022-05-04","venue":"伊東","race_no":3,"kimari":"差","rank_1":3,"rank_2":2,"rank_3":5,"rank_4":6,"rank_5":4,"rank_6":1,"rank_7":7,"rank_8":null,"rank_9":null,"temp":22.4,"humidity":38}
 {"date":"2022-05-04","venue":"立川","race_no":4,"kimari":"捲","rank_1":4,"rank_2":5,"rank_3":3,"rank_4":2,"rank_5":1,"rank_6":6,"rank_7":7,"rank_8":null,"rank_9":null,"temp":21.9,"humidity":52.2}
