@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-18T20:35:25.511Z",
-  "total_races": 4479,
+  "generated_at": "2026-07-18T21:08:41.236Z",
+  "total_races": 4866,
   "total_months": 52,
   "venues": [
     {
@@ -172,11 +172,11 @@
     },
     {
       "venue": "川崎",
-      "done_months": 1,
+      "done_months": 5,
       "total_months": 52,
-      "done_races": 48,
+      "done_races": 435,
       "target_races": 350,
-      "pct": 14,
+      "pct": 100,
       "latest": {
         "date": "2025-03-15",
         "kimari": "差",
