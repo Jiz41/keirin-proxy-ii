@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-18T20:04:08.972Z",
-  "total_races": 4117,
+  "generated_at": "2026-07-18T20:35:25.511Z",
+  "total_races": 4479,
   "total_months": 52,
   "venues": [
     {
@@ -149,12 +149,17 @@
     },
     {
       "venue": "松戸",
-      "done_months": 0,
+      "done_months": 8,
       "total_months": 52,
-      "done_races": 0,
+      "done_races": 362,
       "target_races": 350,
-      "pct": 0,
-      "latest": null
+      "pct": 100,
+      "latest": {
+        "date": "2022-12-31",
+        "kimari": "",
+        "temp": null,
+        "humidity": null
+      }
     },
     {
       "venue": "千葉",
