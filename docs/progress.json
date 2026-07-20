@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-20T20:27:08.922Z",
-  "total_races": 5646,
+  "generated_at": "2026-07-20T20:58:39.543Z",
+  "total_races": 5745,
   "total_months": 52,
   "venues": [
     {
@@ -214,16 +214,16 @@
     },
     {
       "venue": "伊東",
-      "done_months": 4,
+      "done_months": 6,
       "total_months": 52,
-      "done_races": 294,
+      "done_races": 393,
       "target_races": 350,
-      "pct": 84,
+      "pct": 100,
       "latest": {
-        "date": "2022-07-20",
-        "kimari": "逃",
-        "temp": 31.5,
-        "humidity": 66.2
+        "date": "2022-11-30",
+        "kimari": "差",
+        "temp": null,
+        "humidity": null
       }
     },
     {
