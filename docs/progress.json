@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-21T21:02:09.219Z",
-  "total_races": 6524,
+  "generated_at": "2026-07-21T21:33:54.446Z",
+  "total_races": 6853,
   "total_months": 52,
   "venues": [
     {
@@ -236,8 +236,8 @@
       "latest": {
         "date": "2022-12-17",
         "kimari": "差",
-        "temp": null,
-        "humidity": null
+        "temp": 8.8,
+        "humidity": 68.4
       }
     },
     {
@@ -250,18 +250,23 @@
       "latest": {
         "date": "2022-10-31",
         "kimari": "捲",
-        "temp": null,
-        "humidity": null
+        "temp": 17.5,
+        "humidity": 59
       }
     },
     {
       "venue": "名古屋",
-      "done_months": 0,
+      "done_months": 6,
       "total_months": 52,
-      "done_races": 0,
+      "done_races": 329,
       "target_races": 350,
-      "pct": 0,
-      "latest": null
+      "pct": 94,
+      "latest": {
+        "date": "2022-12-28",
+        "kimari": "捲",
+        "temp": 9.4,
+        "humidity": 58.6
+      }
     },
     {
       "venue": "岐阜",
