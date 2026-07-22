@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-22T20:53:56.523Z",
-  "total_races": 7338,
+  "generated_at": "2026-07-22T21:19:20.607Z",
+  "total_races": 7603,
   "total_months": 52,
   "venues": [
     {
@@ -264,8 +264,8 @@
       "latest": {
         "date": "2023-01-18",
         "kimari": "差",
-        "temp": null,
-        "humidity": null
+        "temp": 10.2,
+        "humidity": 52
       }
     },
     {
@@ -278,18 +278,23 @@
       "latest": {
         "date": "2022-08-14",
         "kimari": "逃",
-        "temp": null,
-        "humidity": null
+        "temp": 29.4,
+        "humidity": 78
       }
     },
     {
       "venue": "大垣",
-      "done_months": 0,
+      "done_months": 4,
       "total_months": 52,
-      "done_races": 0,
+      "done_races": 265,
       "target_races": 350,
-      "pct": 0,
-      "latest": null
+      "pct": 76,
+      "latest": {
+        "date": "2022-09-30",
+        "kimari": "逃",
+        "temp": 25.2,
+        "humidity": 60.4
+      }
     },
     {
       "venue": "豊橋",
