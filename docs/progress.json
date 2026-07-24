@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-24T20:50:18.699Z",
-  "total_races": 8709,
+  "generated_at": "2026-07-24T21:23:04.037Z",
+  "total_races": 9086,
   "total_months": 52,
   "venues": [
     {
@@ -326,12 +326,17 @@
     },
     {
       "venue": "四日市",
-      "done_months": 0,
+      "done_months": 6,
       "total_months": 52,
-      "done_races": 0,
+      "done_races": 377,
       "target_races": 350,
-      "pct": 0,
-      "latest": null
+      "pct": 100,
+      "latest": {
+        "date": "2022-11-04",
+        "kimari": "",
+        "temp": null,
+        "humidity": null
+      }
     },
     {
       "venue": "福井",
