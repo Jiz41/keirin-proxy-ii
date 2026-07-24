@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-24T20:20:49.566Z",
-  "total_races": 8369,
+  "generated_at": "2026-07-24T20:50:18.699Z",
+  "total_races": 8709,
   "total_months": 52,
   "venues": [
     {
@@ -312,16 +312,16 @@
     },
     {
       "venue": "松阪",
-      "done_months": 1,
+      "done_months": 5,
       "total_months": 52,
-      "done_races": 117,
+      "done_races": 457,
       "target_races": 350,
-      "pct": 33,
+      "pct": 100,
       "latest": {
-        "date": "2022-04-30",
-        "kimari": "捲",
-        "temp": 17.5,
-        "humidity": 60.6
+        "date": "2022-08-31",
+        "kimari": "逃",
+        "temp": null,
+        "humidity": null
       }
     },
     {
