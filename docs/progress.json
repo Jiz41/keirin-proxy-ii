@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-25T20:49:16.803Z",
-  "total_races": 9521,
+  "generated_at": "2026-07-25T21:15:20.621Z",
+  "total_races": 9802,
   "total_months": 52,
   "venues": [
     {
@@ -348,18 +348,23 @@
       "latest": {
         "date": "2022-11-24",
         "kimari": "差",
-        "temp": null,
-        "humidity": null
+        "temp": 14.1,
+        "humidity": 62.2
       }
     },
     {
       "venue": "奈良",
-      "done_months": 0,
+      "done_months": 4,
       "total_months": 52,
-      "done_races": 0,
+      "done_races": 281,
       "target_races": 350,
-      "pct": 0,
-      "latest": null
+      "pct": 80,
+      "latest": {
+        "date": "2022-09-16",
+        "kimari": "差",
+        "temp": 29,
+        "humidity": 52
+      }
     },
     {
       "venue": "向日町",
