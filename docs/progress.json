@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-26T20:10:12.707Z",
-  "total_races": 9802,
+  "generated_at": "2026-07-26T20:20:38.363Z",
+  "total_races": 9928,
   "total_months": 52,
   "venues": [
     {
@@ -354,16 +354,16 @@
     },
     {
       "venue": "奈良",
-      "done_months": 4,
+      "done_months": 5,
       "total_months": 52,
-      "done_races": 281,
+      "done_races": 407,
       "target_races": 350,
-      "pct": 80,
+      "pct": 100,
       "latest": {
-        "date": "2022-09-16",
+        "date": "2022-10-27",
         "kimari": "差",
-        "temp": 29,
-        "humidity": 52
+        "temp": null,
+        "humidity": null
       }
     },
     {
