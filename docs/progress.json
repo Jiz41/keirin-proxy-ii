@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-26T20:51:48.576Z",
-  "total_races": 10295,
+  "generated_at": "2026-07-26T21:10:58.064Z",
+  "total_races": 10507,
   "total_months": 52,
   "venues": [
     {
@@ -362,8 +362,8 @@
       "latest": {
         "date": "2022-10-27",
         "kimari": "差",
-        "temp": null,
-        "humidity": null
+        "temp": 18.4,
+        "humidity": 53.4
       }
     },
     {
@@ -376,18 +376,23 @@
       "latest": {
         "date": "2022-12-21",
         "kimari": "差",
-        "temp": null,
-        "humidity": null
+        "temp": 9.8,
+        "humidity": 55.8
       }
     },
     {
       "venue": "和歌山",
-      "done_months": 0,
+      "done_months": 5,
       "total_months": 52,
-      "done_races": 0,
+      "done_races": 212,
       "target_races": 350,
-      "pct": 0,
-      "latest": null
+      "pct": 61,
+      "latest": {
+        "date": "2022-08-24",
+        "kimari": "差",
+        "temp": 29,
+        "humidity": 73.8
+      }
     },
     {
       "venue": "岸和田",
