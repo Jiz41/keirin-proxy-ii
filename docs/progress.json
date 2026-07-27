@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-27T20:38:12.067Z",
-  "total_races": 10687,
+  "generated_at": "2026-07-27T21:06:50.107Z",
+  "total_races": 11041,
   "total_months": 52,
   "venues": [
     {
@@ -396,16 +396,16 @@
     },
     {
       "venue": "岸和田",
-      "done_months": 1,
+      "done_months": 6,
       "total_months": 52,
-      "done_races": 5,
+      "done_races": 359,
       "target_races": 350,
-      "pct": 1,
+      "pct": 100,
       "latest": {
-        "date": "2022-04-01",
+        "date": "2022-10-13",
         "kimari": "捲",
-        "temp": 10.7,
-        "humidity": 42
+        "temp": null,
+        "humidity": null
       }
     },
     {
