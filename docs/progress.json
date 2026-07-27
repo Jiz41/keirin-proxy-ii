@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-27T21:06:50.107Z",
-  "total_races": 11041,
+  "generated_at": "2026-07-27T21:22:30.684Z",
+  "total_races": 11212,
   "total_months": 52,
   "venues": [
     {
@@ -390,8 +390,8 @@
       "latest": {
         "date": "2022-11-27",
         "kimari": "差",
-        "temp": null,
-        "humidity": null
+        "temp": 15.9,
+        "humidity": 56
       }
     },
     {
@@ -404,18 +404,23 @@
       "latest": {
         "date": "2022-10-13",
         "kimari": "捲",
-        "temp": null,
-        "humidity": null
+        "temp": 23.8,
+        "humidity": 59.6
       }
     },
     {
       "venue": "玉野",
-      "done_months": 0,
+      "done_months": 3,
       "total_months": 52,
-      "done_races": 0,
+      "done_races": 171,
       "target_races": 350,
-      "pct": 0,
-      "latest": null
+      "pct": 49,
+      "latest": {
+        "date": "2022-07-29",
+        "kimari": "差",
+        "temp": 30.7,
+        "humidity": 67.4
+      }
     },
     {
       "venue": "広島",
