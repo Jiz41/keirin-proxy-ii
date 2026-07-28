@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-28T21:08:25.544Z",
-  "total_races": 11831,
+  "generated_at": "2026-07-28T21:19:03.028Z",
+  "total_races": 11931,
   "total_months": 52,
   "venues": [
     {
@@ -418,8 +418,8 @@
       "latest": {
         "date": "2022-11-30",
         "kimari": "差",
-        "temp": null,
-        "humidity": null
+        "temp": 13.8,
+        "humidity": 53.8
       }
     },
     {
@@ -432,18 +432,23 @@
       "latest": {
         "date": "2022-11-28",
         "kimari": "差",
-        "temp": null,
-        "humidity": null
+        "temp": 17.7,
+        "humidity": 63
       }
     },
     {
       "venue": "防府",
-      "done_months": 0,
+      "done_months": 2,
       "total_months": 52,
-      "done_races": 0,
+      "done_races": 100,
       "target_races": 350,
-      "pct": 0,
-      "latest": null
+      "pct": 29,
+      "latest": {
+        "date": "2022-05-08",
+        "kimari": "捲",
+        "temp": 20.3,
+        "humidity": 55.8
+      }
     },
     {
       "venue": "高松",
