@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-29T20:13:36.555Z",
-  "total_races": 11931,
+  "generated_at": "2026-07-29T20:37:27.300Z",
+  "total_races": 12217,
   "total_months": 52,
   "venues": [
     {
@@ -438,16 +438,16 @@
     },
     {
       "venue": "防府",
-      "done_months": 2,
+      "done_months": 6,
       "total_months": 52,
-      "done_races": 100,
+      "done_races": 386,
       "target_races": 350,
-      "pct": 29,
+      "pct": 100,
       "latest": {
-        "date": "2022-05-08",
-        "kimari": "捲",
-        "temp": 20.3,
-        "humidity": 55.8
+        "date": "2022-09-18",
+        "kimari": "差",
+        "temp": null,
+        "humidity": null
       }
     },
     {
