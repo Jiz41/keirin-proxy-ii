@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-30T20:42:40.652Z",
-  "total_races": 12957,
+  "generated_at": "2026-07-30T21:17:03.891Z",
+  "total_races": 13383,
   "total_months": 52,
   "venues": [
     {
@@ -480,12 +480,17 @@
     },
     {
       "venue": "高知",
-      "done_months": 0,
+      "done_months": 4,
       "total_months": 52,
-      "done_races": 0,
+      "done_races": 426,
       "target_races": 350,
-      "pct": 0,
-      "latest": null
+      "pct": 100,
+      "latest": {
+        "date": "2023-02-18",
+        "kimari": "差",
+        "temp": null,
+        "humidity": null
+      }
     },
     {
       "venue": "松山",
