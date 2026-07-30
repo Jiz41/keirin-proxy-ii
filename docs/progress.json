@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-30T20:14:57.592Z",
-  "total_races": 12610,
+  "generated_at": "2026-07-30T20:42:40.652Z",
+  "total_races": 12957,
   "total_months": 52,
   "venues": [
     {
@@ -466,16 +466,16 @@
     },
     {
       "venue": "小松島",
-      "done_months": 1,
+      "done_months": 8,
       "total_months": 52,
-      "done_races": 35,
+      "done_races": 382,
       "target_races": 350,
-      "pct": 10,
+      "pct": 100,
       "latest": {
-        "date": "2022-04-27",
+        "date": "2022-12-27",
         "kimari": "捲",
-        "temp": 21.3,
-        "humidity": 80.8
+        "temp": null,
+        "humidity": null
       }
     },
     {
