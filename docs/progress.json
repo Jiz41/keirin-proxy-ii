@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-07-31T20:20:51.917Z",
-  "total_races": 13383,
+  "generated_at": "2026-07-31T20:50:24.318Z",
+  "total_races": 13738,
   "total_months": 52,
   "venues": [
     {
@@ -494,12 +494,17 @@
     },
     {
       "venue": "松山",
-      "done_months": 0,
+      "done_months": 6,
       "total_months": 52,
-      "done_races": 0,
+      "done_races": 355,
       "target_races": 350,
-      "pct": 0,
-      "latest": null
+      "pct": 100,
+      "latest": {
+        "date": "2022-10-01",
+        "kimari": "差",
+        "temp": null,
+        "humidity": null
+      }
     },
     {
       "venue": "小倉",
