@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-31T21:22:18.577Z",
+  "generated_at": "2026-07-31T21:24:23.973Z",
   "total_races": 14124,
   "total_months": 52,
   "venues": [
@@ -502,8 +502,8 @@
       "latest": {
         "date": "2022-10-01",
         "kimari": "差",
-        "temp": null,
-        "humidity": null
+        "temp": 25.3,
+        "humidity": 67.4
       }
     },
     {
@@ -525,8 +525,8 @@
       "latest": {
         "date": "2022-12-25",
         "kimari": "捲",
-        "temp": null,
-        "humidity": null
+        "temp": 11.1,
+        "humidity": 53.6
       }
     },
     {
