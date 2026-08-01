@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-01T20:13:04.494Z",
-  "total_races": 14124,
+  "generated_at": "2026-08-01T20:43:04.285Z",
+  "total_races": 14491,
   "total_months": 53,
   "venues": [
     {
@@ -531,12 +531,17 @@
     },
     {
       "venue": "武雄",
-      "done_months": 0,
+      "done_months": 6,
       "total_months": 53,
-      "done_races": 0,
+      "done_races": 367,
       "target_races": 350,
-      "pct": 0,
-      "latest": null
+      "pct": 100,
+      "latest": {
+        "date": "2022-09-20",
+        "kimari": "差",
+        "temp": null,
+        "humidity": null
+      }
     },
     {
       "venue": "佐世保",
