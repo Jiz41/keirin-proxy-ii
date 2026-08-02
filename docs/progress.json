@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-02T20:44:06.336Z",
-  "total_races": 15253,
+  "generated_at": "2026-08-02T21:17:12.965Z",
+  "total_races": 15618,
   "total_months": 53,
   "venues": [
     {
@@ -573,12 +573,17 @@
     },
     {
       "venue": "熊本",
-      "done_months": 0,
+      "done_months": 6,
       "total_months": 53,
-      "done_races": 0,
+      "done_races": 365,
       "target_races": 350,
-      "pct": 0,
-      "latest": null
+      "pct": 100,
+      "latest": {
+        "date": "2024-12-25",
+        "kimari": "捲",
+        "temp": null,
+        "humidity": null
+      }
     }
   ]
 }
