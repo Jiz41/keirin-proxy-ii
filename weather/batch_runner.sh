@@ -113,6 +113,7 @@ done
 
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] === scrape完了 ${TOTAL_OK}R — fetch_weather 実行 ==="
 node weather/fetch_weather.js
+node weather/generate_trends.js || echo "[$(date '+%Y-%m-%d %H:%M:%S')] trends生成失敗(続行)"
 
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] === fetch_weather 完了 — progress.json 生成 & GitHub プッシュ ==="
 commit_and_push

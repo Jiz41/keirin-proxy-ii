@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>気温×決まり手 傾向分析</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:sans-serif;background:#0f1117;color:#e2e8f0;padding:16px;font-size:14px}
+h1{font-size:18px;margin-bottom:4px;color:#f8fafc}
+.meta{color:#64748b;font-size:12px;margin-bottom:16px}
+a.back{color:#38bdf8;font-size:13px;display:inline-block;margin-bottom:16px}
+.venues{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.venue-btn{background:#1e2330;color:#e2e8f0;border:1px solid #2d3448;border-radius:20px;padding:10px 16px;font-size:14px;min-height:40px}
+.venue-btn.active{background:#0ea5e9;border-color:#38bdf8;color:#0f1117;font-weight:700}
+.tabs{display:flex;gap:8px;margin-bottom:16px}
+.tab-btn{flex:1;background:#1e2330;color:#94a3b8;border:1px solid #2d3448;border-radius:8px;padding:12px;font-size:14px;min-height:44px}
+.tab-btn.active{background:#38bdf8;color:#0f1117;font-weight:700;border-color:#38bdf8}
+.card{background:#1e2330;border-radius:8px;padding:14px;margin-bottom:16px}
+.card .label{color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.baseline{font-size:13px;color:#94a3b8}
+.baseline b{color:#f1f5f9}
+.table-wrap{overflow-x:auto;background:#1e2330;border-radius:8px}
+table{width:100%;border-collapse:collapse;min-width:420px}
+th{text-align:left;padding:10px 8px;color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #2d3448;white-space:nowrap}
+td{padding:10px 8px;border-bottom:1px solid #1a1f2e;vertical-align:middle;white-space:nowrap}
+.bin{font-weight:600;color:#f1f5f9}
+.pctcell{font-size:14px}
+.n{color:#64748b;font-size:11px;margin-left:4px}
+.high{color:#38bdf8;font-weight:700}
+.low{color:#fb923c;font-weight:700}
+.ref{opacity:.55}
+.ref-tag{display:inline-block;font-size:10px;color:#64748b;border:1px solid #334155;border-radius:3px;padding:0 4px;margin-left:4px;vertical-align:middle}
+.none{color:#334155}
+.guide{color:#64748b;font-size:13px;padding:20px;text-align:center}
+.legend{color:#64748b;font-size:11px;margin-top:10px;line-height:1.6}
+.updated{color:#475569;font-size:11px;margin-top:20px;text-align:right}
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← 進捗ダッシュボードへ戻る</a>
+<h1>気温×決まり手 傾向分析</h1>
+<p class="meta" id="meta">読み込み中...</p>
+
+<div class="venues" id="venues"></div>
+
+<div class="tabs">
+  <button class="tab-btn active" id="tab-temp" data-tab="temp">気温帯</button>
+  <button class="tab-btn" id="tab-season" data-tab="season">季節</button>
+</div>
+
+<div id="content"></div>
+
+<p class="updated" id="updated"></p>
+
+<script>
+let DATA = null;
+let currentVenue = null;
+let currentTab = 'temp';
+
+const TEMP_BINS = ['<10', '10-20', '20-25', '25-30', '30+'];
+const SEASONS = ['春', '夏', '秋', '冬'];
+const KIMARI = ['差', '捲', '逃'];
+
+fetch('./weather_trends.json?_=' + Date.now())
+  .then(r => r.json())
+  .then(data => {
+    DATA = data;
+    document.getElementById('meta').textContent =
+      '最終更新: ' + new Date(data.generated_at).toLocaleString('ja-JP');
+    document.getElementById('updated').textContent =
+      '生成日時: ' + new Date(data.generated_at).toLocaleString('ja-JP');
+
+    const venueNames = Object.keys(data.venues);
+    const venuesEl = document.getElementById('venues');
+    venueNames.forEach(name => {
+      const btn = document.createElement('button');
+      btn.className = 'venue-btn';
+      btn.textContent = name;
+      btn.addEventListener('click', () => {
+        currentVenue = name;
+        render();
+      });
+      venuesEl.appendChild(btn);
+    });
+
+    document.getElementById('tab-temp').addEventListener('click', () => {
+      currentTab = 'temp';
+      updateTabButtons();
+      render();
+    });
+    document.getElementById('tab-season').addEventListener('click', () => {
+      currentTab = 'season';
+      updateTabButtons();
+      render();
+    });
+
+    render();
+  })
+  .catch(e => {
+    document.getElementById('meta').textContent = 'weather_trends.json 読み込みエラー: ' + e.message;
+  });
+
+function updateTabButtons() {
+  document.getElementById('tab-temp').classList.toggle('active', currentTab === 'temp');
+  document.getElementById('tab-season').classList.toggle('active', currentTab === 'season');
+}
+
+function updateVenueButtons() {
+  document.querySelectorAll('.venue-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent === currentVenue);
+  });
+}
+
+function render() {
+  updateVenueButtons();
+  const content = document.getElementById('content');
+
+  if (!currentVenue) {
+    content.innerHTML = '<div class="guide">上の一覧から会場を選択してください。</div>';
+    return;
+  }
+
+  const v = DATA.venues[currentVenue];
+  const groups = currentTab === 'temp' ? TEMP_BINS : SEASONS;
+  const groupData = currentTab === 'temp' ? v.by_temp_bin : v.by_season;
+
+  let html = '';
+  html += '<div class="card">';
+  html += '<div class="label">会場全体（総件数 ' + v.total + '件）</div>';
+  html += '<div class="baseline">差 <b>' + v.baseline['差'] + '%</b> ／ 捲 <b>' + v.baseline['捲'] + '%</b> ／ 逃 <b>' + v.baseline['逃'] + '%</b></div>';
+  html += '</div>';
+
+  html += '<div class="table-wrap"><table><thead><tr><th>' + (currentTab === 'temp' ? '気温帯' : '季節') + '</th>';
+  KIMARI.forEach(k => { html += '<th>' + k + '</th>'; });
+  html += '</tr></thead><tbody>';
+
+  groups.forEach(g => {
+    const cell = groupData[g];
+    html += '<tr><td class="bin">' + g + (cell && cell.low_n ? '<span class="ref-tag">参考</span>' : '') + '</td>';
+    if (!cell) {
+      KIMARI.forEach(() => { html += '<td class="none">—</td>'; });
+    } else {
+      KIMARI.forEach(k => {
+        const pct = cell[k];
+        const diff = pct - v.baseline[k];
+        let cls = 'pctcell';
+        if (Math.abs(diff) >= 8) cls += diff > 0 ? ' high' : ' low';
+        if (cell.low_n) cls += ' ref';
+        html += '<td class="' + cls + '">' + pct + '%<span class="n">n=' + cell.n + '</span></td>';
+      });
+    }
+    html += '</tr>';
+  });
+
+  html += '</tbody></table></div>';
+  html += '<div class="legend">青字=会場平均比+8pt以上／橙字=会場平均比−8pt以上／「参考」=区分件数30未満で断定不可</div>';
+
+  content.innerHTML = html;
+}
+</script>
+</body>
+</html>
