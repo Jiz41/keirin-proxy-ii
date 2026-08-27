@@ -10,7 +10,13 @@ body{font-family:sans-serif;background:#0f1117;color:#e2e8f0;padding:16px;font-s
 h1{font-size:18px;margin-bottom:4px;color:#f8fafc}
 .meta{color:#64748b;font-size:12px;margin-bottom:16px}
 a.back{color:#38bdf8;font-size:13px;display:inline-block;margin-bottom:16px}
-.venues{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.venues{margin-bottom:16px}
+.region{border:1px solid #2d3448;border-radius:8px;margin-bottom:8px;overflow:hidden}
+.region-header{width:100%;text-align:left;background:#1a1f2e;color:#e2e8f0;border:none;padding:12px 14px;font-size:14px;font-weight:700;min-height:44px;display:flex;justify-content:space-between;align-items:center}
+.region-header::after{content:'▸';color:#64748b;font-size:12px;transition:transform .15s}
+.region-header.open::after{transform:rotate(90deg)}
+.region-venues{display:none;flex-wrap:wrap;gap:8px;padding:12px 14px}
+.region-venues.open{display:flex}
 .venue-btn{background:#1e2330;color:#e2e8f0;border:1px solid #2d3448;border-radius:20px;padding:10px 16px;font-size:14px;min-height:40px}
 .venue-btn.active{background:#0ea5e9;border-color:#38bdf8;color:#0f1117;font-weight:700}
 .tabs{display:flex;gap:8px;margin-bottom:16px}
@@ -62,6 +68,17 @@ const TEMP_BINS = ['<10', '10-20', '20-25', '25-30', '30+'];
 const SEASONS = ['春', '夏', '秋', '冬'];
 const KIMARI = ['差', '捲', '逃'];
 
+const REGIONS = [
+  { name: '北海道・東北', venues: ['函館', '青森'] },
+  { name: '北陸・甲信越', venues: ['弥彦', '富山', '福井'] },
+  { name: '関東', venues: ['京王閣', '川崎', '西武園', '小田原', '大宮', '取手', '立川', '平塚', '宇都宮', '松戸'] },
+  { name: '東海', venues: ['豊橋', '松阪', '大垣', '名古屋', '静岡', '岐阜', '伊東', '四日市'] },
+  { name: '近畿', venues: ['奈良', '和歌山', '向日町', '岸和田'] },
+  { name: '中国', venues: ['玉野', '防府', '広島'] },
+  { name: '四国', venues: ['高知', '高松', '小松島', '松山'] },
+  { name: '九州', venues: ['別府', '久留米', '佐世保', '武雄', '熊本'] },
+];
+
 fetch('./weather_trends.json?_=' + Date.now())
   .then(r => r.json())
   .then(data => {
@@ -72,16 +89,47 @@ fetch('./weather_trends.json?_=' + Date.now())
       '生成日時: ' + new Date(data.generated_at).toLocaleString('ja-JP');
 
     const venueNames = Object.keys(data.venues);
+    const allRegionVenues = [];
+    REGIONS.forEach(r => allRegionVenues.push(...r.venues));
+    console.log('data.venues件数=' + venueNames.length, venueNames);
+    console.log('REGIONS合算件数=' + allRegionVenues.length, allRegionVenues);
+    const missingInRegions = venueNames.filter(n => !allRegionVenues.includes(n));
+    const missingInData = allRegionVenues.filter(n => !venueNames.includes(n));
+    console.log('data.venuesにあるがREGIONSに無い:', missingInRegions);
+    console.log('REGIONSにあるがdata.venuesに無い:', missingInData);
+
     const venuesEl = document.getElementById('venues');
-    venueNames.forEach(name => {
-      const btn = document.createElement('button');
-      btn.className = 'venue-btn';
-      btn.textContent = name;
-      btn.addEventListener('click', () => {
-        currentVenue = name;
-        render();
+    REGIONS.forEach(region => {
+      const wrap = document.createElement('div');
+      wrap.className = 'region';
+
+      const header = document.createElement('button');
+      header.className = 'region-header';
+      header.dataset.region = region.name;
+      header.textContent = region.name + '（' + region.venues.length + '）';
+
+      const body = document.createElement('div');
+      body.className = 'region-venues';
+
+      region.venues.forEach(name => {
+        const btn = document.createElement('button');
+        btn.className = 'venue-btn';
+        btn.textContent = name;
+        btn.addEventListener('click', () => {
+          currentVenue = name;
+          render();
+        });
+        body.appendChild(btn);
       });
-      venuesEl.appendChild(btn);
+
+      header.addEventListener('click', () => {
+        header.classList.toggle('open');
+        body.classList.toggle('open');
+      });
+
+      wrap.appendChild(header);
+      wrap.appendChild(body);
+      venuesEl.appendChild(wrap);
     });
 
     document.getElementById('tab-temp').addEventListener('click', () => {
@@ -110,6 +158,15 @@ function updateVenueButtons() {
   document.querySelectorAll('.venue-btn').forEach(btn => {
     btn.classList.toggle('active', btn.textContent === currentVenue);
   });
+  if (currentVenue) {
+    document.querySelectorAll('.region-header').forEach(header => {
+      const region = REGIONS.find(r => r.name === header.dataset.region);
+      if (region && region.venues.includes(currentVenue)) {
+        header.classList.add('open');
+        header.nextElementSibling.classList.add('open');
+      }
+    });
+  }
 }
 
 function render() {
